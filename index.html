@@ -111,7 +111,7 @@
         .ped-character { width: 100px; transition: 0.5s; opacity: 0; transform: translateY(20px); }
         .ped-character.active { opacity: 1; transform: translateY(0); }
 
-        /* CONTROLES DE LIENZO (NUEVO) */
+        /* CONTROLES DE LIENZO */
         .canvas-controls { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 60; }
         .canvas-btn { background: rgba(255,255,255,0.9); border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; color: #5d4037; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
         .canvas-btn:hover:not(:disabled) { transform: scale(1.1); background: #fff; color: #d4af37; }
@@ -273,7 +273,6 @@
                 const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), {
                     ...MASTER_TEMPLATE, createdAt: new Date().toISOString()
                 });
-                // Guardar en localStorage cual se está editando para pasar al editor
                 localStorage.setItem('currentBookId', ref.id);
                 setView('editor');
             };
@@ -311,11 +310,11 @@
             );
         }
 
-        // --- EDITOR PRINCIPAL (CON LIENZO DE REVISTA) ---
+        // --- EDITOR PRINCIPAL (CON CARGA DE IMÁGENES) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
-            const [activeIdx, setActiveIdx] = useState(0); // 0 = Portada cerrada
-            const [selPageIdx, setSelPageIdx] = useState(0); // Para el panel lateral
+            const [activeIdx, setActiveIdx] = useState(0); 
+            const [selPageIdx, setSelPageIdx] = useState(0); 
             const [editSide, setEditSide] = useState('front');
 
             useEffect(() => {
@@ -328,31 +327,70 @@
             }, []);
 
             const save = async () => {
-                await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), {
-                    pages: book.pages, title: book.title
-                });
-                alert("¡Guardado!");
+                try {
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), {
+                        pages: book.pages, title: book.title
+                    });
+                    alert("¡Guardado correctamente!");
+                } catch (e) {
+                    alert("Error al guardar: La imagen puede ser muy pesada. Intenta con imágenes más pequeñas.");
+                }
             };
 
             const share = () => {
                 const url = `${window.location.origin}${window.location.pathname}?uid=${user.uid}&book=${book.id}`;
                 navigator.clipboard.writeText(url);
-                alert("¡Enlace copiado al portapapeles!\n\nCualquiera con este link podrá ver tu revista: " + url);
+                alert("¡Enlace copiado! Comparte este link: " + url);
             };
 
             const updateContent = (field, val) => {
                 const newPages = [...book.pages];
                 const page = newPages[selPageIdx][editSide];
-                
-                // Manejo de tooltips anidados
                 if (field === 'tooltipTitle') page.tooltip.title = val;
                 else if (field === 'tooltipText') page.tooltip.text = val;
                 else page[field] = val;
-
                 setBook({...book, pages: newPages});
             };
 
-            // Insertar página antes del final
+            // NUEVA FUNCIÓN: CARGAR IMAGEN DESDE PC
+            const handleImageUpload = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Límite simple: Advertencia si es muy grande
+                if (file.size > 1000000) { // 1MB
+                    if(!confirm("Esta imagen es grande y podría tardar en guardar. ¿Deseas continuar?")) return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    // Comprimir visualmente creando un canvas temporal
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        // Redimensionar a max 800px ancho para ahorrar espacio
+                        const MAX_WIDTH = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Guardar como Data URL (Base64)
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // Calidad 70%
+                        updateContent('bg', dataUrl);
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+
             const addPage = () => {
                 const np = [...book.pages];
                 np.splice(np.length-1, 0, { 
@@ -367,7 +405,7 @@
 
             return (
                 <div className="flex h-full">
-                    {/* PANEL LATERAL DE HERRAMIENTAS */}
+                    {/* PANEL DE EDICIÓN */}
                     <div className="w-80 bg-white border-r flex flex-col z-20 shadow-xl overflow-hidden">
                         <div className="p-4 bg-amber-50 border-b border-amber-200">
                             <button onClick={()=>setView('dashboard')} className="text-xs text-gray-500 mb-2 hover:text-amber-800"><i className="fas fa-arrow-left"></i> Volver al panel</button>
@@ -394,13 +432,34 @@
                                 if(face.type === 'endpaper') return <p className="text-xs text-gray-500 italic">Esta es una página de estructura (Guardas). No editable.</p>;
 
                                 return (
-                                    <div className="space-y-3 animate-pulse-once">
+                                    <div className="space-y-4 animate-pulse-once">
                                         {face.type === 'image-page' && (
-                                            <div>
-                                                <label className="text-xs font-bold text-gray-600">URL Imagen Fondo</label>
-                                                <input className="w-full border rounded p-1 text-xs" value={face.bg} onChange={e=>updateContent('bg', e.target.value)} placeholder="https://..." />
+                                            <div className="bg-gray-50 p-3 rounded border border-gray-200">
+                                                <label className="block text-xs font-bold text-gray-700 mb-2">IMAGEN DE FONDO</label>
+                                                
+                                                {/* OPCIÓN 1: SUBIR DESDE PC */}
+                                                <div className="mb-3">
+                                                    <label className="flex items-center justify-center w-full px-4 py-2 bg-white text-blue-600 rounded-lg shadow-sm tracking-wide uppercase border border-blue-200 cursor-pointer hover:bg-blue-50">
+                                                        <i className="fas fa-cloud-upload-alt mr-2"></i>
+                                                        <span className="text-xs font-bold">Subir desde PC</span>
+                                                        <input type='file' accept="image/*" className="hidden" onChange={handleImageUpload} />
+                                                    </label>
+                                                </div>
+
+                                                <div className="text-center text-xs text-gray-400 mb-2">- O PEGA UN ENLACE -</div>
+
+                                                {/* OPCIÓN 2: PEGAR LINK */}
+                                                <input className="w-full border rounded p-2 text-xs mb-2" value={face.bg} onChange={e=>updateContent('bg', e.target.value)} placeholder="https://..." />
+                                                
+                                                {/* PREVISUALIZACIÓN PEQUEÑA */}
+                                                {face.bg && (
+                                                    <div className="h-20 w-full rounded bg-gray-200 overflow-hidden border border-gray-300">
+                                                        <img src={face.bg} className="w-full h-full object-cover" />
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
+                                        
                                         {face.type === 'text-page' && (
                                             <>
                                                 <div>
@@ -414,8 +473,8 @@
                                             </>
                                         )}
                                         
-                                        <div className="bg-blue-50 p-2 rounded border border-blue-100 mt-4">
-                                            <h5 className="text-xs font-bold text-blue-800 mb-2"><i className="fas fa-comment"></i> Guía Pedagógica (Nube)</h5>
+                                        <div className="bg-amber-50 p-2 rounded border border-amber-100 mt-4">
+                                            <h5 className="text-xs font-bold text-amber-800 mb-2"><i className="fas fa-comment"></i> Guía Pedagógica (Nube)</h5>
                                             <input className="w-full border rounded p-1 text-xs mb-1" placeholder="Título nube" value={face.tooltip?.title} onChange={e=>updateContent('tooltipTitle', e.target.value)} />
                                             <textarea className="w-full border rounded p-1 text-xs" rows="2" placeholder="Texto nube" value={face.tooltip?.text} onChange={e=>updateContent('tooltipText', e.target.value)} />
                                         </div>
@@ -435,10 +494,9 @@
                             activeIdx={activeIdx} 
                             setActiveIdx={(idx) => {
                                 setActiveIdx(idx);
-                                // Sincronizar el editor lateral con la página que se está viendo
-                                if(idx === -1) setSelPageIdx(0); // Portada
-                                else if(idx >= book.pages.length-1) setSelPageIdx(book.pages.length-1); // Contraportada
-                                else setSelPageIdx(idx); // Páginas internas
+                                if(idx === -1) setSelPageIdx(0); 
+                                else if(idx >= book.pages.length-1) setSelPageIdx(book.pages.length-1); 
+                                else setSelPageIdx(idx); 
                             }} 
                             isEditor={true} 
                         />
@@ -457,13 +515,12 @@
             )
         }
 
-        // --- COMPONENTE DEL LIBRO (COMÚN PARA EDITOR Y VISOR) ---
+        // --- COMPONENTE DEL LIBRO ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor }) {
             const [showPed, setShowPed] = useState(false);
             const [pedData, setPedData] = useState({left:null, right:null});
             const audioRef = useRef(null);
 
-            // Calcular estado visual
             const isOpen = activeIdx >= 0 && activeIdx < pages.length - 1;
             const isClosedBack = activeIdx === pages.length - 1;
 
@@ -492,7 +549,6 @@
                 <div className="canvas-area">
                     <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
 
-                    {/* LIBRO 3D */}
                     <div id="stage">
                         <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
                             {pages.map((p, i) => {
@@ -502,7 +558,7 @@
                                         <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
                                             {p.front.type==='text-page' && (
                                                 <div className="w-full h-full p-8 flex flex-col items-center justify-center">
-                                                    <h2>{p.front.title}</h2><p>{p.front.text}</p>
+                                                    <h2>{p.front.title}</h2><p dangerouslySetInnerHTML={{__html: p.front.text?.replace(/\n/g, '<br>')}}></p>
                                                 </div>
                                             )}
                                             {i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}
@@ -510,7 +566,7 @@
                                         <div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>
                                             {p.back.type==='text-page' && (
                                                 <div className="w-full h-full p-8 flex flex-col items-center justify-center">
-                                                    <h2>{p.back.title}</h2><p>{p.back.text}</p>
+                                                    <h2>{p.back.title}</h2><p dangerouslySetInnerHTML={{__html: p.back.text?.replace(/\n/g, '<br>')}}></p>
                                                 </div>
                                             )}
                                             {i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}
@@ -521,36 +577,22 @@
                         </div>
                     </div>
 
-                    {/* BOTONES DE NAVEGACIÓN EN EL LIENZO */}
                     <div className="canvas-controls">
-                        <button className="canvas-btn" disabled={activeIdx < -1} onClick={() => changePage(activeIdx - 1)}>
-                            <i className="fas fa-chevron-left"></i>
-                        </button>
+                        <button className="canvas-btn" disabled={activeIdx < -1} onClick={() => changePage(activeIdx - 1)}><i className="fas fa-chevron-left"></i></button>
                         <span className="bg-white/80 px-4 py-2 rounded-full font-bold text-sm text-gray-600 flex items-center">
                             {activeIdx === -1 ? 'Portada' : activeIdx === pages.length-1 ? 'Fin' : `Pág ${activeIdx*2+1}-${activeIdx*2+2}`}
                         </span>
-                        <button className="canvas-btn" disabled={activeIdx >= pages.length - 1} onClick={() => changePage(activeIdx + 1)}>
-                            <i className="fas fa-chevron-right"></i>
-                        </button>
+                        <button className="canvas-btn" disabled={activeIdx >= pages.length - 1} onClick={() => changePage(activeIdx + 1)}><i className="fas fa-chevron-right"></i></button>
                     </div>
 
-                    {/* CAPA PEDAGÓGICA (VISUALIZACIÓN NUBES) */}
                     <div className="pedagogical-layer">
-                        {/* Izquierda */}
                         <div className="flex flex-col items-end w-64 pb-20 pl-4">
-                            <div className={`ped-cloud ${showPed && pedData.left ? 'active' : ''}`}>
-                                <h3>{pedData.left?.title}</h3><p>{pedData.left?.text}</p>
-                            </div>
-                            <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20izquierda.png?raw=true" 
-                                 className={`ped-character ${showPed && pedData.left ? 'active' : ''}`} />
+                            <div className={`ped-cloud ${showPed && pedData.left ? 'active' : ''}`}><h3>{pedData.left?.title}</h3><p>{pedData.left?.text}</p></div>
+                            <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20izquierda.png?raw=true" className={`ped-character ${showPed && pedData.left ? 'active' : ''}`} />
                         </div>
-                        {/* Derecha */}
                         <div className="flex flex-col items-start w-64 pt-20 pr-4 h-full justify-start mt-20">
-                            <div className={`ped-cloud ${showPed && pedData.right ? 'active' : ''}`}>
-                                <h3>{pedData.right?.title}</h3><p>{pedData.right?.text}</p>
-                            </div>
-                            <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png?raw=true" 
-                                 className={`ped-character ${showPed && pedData.right ? 'active' : ''}`} style={{transform:'scaleX(-1)'}} />
+                            <div className={`ped-cloud ${showPed && pedData.right ? 'active' : ''}`}><h3>{pedData.right?.title}</h3><p>{pedData.right?.text}</p></div>
+                            <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png?raw=true" className={`ped-character ${showPed && pedData.right ? 'active' : ''}`} style={{transform:'scaleX(-1)'}} />
                         </div>
                     </div>
                 </div>
