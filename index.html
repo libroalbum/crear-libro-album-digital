@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Libro Álbum Digital</title>
+    <title>Libro Álbum Digital Pedagógico</title>
     
-    <!-- 1. ESTILOS Y FUENTES -->
+    <!-- LIBRERÍAS DE ESTILO Y FUENTES (Originales + Tailwind para el panel) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- 2. LIBRERÍAS DE REACT -->
+    <!-- LIBRERÍAS REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- 3. ESTILOS VISUALES -->
+    <!-- ESTILOS: Fusión del Dashboard y Tu Revista Original -->
     <style>
+        /* --- ESTILOS ORIGINALES DE TU REVISTA --- */
         :root {
-            --book-width: 400px;
-            --book-height: 550px;
+            --book-width: 460px;
+            --book-height: 600px;
+            --bg-color: #BDBDBD; 
             --paper-texture: #fdfbf7;
             --text-color: #2c3e50;
             --accent-color: #5d4037;
@@ -28,19 +30,28 @@
             --endpaper-dot: #ffffff; 
         }
 
-        .stage-container {
-            perspective: 2500px;
+        /* Contenedor específico para el libro para no afectar el dashboard */
+        .book-environment {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
             width: 100%;
             height: 100%;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            color: var(--text-color);
             position: relative;
-            padding: 20px;
         }
 
-        .book-3d {
+        /* ESCENARIO 3D */
+        #stage {
+            perspective: 2500px;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.5s ease;
+        }
+
+        .book {
             position: relative;
             width: var(--book-width);
             height: var(--book-height);
@@ -48,63 +59,112 @@
             transition: transform 0.6s ease-in-out;
         }
 
-        .book-3d::before {
-            content: '';
-            position: absolute;
-            z-index: -1;
+        /* SOMBRA REALISTA ORIGINAL */
+        .book::before {
+            content: ''; position: absolute; z-index: -1;
             width: 96%; height: 96%; left: 5%; top: 5%;
-            background: rgba(0,0,0,0.4); 
-            filter: blur(25px);
-            border-radius: 20px;
-            transition: all 0.6s ease-in-out;
-            opacity: 0.7;
+            background: rgba(0,0,0,0.4); filter: blur(25px); border-radius: 20px;
+            transition: all 0.6s ease-in-out; opacity: 0.7;
         }
+        .book.opened { transform: translateX(50%); }
+        .book.opened::before { width: 196%; left: -95%; opacity: 0.5; background: rgba(0,0,0,0.3); }
+        .book.closed-back { transform: translateX(100%); }
+        .book.closed-back::before { width: 96%; left: -99%; }
 
-        .book-3d.opened { transform: translateX(50%); }
-        .book-3d.opened::before { width: 196%; left: -95%; opacity: 0.5; background: rgba(0,0,0,0.3); }
-        .book-3d.closed-back { transform: translateX(100%); }
-        .book-3d.closed-back::before { width: 96%; left: -99%; }
-
+        /* HOJAS */
         .paper {
             position: absolute; width: 100%; height: 100%; top: 0; left: 0;
             transform-origin: left center;
             transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
             transform-style: preserve-3d;
         }
-        .paper.flipped { transform: rotateY(-180deg); }
+        .paper.flipped { transform: rotateY(-180deg); z-index: 0; }
 
-        .face {
+        .front, .back {
             position: absolute; width: 100%; height: 100%; top: 0; left: 0;
             background-color: var(--paper-texture);
-            backface-visibility: hidden;
-            overflow: hidden;
+            backface-visibility: hidden; overflow: hidden;
             border-radius: 2px 5px 5px 2px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
         }
-        .face.front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); }
-        .face.back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
+        .front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); }
+        .back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
 
-        .face.image-page { background-size: cover; background-position: center; background-color: #fff; }
-        .face.text-page { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
+        /* Sombras lomo */
+        .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; }
+        .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; }
+
+        /* TIPOS DE PÁGINA */
+        .image-page { background-size: cover; background-position: center; background-color: #fff; }
         
-        .face.endpaper { 
+        .text-page {
+            background-color: #fffefae6; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 60px; text-align: center;
+        }
+        .text-page h2 { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; margin-bottom: 25px; position: relative; padding-bottom: 15px; }
+        .text-page h2::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 1px; background: var(--gold-color); }
+        .text-page p { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 2; color: #555; font-style: italic; white-space: pre-wrap; }
+        .legal-text { font-size: 0.75rem !important; color: #888 !important; font-style: normal !important; }
+
+        .endpaper {
             background-color: var(--endpaper-bg);
             background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px);
             background-size: 20px 20px;
         }
 
-        .text-page h2 { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; margin-bottom: 25px; position: relative; padding-bottom: 15px; }
-        .text-page h2::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 1px; background: var(--gold-color); }
-        .text-page p { font-family: 'Merriweather', serif; font-size: 0.9rem; line-height: 1.8; color: #555; font-style: italic; white-space: pre-wrap; }
-        
-        .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 14px; color: var(--text-color); font-weight: bold; }
-        .face.front .page-number { right: 20px; }
-        .face.back .page-number { left: 20px; }
+        .page-number {
+            position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 14px;
+            color: var(--text-color); font-weight: bold; pointer-events: none; z-index: 10;
+        }
+        .front .page-number { right: 20px; }
+        .back .page-number { left: 20px; }
 
+        /* CAPA PEDAGÓGICA (NUBES Y PERSONAJES) */
+        .pedagogical-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 200; display: flex; justify-content: space-between; align-items: stretch; padding: 0 5px;
+        }
+        .ped-label-container { width: 250px; display: flex; flex-direction: column; transition: padding 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .align-bottom { justify-content: flex-end; padding-top: 0; }
+        .align-top { justify-content: flex-start; padding-bottom: 0; }
+        .ped-label-left { margin-left: 5px; text-align: right; align-items: flex-end; }
+        .ped-label-right { margin-right: 5px; text-align: left; align-items: flex-start; }
+        
+        .ped-cloud, .ped-character { opacity: 0; transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        
+        .ped-cloud {
+            background-color: #fff; padding: 20px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15); border: 1px solid #eee;
+            position: relative; max-width: 100%; margin-bottom: 10px;
+        }
+        .ped-character { width: 120px; height: auto; transition-delay: 0.1s; }
+
+        /* Animaciones Nubes */
+        .ped-label-left .ped-cloud, .ped-label-left .ped-character { transform: translateX(-150px); }
+        .ped-label-left .ped-cloud.active, .ped-label-left .ped-character.active { opacity: 1; transform: translateX(0); }
+        .ped-label-right .ped-cloud { transform: translateX(150px); }
+        .ped-label-right .ped-cloud.active { opacity: 1; transform: translateX(0); }
+        .ped-label-right .ped-character { transform: translateX(150px) scaleX(-1); }
+        .ped-label-right .ped-character.active { opacity: 1; transform: translateX(0) scaleX(-1); }
+
+        .ped-cloud h3 { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1rem; margin-bottom: 8px; border-bottom: 2px solid var(--gold-color); display: inline-block; }
+        .ped-cloud p { font-family: 'Lato', sans-serif; font-size: 0.85rem; color: #666; line-height: 1.5; }
+
+        /* Triangulitos Nube */
+        .ped-label-left .ped-cloud::after { content: ''; position: absolute; top: 100%; right: 40px; border-width: 10px 10px 0 10px; border-style: solid; border-color: #fff transparent transparent transparent; }
+        .ped-label-right .ped-cloud::after { content: ''; position: absolute; top: 100%; left: 40px; border-width: 10px 10px 0 10px; border-style: solid; border-color: #fff transparent transparent transparent; }
+
+        @media (max-width: 1100px) {
+            :root { --book-width: 350px; --book-height: 500px; }
+        }
         @media (max-width: 768px) {
             :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); }
-            .stage-container { perspective: 1200px; }
-            .text-page { padding: 15px; }
+            #stage { perspective: 1200px; }
+            .ped-label-container { width: 140px; }
+            .ped-character { width: 80px; }
+            .ped-cloud { padding: 10px; }
+            .ped-cloud h3 { font-size: 0.8rem; }
+            .ped-cloud p { display: none; }
         }
     </style>
 </head>
@@ -117,9 +177,9 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
-        // --- TUS CLAVES DE FIREBASE (NO TOCAR) ---
+        // --- TUS CLAVES FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyAThH-edUt4Ep9BR-Xuy5Zjmgl9Nky1keU",
             authDomain: "libroalbum.firebaseapp.com",
@@ -136,19 +196,44 @@
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
-            console.log("Firebase conectado correctamente");
-        } catch (e) {
-            console.error("Error iniciando Firebase", e);
-            alert("Error crítico: No se pudo conectar con Firebase. Revisa la consola.");
-        }
+        } catch (e) { console.error("Error Firebase", e); }
 
-        const DEFAULT_TEMPLATE = {
+        // --- PLANTILLA MAESTRA RÍGIDA ---
+        // Esta plantilla tiene la estructura exacta que pediste.
+        // El usuario editará sobre esto, pero no podrá romper la estructura base.
+        const MASTER_TEMPLATE = {
             title: "Nuevo Álbum Digital",
             pages: [
-                { id: 'p1', type: 'cover', front: { type: 'image-page', bg: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=800', tooltip: 'Portada' }, back: { type: 'endpaper', tooltip: 'Guardas' } },
-                { id: 'p2', type: 'content', front: { type: 'endpaper', tooltip: 'Guardas' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: 'Una historia por contar...', tooltip: 'Respeto' } },
-                { id: 'p3', type: 'content', front: { type: 'text-page', title: 'Dedicatoria', text: 'Para todos los que sueñan.', tooltip: 'Dedicatoria' }, back: { type: 'image-page', bg: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800', tooltip: 'Inicio' } },
-                { id: 'p4', type: 'back-cover', front: { type: 'endpaper', tooltip: 'Guardas Finales' }, back: { type: 'image-page', bg: 'https://images.unsplash.com/photo-1507842217153-e21f4066195c?auto=format&fit=crop&q=80&w=800', tooltip: 'Contraportada' } }
+                // 1. Portada + Guarda Delantera
+                { 
+                    id: 'cover', type: 'structure', 
+                    front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true', tooltip: { title: "La Portada", text: "Es la cara del libro." } }, 
+                    back: { type: 'endpaper', tooltip: { title: "Guardas", text: "Unen las tapas con el cuerpo." } } 
+                },
+                // 2. Guarda + Hoja de Respeto
+                { 
+                    id: 'respect', type: 'structure',
+                    front: { type: 'endpaper', tooltip: { title: "Guardas", text: "Transición visual." } }, 
+                    back: { type: 'text-page', title: 'Título del Libro', text: '(Hoja de Respeto)', tooltip: { title: "Hoja de Respeto", text: "Página de cortesía." } } 
+                },
+                // 3. Créditos + Dedicatoria
+                { 
+                    id: 'credits', type: 'structure',
+                    front: { type: 'text-page', title: 'Créditos', text: 'Edición Digital 2024\nAutor: Tu Nombre\nTodos los derechos reservados.', tooltip: { title: "Página Legal", text: "Información técnica." } }, 
+                    back: { type: 'text-page', title: 'Dedicatoria', text: 'Para mis estudiantes...', tooltip: { title: "Dedicatoria", text: "Espacio íntimo." } } 
+                },
+                // 4. CUERPO (Estas son las que el usuario agrega/quita más)
+                { 
+                    id: 'content-1', type: 'content',
+                    front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true', tooltip: { title: "Narrativa", text: "La imagen cuenta la historia." } }, 
+                    back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true', tooltip: { title: "Continuidad", text: "Sigue la secuencia." } } 
+                },
+                // 5. Contraportada
+                { 
+                    id: 'back-cover', type: 'structure',
+                    front: { type: 'endpaper', tooltip: { title: "Guardas Finales", text: "Cierre del libro." } }, 
+                    back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true', tooltip: { title: "Contraportada", text: "Sinopsis y cierre." } } 
+                }
             ]
         };
 
@@ -162,77 +247,47 @@
             const [password, setPassword] = useState('');
             const [error, setError] = useState('');
 
+            // Auth Listener
             useEffect(() => {
                 if (!auth) return;
                 const unsubscribe = onAuthStateChanged(auth, (u) => {
                     setUser(u);
-                    if (u) setView('dashboard');
-                    else setView('login');
+                    setView(u ? 'dashboard' : 'login');
                 });
                 return () => unsubscribe();
             }, []);
 
+            // Data Listener
             useEffect(() => {
                 if (!user || !db) return;
-                // Usamos una ID fija para la app
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'));
                 const unsubscribe = onSnapshot(q, (snapshot) => {
-                    const booksData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    setBooks(booksData);
-                }, (err) => console.log(err));
+                    setBooks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                });
                 return () => unsubscribe();
             }, [user]);
 
-            // --- LÓGICA DE LOGIN CON ALERTAS ---
             const handleAuth = async (e) => {
                 e.preventDefault();
                 setError('');
-                
-                if (!auth) {
-                    alert("⚠️ ERROR CRÍTICO: Firebase no se inició correctamente. Revisa la consola (F12) para más detalles.");
-                    return;
-                }
-
+                if(!auth) return alert("Firebase no conectado");
                 try {
-                    if (authMode === 'login') {
-                        await signInWithEmailAndPassword(auth, email, password);
-                    } else {
-                        await createUserWithEmailAndPassword(auth, email, password);
-                    }
-                    // Si funciona, el useEffect cambiará la vista automáticamente
+                    if (authMode === 'login') await signInWithEmailAndPassword(auth, email, password);
+                    else await createUserWithEmailAndPassword(auth, email, password);
                 } catch (err) {
-                    console.error("Error de Autenticación:", err);
                     setError(err.message);
-                    
-                    // MENSAJES DE ERROR AMIGABLES
-                    if (err.code === 'auth/operation-not-allowed') {
-                        alert("❌ ERROR: No has activado el inicio de sesión. Ve a Firebase -> Authentication -> Sign-in method y habilita 'Correo/Contraseña'.");
-                    } else if (err.code === 'auth/network-request-failed') {
-                        alert("❌ ERROR DE CONEXIÓN: Este error suele pasar si abres el archivo desde tu PC. ¡Sube el archivo a GitHub Pages para que funcione!");
-                    } else if (err.code === 'auth/email-already-in-use') {
-                        alert("⚠️ Ese correo ya está registrado. Intenta iniciar sesión.");
-                    } else if (err.code === 'auth/weak-password') {
-                        alert("⚠️ La contraseña es muy débil. Debe tener al menos 6 caracteres.");
-                    } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-                         alert("⚠️ Correo o contraseña incorrectos.");
-                    } else {
-                        alert("❌ Ocurrió un error desconocido: " + err.message);
-                    }
+                    if(err.code === 'auth/operation-not-allowed') alert("¡Activa Email/Password en Firebase!");
+                    if(err.code === 'auth/network-request-failed') alert("Sube esto a GitHub, no funciona localmente.");
                 }
             };
 
             const createBook = async () => {
-                const newBook = { ...DEFAULT_TEMPLATE, createdAt: new Date().toISOString(), title: "Libro " + (books.length + 1) };
+                const newBook = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString(), title: "Mi Álbum Digital" };
                 if (db && user) {
                     const docRef = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), newBook);
                     setCurrentBook({ id: docRef.id, ...newBook });
                     setView('editor');
                 }
-            };
-
-            const deleteBookLocal = (id) => {
-                if(!confirm("¿Borrar libro?")) return;
-                if(db && user) deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', id));
             };
 
             const saveBookLocal = async (bookToSave) => {
@@ -241,71 +296,49 @@
                         pages: bookToSave.pages,
                         title: bookToSave.title
                     });
-                    alert("¡Guardado exitoso en la nube!");
+                    alert("¡Libro guardado!");
                 }
             };
 
             return (
                 <div className="flex flex-col h-full font-sans">
-                    {user && (
-                        <header className="bg-white shadow-sm px-6 py-3 flex justify-between items-center z-50">
-                            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('dashboard')}>
-                                <i className="fas fa-book-open text-amber-800 text-xl"></i>
-                                <h1 className="font-bold text-xl hidden sm:block">Editor Libro Álbum</h1>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm text-gray-500 hidden sm:block">{user.email}</span>
-                                <button onClick={() => auth ? signOut(auth) : setUser(null)} className="text-gray-600 hover:text-red-500">
-                                    <i className="fas fa-sign-out-alt"></i> Salir
-                                </button>
-                            </div>
+                    {/* Header solo si no estamos editando para dar inmersión, o minimalista */}
+                    {user && view !== 'editor' && (
+                        <header className="bg-white shadow px-6 py-3 flex justify-between items-center z-50">
+                            <h1 className="font-bold text-xl text-amber-800">Plataforma Pedagógica</h1>
+                            <button onClick={() => signOut(auth)} className="text-gray-600 hover:text-red-500">Salir</button>
                         </header>
                     )}
 
                     <main className="flex-1 relative overflow-hidden bg-gray-100">
                         {view === 'login' && (
-                            <div className="flex items-center justify-center h-full p-4">
-                                <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md border-t-4 border-amber-800">
-                                    <div className="text-center mb-6">
-                                        <i className="fas fa-book-reader text-4xl text-amber-800 mb-2"></i>
-                                        <h2 className="text-2xl font-bold">Bienvenido</h2>
-                                        <p className="text-gray-500 text-sm">Crea tu revista digital interactiva</p>
-                                    </div>
+                            <div className="flex items-center justify-center h-full">
+                                <div className="bg-white p-8 rounded shadow-lg max-w-md w-full border-t-4 border-amber-800">
+                                    <h2 className="text-2xl font-bold text-center mb-4">Acceso Docentes/Alumnos</h2>
                                     <form onSubmit={handleAuth} className="space-y-4">
-                                        <input type="email" placeholder="Correo (ej: usuario@test.com)" className="w-full p-2 border rounded" value={email} onChange={e=>setEmail(e.target.value)} required />
-                                        <input type="password" placeholder="Contraseña (min 6 caracteres)" className="w-full p-2 border rounded" value={password} onChange={e=>setPassword(e.target.value)} required />
-                                        <button className="w-full bg-amber-800 text-white py-2 rounded hover:bg-amber-900 transition">
-                                            {authMode === 'login' ? 'Entrar' : 'Registrarse'}
-                                        </button>
+                                        <input type="email" placeholder="Correo" className="w-full p-2 border rounded" value={email} onChange={e=>setEmail(e.target.value)} required />
+                                        <input type="password" placeholder="Contraseña" className="w-full p-2 border rounded" value={password} onChange={e=>setPassword(e.target.value)} required />
+                                        <button className="w-full bg-amber-800 text-white py-2 rounded">{authMode === 'login' ? 'Entrar' : 'Registrarse'}</button>
                                     </form>
-                                    <p className="text-center mt-4 text-sm text-amber-700 cursor-pointer hover:underline" onClick={() => setAuthMode(authMode==='login'?'register':'login')}>
-                                        {authMode === 'login' ? '¿Crear cuenta?' : '¿Ya tienes cuenta?'}
-                                    </p>
+                                    <p className="text-center mt-2 text-sm text-blue-600 cursor-pointer" onClick={()=>setAuthMode(authMode==='login'?'r':'login')}>Cambiar a {authMode==='login'?'Registro':'Login'}</p>
                                 </div>
                             </div>
                         )}
 
                         {view === 'dashboard' && (
-                            <div className="p-8 max-w-6xl mx-auto h-full overflow-y-auto">
-                                <div className="flex justify-between items-center mb-8">
-                                    <h2 className="text-2xl font-bold text-gray-800">Mis Proyectos</h2>
-                                    <button onClick={createBook} className="bg-amber-800 text-white px-4 py-2 rounded shadow hover:bg-amber-900 transition">
-                                        <i className="fas fa-plus mr-2"></i> Nuevo Libro
-                                    </button>
+                            <div className="p-8 max-w-5xl mx-auto">
+                                <div className="flex justify-between mb-6">
+                                    <h2 className="text-2xl font-bold">Mis Libros</h2>
+                                    <button onClick={createBook} className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700">+ Nuevo Proyecto</button>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     {books.map(b => (
-                                        <div key={b.id} onClick={() => { setCurrentBook(b); setView('editor'); }} className="bg-white rounded-lg shadow hover:shadow-xl transition cursor-pointer overflow-hidden border border-gray-200 group">
-                                            <div className="h-40 bg-gray-200 flex items-center justify-center relative overflow-hidden">
-                                                {b.pages[0]?.front?.bg ? <img src={b.pages[0].front.bg} className="w-full h-full object-cover opacity-90" /> : <i className="fas fa-book text-4xl text-gray-300"></i>}
+                                        <div key={b.id} onClick={() => { setCurrentBook(b); setView('editor'); }} className="bg-white p-4 rounded shadow cursor-pointer hover:shadow-xl transition">
+                                            <div className="h-40 bg-gray-200 mb-2 overflow-hidden rounded relative">
+                                                {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
                                             </div>
-                                            <div className="p-4 flex justify-between items-center">
-                                                <div>
-                                                    <h3 className="font-bold truncate w-40">{b.title}</h3>
-                                                    <p className="text-xs text-gray-500">{b.pages.length} págs</p>
-                                                </div>
-                                                <button onClick={(e) => { e.stopPropagation(); deleteBookLocal(b.id); }} className="text-gray-400 hover:text-red-500"><i className="fas fa-trash"></i></button>
-                                            </div>
+                                            <h3 className="font-bold">{b.title}</h3>
+                                            <p className="text-xs text-gray-500">{b.pages.length} hojas</p>
                                         </div>
                                     ))}
                                 </div>
@@ -320,132 +353,259 @@
             );
         }
 
+        // --- COMPONENTE EDITOR: Controles a la izquierda, Libro a la derecha ---
         function Editor({ book, setBook, onSave, onClose }) {
-            const [activeIdx, setActiveIdx] = useState(0);
-            const [editSide, setEditSide] = useState('front'); 
+            const [activeIdx, setActiveIdx] = useState(0); // Índice de Hoja (Paper)
             const [selPageIdx, setSelPageIdx] = useState(0);
+            const [editSide, setEditSide] = useState('front');
 
+            // Insertar hoja antes de la contraportada
             const addPage = () => {
-                const newP = { id: Date.now(), type: 'content', front: { type: 'image-page', bg: '', tooltip: 'Nueva' }, back: { type: 'text-page', title: 'Título', text: '...' } };
+                const newP = { 
+                    id: Date.now(), type: 'content', 
+                    front: { type: 'image-page', bg: '', tooltip: { title: "Nueva Página", text: "Describe esta imagen." } }, 
+                    back: { type: 'image-page', bg: '', tooltip: { title: "Nueva Página", text: "Describe esta imagen." } } 
+                };
                 const newPages = [...book.pages];
-                if(newPages.length > 1) newPages.splice(newPages.length-1, 0, newP);
-                else newPages.push(newP);
+                newPages.splice(newPages.length - 1, 0, newP); // Insertar penúltimo
                 setBook({...book, pages: newPages});
             };
 
             const updateFace = (idx, side, key, val) => {
                 const newPages = [...book.pages];
-                newPages[idx][side] = { ...newPages[idx][side], [key]: val };
+                // Si es un objeto tooltip, manejamos anidado, si no directo
+                if (key === 'tooltipTitle') {
+                    newPages[idx][side].tooltip = { ...newPages[idx][side].tooltip, title: val };
+                } else if (key === 'tooltipText') {
+                    newPages[idx][side].tooltip = { ...newPages[idx][side].tooltip, text: val };
+                } else {
+                    newPages[idx][side][key] = val;
+                }
                 setBook({...book, pages: newPages});
             };
 
             return (
                 <div className="flex h-full">
-                    <div className="w-80 bg-white border-r flex flex-col z-20 shadow-lg">
-                        <div className="p-4 bg-gray-50 border-b">
-                            <input value={book.title} onChange={e=>setBook({...book, title: e.target.value})} className="w-full bg-transparent font-bold border-b border-gray-300 focus:border-amber-600 outline-none" />
-                            <div className="flex gap-2 mt-3">
-                                <button onClick={onSave} className="flex-1 bg-amber-800 text-white py-1 rounded text-sm hover:bg-amber-900"><i className="fas fa-save mr-1"></i> Guardar</button>
-                                <button onClick={onClose} className="px-3 bg-gray-200 text-gray-600 rounded hover:bg-gray-300"><i className="fas fa-times"></i></button>
+                    {/* PANEL DE EDICIÓN */}
+                    <div className="w-80 bg-white border-r flex flex-col z-50 shadow-2xl">
+                        <div className="p-4 bg-amber-50 border-b border-amber-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <button onClick={onClose} className="text-gray-500 hover:text-gray-800"><i className="fas fa-arrow-left"></i> Volver</button>
+                                <button onClick={onSave} className="bg-amber-700 text-white px-3 py-1 rounded text-sm hover:bg-amber-800"><i className="fas fa-save"></i> Guardar</button>
                             </div>
+                            <input className="w-full bg-transparent font-bold text-lg border-b border-amber-300 focus:outline-none" value={book.title} onChange={e=>setBook({...book, title: e.target.value})} />
                         </div>
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                            <div className="flex justify-between items-center">
-                                <h4 className="text-xs font-bold text-gray-400 uppercase">Páginas</h4>
-                                <button onClick={addPage} className="text-amber-700 text-xs font-bold"><i className="fas fa-plus"></i> AGREGAR</button>
-                            </div>
-                            <div className="space-y-1">
-                                {book.pages.map((p, i) => (
-                                    <div key={i} onClick={()=>{setSelPageIdx(i); if(i <= activeIdx) setActiveIdx(i);}} 
-                                         className={`p-2 rounded border cursor-pointer text-sm flex justify-between ${selPageIdx===i ? 'border-amber-500 bg-amber-50' : 'border-gray-100'}`}>
-                                        <span>{i===0?'Portada':i===book.pages.length-1?'Contraportada':`Página ${i}`}</span>
-                                        {i!==0 && i!==book.pages.length-1 && <i className="fas fa-trash text-gray-300 hover:text-red-500" onClick={(e)=>{e.stopPropagation(); /* Logic delete */}}></i>}
-                                    </div>
-                                ))}
-                            </div>
-                            <hr />
+
+                        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                            {/* Navegador de Estructura */}
                             <div>
-                                <h4 className="text-sm font-bold mb-2">Editar Contenido</h4>
-                                <div className="flex bg-gray-100 p-1 rounded mb-3">
-                                    <button onClick={()=>setEditSide('front')} className={`flex-1 text-xs py-1 rounded ${editSide==='front'?'bg-white shadow text-amber-800':''}`}>Anverso</button>
-                                    <button onClick={()=>setEditSide('back')} className={`flex-1 text-xs py-1 rounded ${editSide==='back'?'bg-white shadow text-amber-800':''}`}>Reverso</button>
+                                <h4 className="text-xs font-bold text-gray-400 uppercase mb-2">Estructura del Libro</h4>
+                                <div className="space-y-1">
+                                    {book.pages.map((p, i) => (
+                                        <div key={i} 
+                                             onClick={() => { setSelPageIdx(i); if(i <= activeIdx) setActiveIdx(i); }}
+                                             className={`p-2 rounded cursor-pointer text-sm flex justify-between items-center ${selPageIdx === i ? 'bg-amber-100 text-amber-900 font-bold border-l-4 border-amber-600' : 'hover:bg-gray-50'}`}>
+                                            <span>
+                                                {i===0 ? '1. Portada' : 
+                                                 i===1 ? '2. Guarda/Respeto' : 
+                                                 i===2 ? '3. Créditos' : 
+                                                 i===book.pages.length-1 ? `${i+1}. Contraportada` : `${i+1}. Contenido`}
+                                            </span>
+                                            {p.type === 'content' && <button className="text-gray-400 hover:text-red-500" title="Borrar hoja" onClick={(e)=>{e.stopPropagation(); if(confirm('¿Borrar hoja?')){
+                                                const np = book.pages.filter((_,Ix)=>Ix!==i); setBook({...book, pages: np});
+                                            }}}><i className="fas fa-trash"></i></button>}
+                                        </div>
+                                    ))}
+                                    <button onClick={addPage} className="w-full py-2 mt-2 border-dashed border-2 border-gray-300 text-gray-500 rounded hover:border-amber-500 hover:text-amber-600 text-sm font-bold">
+                                        + Agregar Hoja de Contenido
+                                    </button>
                                 </div>
+                            </div>
+
+                            {/* Editor de la Página Seleccionada */}
+                            <div className="border-t pt-4">
+                                <h4 className="text-sm font-bold mb-3 text-amber-800">Editar Hoja {selPageIdx + 1}</h4>
+                                <div className="flex bg-gray-100 p-1 rounded mb-3">
+                                    <button onClick={()=>setEditSide('front')} className={`flex-1 text-xs py-1 rounded ${editSide==='front'?'bg-white shadow text-amber-800 font-bold':''}`}>Anverso (Frente)</button>
+                                    <button onClick={()=>setEditSide('back')} className={`flex-1 text-xs py-1 rounded ${editSide==='back'?'bg-white shadow text-amber-800 font-bold':''}`}>Reverso (Atrás)</button>
+                                </div>
+
                                 {(() => {
                                     const face = book.pages[selPageIdx][editSide];
+                                    const isLocked = face.type === 'endpaper'; // Las guardas no se editan mucho
+
+                                    if(isLocked) return <p className="text-xs text-gray-500 italic text-center">Esta es una página de estructura (Guardas). No requiere edición.</p>;
+
                                     return (
-                                        <div className="space-y-2 text-sm">
-                                            <div>
-                                                <label className="text-xs text-gray-500">Tipo</label>
-                                                <select className="w-full border rounded p-1" value={face.type} onChange={e=>updateFace(selPageIdx, editSide, 'type', e.target.value)}>
-                                                    <option value="image-page">Imagen</option>
-                                                    <option value="text-page">Texto</option>
-                                                    <option value="endpaper">Guardas</option>
-                                                </select>
-                                            </div>
+                                        <div className="space-y-3 text-sm animate-fade-in">
                                             {face.type === 'image-page' && (
                                                 <div>
-                                                    <label className="text-xs text-gray-500">URL Imagen</label>
-                                                    <input className="w-full border rounded p-1" value={face.bg||''} onChange={e=>updateFace(selPageIdx, editSide, 'bg', e.target.value)} placeholder="http://..." />
+                                                    <label className="block text-xs font-bold text-gray-500 mb-1">Imagen de Fondo (URL)</label>
+                                                    <input className="w-full border rounded p-2 text-xs" value={face.bg||''} onChange={e=>updateFace(selPageIdx, editSide, 'bg', e.target.value)} placeholder="https://..." />
+                                                    <p className="text-[10px] text-gray-400 mt-1">Pega el link de tu imagen aquí.</p>
                                                 </div>
                                             )}
                                             {face.type === 'text-page' && (
                                                 <>
-                                                    <input className="w-full border rounded p-1 mb-1" placeholder="Título" value={face.title||''} onChange={e=>updateFace(selPageIdx, editSide, 'title', e.target.value)} />
-                                                    <textarea className="w-full border rounded p-1" rows="3" placeholder="Texto..." value={face.text||''} onChange={e=>updateFace(selPageIdx, editSide, 'text', e.target.value)} />
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-gray-500 mb-1">Título</label>
+                                                        <input className="w-full border rounded p-2" value={face.title||''} onChange={e=>updateFace(selPageIdx, editSide, 'title', e.target.value)} />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-gray-500 mb-1">Texto Principal</label>
+                                                        <textarea className="w-full border rounded p-2" rows="5" value={face.text||''} onChange={e=>updateFace(selPageIdx, editSide, 'text', e.target.value)}></textarea>
+                                                    </div>
                                                 </>
                                             )}
-                                            <input className="w-full border rounded p-1 mt-1" placeholder="Tooltip / Ayuda" value={face.tooltip||''} onChange={e=>updateFace(selPageIdx, editSide, 'tooltip', e.target.value)} />
+                                            
+                                            <div className="bg-blue-50 p-2 rounded border border-blue-100">
+                                                <h5 className="text-xs font-bold text-blue-800 mb-2"><i className="fas fa-comment-dots"></i> Ayuda Pedagógica (Nube)</h5>
+                                                <input className="w-full border rounded p-1 mb-1 text-xs" placeholder="Título de la nube" value={face.tooltip?.title||''} onChange={e=>updateFace(selPageIdx, editSide, 'tooltipTitle', e.target.value)} />
+                                                <textarea className="w-full border rounded p-1 text-xs" rows="2" placeholder="Explicación para el estudiante..." value={face.tooltip?.text||''} onChange={e=>updateFace(selPageIdx, editSide, 'tooltipText', e.target.value)} />
+                                            </div>
                                         </div>
-                                    )
+                                    );
                                 })()}
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex-1 bg-gray-200 relative flex flex-col overflow-hidden">
-                        <BookViewer pages={book.pages} activeIdx={activeIdx} />
-                        <div className="h-16 bg-white border-t flex justify-center items-center gap-8 z-30">
-                            <button disabled={activeIdx<=0} onClick={()=>setActiveIdx(activeIdx-1)} className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30"><i className="fas fa-chevron-left text-xl"></i></button>
-                            <span className="text-sm font-mono text-gray-400">Spread {activeIdx+1}</span>
-                            <button disabled={activeIdx>=book.pages.length-1} onClick={()=>setActiveIdx(activeIdx+1)} className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30"><i className="fas fa-chevron-right text-xl"></i></button>
-                        </div>
+                    {/* VISTA DEL LIBRO (BookViewer) */}
+                    <div className="flex-1 relative bg-gray-200">
+                        <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} />
                     </div>
                 </div>
             );
         }
 
-        function BookViewer({ pages, activeIdx }) {
+        // --- COMPONENTE VISUALIZADOR (El Corazón de tu Revista) ---
+        function BookViewer({ pages, activeIdx, setActiveIdx }) {
+            const [pedagogicalState, setPedagogicalState] = useState({ left: null, right: null, show: false });
+            
+            // Audio Ref
+            const audioRef = useRef(null);
+
+            // Control de pasar página
+            const goNext = () => { if(activeIdx < pages.length - 1) changePage(activeIdx + 1); };
+            const goPrev = () => { if(activeIdx >= 0) changePage(activeIdx - 1); };
+            
+            const changePage = (newIdx) => {
+                // Reproducir sonido
+                if(audioRef.current) {
+                    audioRef.current.currentTime = 0;
+                    audioRef.current.play().catch(e => console.log("Audio autoplay block"));
+                }
+                setActiveIdx(newIdx);
+            };
+
+            // Lógica de las Nubes Pedagógicas (Igual a tu script original)
+            useEffect(() => {
+                // 1. Ocultar
+                setPedagogicalState(prev => ({ ...prev, show: false }));
+
+                const timer = setTimeout(() => {
+                    let left = null;
+                    let right = null;
+
+                    // Libro cerrado (Portada)
+                    if (activeIdx === -1) {
+                        if (pages[0].front.tooltip) right = pages[0].front.tooltip;
+                    }
+                    // Libro cerrado (Contraportada)
+                    else if (activeIdx === pages.length - 1) {
+                        if (pages[pages.length - 1].back.tooltip) left = pages[pages.length - 1].back.tooltip;
+                    }
+                    // Abierto
+                    else {
+                        if (pages[activeIdx].back.tooltip) left = pages[activeIdx].back.tooltip;
+                        if (activeIdx + 1 < pages.length && pages[activeIdx + 1].front.tooltip) right = pages[activeIdx + 1].front.tooltip;
+                    }
+
+                    setPedagogicalState({ left, right, show: true });
+                }, 800); // Esperar a que pase la hoja
+
+                return () => clearTimeout(timer);
+            }, [activeIdx, pages]);
+
             const isOpen = activeIdx >= 0 && activeIdx < pages.length - 1;
             const isClosedBack = activeIdx === pages.length - 1;
-            const bookClass = `book-3d ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`;
 
             return (
-                <div className="stage-container">
-                    <div className={bookClass}>
-                        {pages.map((p, i) => {
-                            const zIndex = activeIdx >= i ? i + 1 : pages.length - i;
-                            return (
-                                <div key={p.id} className={`paper ${i <= activeIdx ? 'flipped' : ''}`} style={{ zIndex }}>
-                                    <div className={`face front ${p.front.type}`} style={p.front.bg ? { backgroundImage: `url(${p.front.bg})` } : {}}>
-                                        {p.front.type === 'text-page' && <div className="text-center"><h2>{p.front.title}</h2><p>{p.front.text}</p></div>}
-                                    </div>
-                                    <div className={`face back ${p.back.type}`} style={p.back.bg ? { backgroundImage: `url(${p.back.bg})` } : {}}>
-                                        {p.back.type === 'text-page' && <div className="text-center"><h2>{p.back.title}</h2><p>{p.back.text}</p></div>}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                <div className="book-environment">
+                    {/* Audio Invisible */}
+                    <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3" preload="auto"></audio>
+
+                    {/* Controles Superiores */}
+                    <div className="top-controls">
+                        <button className="btn-icon" onClick={() => document.getElementById('stage').style.transform = 'scale(1.2)'}><i className="fas fa-search-plus"></i></button>
+                        <button className="btn-icon" onClick={() => document.getElementById('stage').style.transform = 'scale(1)'}><i className="fas fa-search-minus"></i></button>
                     </div>
-                    <div className="absolute inset-0 pointer-events-none flex justify-between px-10 pb-20 items-end z-40">
-                         <div className={`bg-white p-3 rounded shadow transition-opacity duration-500 ${activeIdx>=0 && pages[activeIdx]?.back?.tooltip ? 'opacity-100' : 'opacity-0'}`}>
-                            <h3 className="text-amber-800 font-bold font-serif">{pages[activeIdx]?.back?.tooltip}</h3>
-                         </div>
-                         <div className={`bg-white p-3 rounded shadow transition-opacity duration-500 ${activeIdx+1<pages.length && pages[activeIdx+1]?.front?.tooltip ? 'opacity-100' : 'opacity-0'}`}>
-                            <h3 className="text-amber-800 font-bold font-serif">{pages[activeIdx+1]?.front?.tooltip}</h3>
-                         </div>
+
+                    {/* Botones Navegación */}
+                    <button className="nav-btn prev-btn" disabled={activeIdx < 0} onClick={goPrev}><i className="fas fa-chevron-left"></i></button>
+                    <button className="nav-btn next-btn" disabled={activeIdx >= pages.length - 1} onClick={goNext}><i className="fas fa-chevron-right"></i></button>
+
+                    {/* ESCENARIO LIBRO */}
+                    <div id="stage">
+                        <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
+                            {pages.map((p, i) => {
+                                const zIndex = activeIdx >= i ? i + 1 : pages.length - i;
+                                return (
+                                    <div key={p.id} className={`paper ${i <= activeIdx ? 'flipped' : ''}`} style={{ zIndex }}>
+                                        {/* FRENTE */}
+                                        <div className={`face front ${p.front.type}`} style={p.front.bg ? { backgroundImage: `url(${p.front.bg})` } : {}}>
+                                            {p.front.type === 'text-page' && (
+                                                <div className="w-full h-full flex flex-col justify-center items-center p-10 text-center">
+                                                    <h2>{p.front.title}</h2>
+                                                    {/* Usamos dangerouslySetInnerHTML para permitir saltos de linea <br> si el usuario los pone */}
+                                                    <p dangerouslySetInnerHTML={{__html: p.front.text?.replace(/\n/g, '<br>')}}></p>
+                                                </div>
+                                            )}
+                                            {/* Numeración: Solo en páginas de contenido (ni portada ni contraportada) */}
+                                            {i > 0 && i < pages.length - 1 && <span className="page-number">{i * 2}</span>}
+                                        </div>
+
+                                        {/* ATRÁS */}
+                                        <div className={`face back ${p.back.type}`} style={p.back.bg ? { backgroundImage: `url(${p.back.bg})` } : {}}>
+                                            {p.back.type === 'text-page' && (
+                                                <div className="w-full h-full flex flex-col justify-center items-center p-10 text-center">
+                                                    <h2>{p.back.title}</h2>
+                                                    <p dangerouslySetInnerHTML={{__html: p.back.text?.replace(/\n/g, '<br>')}}></p>
+                                                </div>
+                                            )}
+                                            {i > 0 && i < pages.length - 1 && <span className="page-number">{i * 2 + 1}</span>}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
+
+                    {/* CAPA PEDAGÓGICA (Nubes y Personajes) */}
+                    <div className="pedagogical-layer">
+                        {/* IZQUIERDA */}
+                        <div className={`ped-label-container ped-label-left align-bottom`} style={{paddingBottom: '20vh'}}>
+                            <div className={`ped-cloud ${pedagogicalState.show && pedagogicalState.left ? 'active' : ''}`}>
+                                <h3>{pedagogicalState.left?.title || 'Nota'}</h3>
+                                <p>{pedagogicalState.left?.text}</p>
+                            </div>
+                            <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20izquierda.png?raw=true" 
+                                 className={`ped-character ${pedagogicalState.show && pedagogicalState.left ? 'active' : ''}`} />
+                        </div>
+
+                        {/* DERECHA */}
+                        <div className={`ped-label-container ped-label-right align-top`} style={{paddingTop: '20vh'}}>
+                            <div className={`ped-cloud ${pedagogicalState.show && pedagogicalState.right ? 'active' : ''}`}>
+                                <h3>{pedagogicalState.right?.title || 'Nota'}</h3>
+                                <p>{pedagogicalState.right?.text}</p>
+                            </div>
+                            <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png?raw=true" 
+                                 className={`ped-character ${pedagogicalState.show && pedagogicalState.right ? 'active' : ''}`} />
+                        </div>
+                    </div>
+
                 </div>
-            )
+            );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
