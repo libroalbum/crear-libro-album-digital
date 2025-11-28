@@ -389,14 +389,17 @@
                 setBook({...book, pages: np});
             };
 
-            // Reglas de edición de texto según la página
-            const canEditTitle = (pageId, side) => {
-                if (pageId === 'c3') return false; // Créditos y Dedicatoria (Título fijo)
-                return true; // Resto sí (incluido Hoja de Respeto)
+            // --- REGLAS DE EDICIÓN ESTRICTAS ---
+            // 1. Hoja Respeto (Pag 2 Reverso): Solo Título
+            // 2. Créditos (Pag 3 Frente): Solo Cuerpo (Título fijo)
+            // 3. Dedicatoria (Pag 3 Reverso): Solo Cuerpo (Título fijo)
+            const canEditTitle = (idx, side) => {
+                if (idx === 2) return false; // Créditos y Dedicatoria
+                return true;
             };
 
-            const canEditText = (pageId, side) => {
-                if (pageId === 'c2' && side === 'back') return false; // Hoja de Respeto (Solo título, no descripción)
+            const canEditText = (idx, side) => {
+                if (idx === 1 && side === 'back') return false; // Hoja de Respeto (Solo título)
                 return true; 
             };
 
@@ -404,7 +407,7 @@
 
             return (
                 <div className="flex h-full">
-                    {/* Panel Izquierdo (Textos) */}
+                    {/* Panel Izquierdo */}
                     <div className="w-80 bg-white border-r flex flex-col z-20 shadow-xl overflow-hidden">
                         <div className="p-4 bg-amber-50 border-b border-amber-200">
                             <button onClick={()=>setView('dashboard')} className="text-xs text-gray-500 mb-2 hover:text-amber-800"><i className="fas fa-arrow-left"></i> Volver</button>
@@ -425,17 +428,16 @@
                                 const face = page[editSide];
                                 const isEndpaper = face.type === 'endpaper';
                                 
-                                // Bloqueos visuales en el panel
-                                if(isEndpaper) return <p className="text-xs text-gray-500 italic p-2 bg-gray-50 rounded">Esta es una página de guardas. Puedes cambiar el fondo tocando el libro.</p>;
+                                if(isEndpaper) return <p className="text-xs text-gray-500 italic p-2 bg-gray-50 rounded">Página de estructura (Guardas). Fondo editable en el libro.</p>;
 
                                 return (
                                     <div className="space-y-4">
                                         {face.type === 'text-page' && (
                                             <>
-                                                {canEditTitle(page.id, editSide) && (
+                                                {canEditTitle(selPageIdx, editSide) && (
                                                     <div><label className="text-xs font-bold text-gray-600">Título</label><input className="w-full border rounded p-1 text-sm" value={face.title} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'title', e.target.value)} /></div>
                                                 )}
-                                                {canEditText(page.id, editSide) && (
+                                                {canEditText(selPageIdx, editSide) && (
                                                     <div><label className="text-xs font-bold text-gray-600">Texto / Descripción</label><textarea className="w-full border rounded p-1 text-sm" rows="6" value={face.text} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'text', e.target.value)} /></div>
                                                 )}
                                             </>
@@ -504,17 +506,19 @@
 
             useEffect(() => { setTimeout(() => updatePedagogical(activeIdx), 500); }, []);
 
-            // Lógica de Permisos de Imagen (REGLA SOLICITADA)
-            const isEditableImage = (pageId, side) => {
-                if (pageId === 'c2' && side === 'back') return false; // Hoja Respeto NO imagen
-                if (pageId === 'c3') return false; // Créditos y Dedicatoria NO imagen
-                return true; // El resto SÍ (Portada, Guardas, Contenido, Contraportada)
+            // === LÓGICA DE BLOQUEO DE IMÁGENES (ÍNDICES) ===
+            const isEditableImage = (idx, side) => {
+                // Hoja Respeto (Index 1 - Back) -> Bloqueado
+                if (idx === 1 && side === 'back') return false; 
+                // Créditos/Dedicatoria (Index 2 - Front & Back) -> Bloqueado
+                if (idx === 2) return false; 
+                return true; 
             };
 
             const renderEditOverlay = (pageIdx, side, currentBg) => {
                 if (!isEditor) return null;
-                // Verificar permisos
-                if (!isEditableImage(pages[pageIdx].id, side)) return null;
+                // Si la página está en la lista negra, no mostrar nada
+                if (!isEditableImage(pageIdx, side)) return null;
 
                 return (
                     <div className="edit-overlay">
