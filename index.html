@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Libro Mágico</title>
+    <title>Creator Studio Pop</title>
     
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Fuentes: Luckiest Guy (Título), Fredoka (Cuerpo), etc. -->
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@400;600;700&family=Balsamiq+Sans:wght@700&family=Cinzel:wght@700&family=Merriweather&display=swap" rel="stylesheet">
+    
+    <!-- FUENTES PROPUESTA: Dosis (Títulos) y Nunito (Cuerpo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;700&family=Cinzel:wght@700&family=Merriweather&display=swap" rel="stylesheet">
 
     <!-- REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -17,22 +18,27 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        /* --- 1. VARIABLES --- */
+        /* --- 1. PALETA "ELECTRIC PASTELS" --- */
         :root {
-            --ui-bg-color: #F0F9FF; 
-            --ui-text-main: #334155;
+            /* Fondo Base */
+            --bg-ice: #F8FAFC; 
+            --text-main: #334155;
             
-            /* Colores Vívidos */
-            --vivid-blue: #00C6FF;
-            --vivid-pink: #FF4081;
-            --vivid-green: #00E676;
-            --vivid-orange: #FF9100;
-            --vivid-purple: #D500F9;
+            /* Acentos de Energía */
+            --hyper-grape: #8B5CF6;  /* Morado Eléctrico */
+            --lime-punch: #84CC16;   /* Verde Ácido */
+            --electric-cyan: #06B6D4; /* Azul Brillante */
+            --hot-orange: #F97316;   /* Naranja Acción */
+            --pop-pink: #EC4899;     /* Rosa Extra */
             
-            /* Editor Fondo */
-            --canvas-grey: #f3f4f6;
+            /* Sombras Sólidas (Para efecto Gummy) */
+            --shadow-grape: #6D28D9;
+            --shadow-lime: #4D7C0F;
+            --shadow-cyan: #0891B2;
+            --shadow-orange: #C2410C;
+            --shadow-pink: #BE185D;
 
-            /* Libro Clásico */
+            /* Variables del Libro (INTACTAS) */
             --book-width: 460px;
             --book-height: 600px;
             --paper-texture: #fdfbf7;
@@ -44,116 +50,152 @@
         }
 
         body {
-            font-family: 'Fredoka', sans-serif;
+            font-family: 'Nunito', sans-serif; /* Texto legible redondeado */
             margin: 0; padding: 0; overflow: hidden; height: 100vh;
-            color: var(--ui-text-main);
-            background-color: var(--ui-bg-color);
+            color: var(--text-main);
+            background-color: var(--bg-ice);
+            /* Fondo sutil general */
+            background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        /* Título Infantil "Gordo" */
-        .kids-title {
-            font-family: 'Luckiest Guy', cursive;
+        /* Títulos con Actitud */
+        h1, h2, h3, .pop-title {
+            font-family: 'Dosis', sans-serif;
+            font-weight: 800; /* Extra Bold */
+            text-transform: uppercase;
             letter-spacing: 1px;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-            font-size: 2.5rem; /* Más grande */
         }
 
-        /* --- 2. INTERFAZ --- */
+        /* --- 2. UI "GOMITAS DIGITALES" (GUMMY UI) --- */
         
-        /* Encabezado Azul Degradado */
-        .full-header {
+        /* Botones Táctiles con Sombra Sólida */
+        .btn-gummy {
+            border: none; outline: none; cursor: pointer;
+            font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px 24px; border-radius: 20px; /* Bordes muy redondeados */
+            color: white; text-transform: uppercase;
+            transition: transform 0.1s;
+            position: relative; top: 0;
+        }
+        
+        /* Efecto de presión física */
+        .btn-gummy:active {
+            top: 6px; /* El botón baja */
+            box-shadow: 0 0 0 transparent !important; /* La sombra desaparece */
+        }
+        .btn-gummy:hover { filter: brightness(1.05); }
+
+        /* Variantes de Color */
+        .btn-grape { background: var(--hyper-grape); box-shadow: 0 6px 0 var(--shadow-grape); }
+        .btn-lime { background: var(--lime-punch); box-shadow: 0 6px 0 var(--shadow-lime); }
+        .btn-cyan { background: var(--electric-cyan); box-shadow: 0 6px 0 var(--shadow-cyan); }
+        .btn-orange { background: var(--hot-orange); box-shadow: 0 6px 0 var(--shadow-orange); }
+        .btn-pink { background: var(--pop-pink); box-shadow: 0 6px 0 var(--shadow-pink); }
+
+        /* Paneles con Efecto Sticker (Borde Blanco Grueso) */
+        .sticker-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 4px solid white; /* Borde blanco sólido */
+            border-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        /* Inputs Amigables */
+        .input-pop {
+            background: white; border: 3px solid #E2E8F0;
+            border-radius: 15px; padding: 12px 15px; width: 100%;
+            font-family: 'Nunito', sans-serif; font-weight: 700; color: #475569;
+            outline: none; transition: 0.2s;
+        }
+        .input-pop:focus { border-color: var(--electric-cyan); box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.2); }
+
+        /* --- 3. ESTRUCTURA --- */
+        
+        /* Encabezado */
+        .header-studio {
             width: 100%;
-            /* Degradado Azul Clarito Atractivo */
-            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-            padding: 25px 50px; /* Más ancho */
+            background: white;
+            padding: 15px 40px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
-            position: relative; z-index: 50;
-            border-bottom: 4px solid rgba(255,255,255,0.3);
+            border-bottom: 3px solid #E2E8F0;
+            z-index: 50;
+        }
+        
+        .logo-text {
+            font-size: 2rem;
+            background: linear-gradient(90deg, var(--hyper-grape), var(--electric-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Tarjetas de Proyecto */
-        .glass-panel {
-            background: white; border: 4px solid white;
-            border-radius: 24px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            transition: 0.3s;
+        /* Tarjetas de Proyecto "Chunk" */
+        .project-card {
+            background: white; border-radius: 24px; overflow: hidden;
+            box-shadow: 0 8px 0 #E2E8F0; /* Sombra sólida gris */
+            border: 3px solid #E2E8F0;
+            transition: 0.2s; cursor: pointer;
         }
-        .glass-panel:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--electric-cyan);
+            box-shadow: 0 12px 0 var(--shadow-cyan); /* Sombra cambia de color */
+        }
         .card-footer {
-            padding: 15px; border-radius: 0 0 20px 20px;
-            color: white; text-align: center;
+            padding: 15px; text-align: center;
+            background: white; border-top: 3px solid #F1F5F9;
         }
-        .card-title { font-family: 'Balsamiq Sans', cursive; font-size: 1.3rem; margin-bottom: 5px; text-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
-        
-        .c-green { background: var(--vivid-green); }
-        .c-blue { background: var(--vivid-blue); }
-        .c-purple { background: var(--vivid-purple); }
-        .c-pink { background: var(--vivid-pink); }
-        .c-orange { background: var(--vivid-orange); }
+        .card-tag {
+            display: inline-block; padding: 4px 12px; border-radius: 12px;
+            font-size: 0.8rem; font-weight: 800; color: white;
+            margin-top: 5px; text-transform: uppercase;
+        }
 
-        /* Botones */
-        .game-btn {
-            border: none; outline: none; cursor: pointer; transition: all 0.2s;
-            font-family: 'Fredoka', sans-serif; font-weight: 700;
+        /* --- 4. LIENZO DEL EDITOR (GRID TÉCNICO) --- */
+        .canvas-grid {
+            flex: 1; position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.15); text-transform: uppercase; color: white;
+            background-color: #F1F5F9; /* Gris muy claro base */
+            /* Patrón de Cuadrícula (Grid) */
+            background-image: 
+                linear-gradient(#E2E8F0 1px, transparent 1px),
+                linear-gradient(90deg, #E2E8F0 1px, transparent 1px);
+            background-size: 40px 40px;
         }
-        .game-btn:active { transform: translateY(4px); box-shadow: none; }
-        .game-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        
-        .btn-blue { background: #3B82F6; } .btn-red { background: #EF4444; }
-        .btn-green { background: var(--vivid-green); } .btn-purple { background: var(--vivid-purple); }
-        .btn-cyan { background: var(--vivid-blue); } .btn-orange { background: var(--vivid-orange); }
 
-        .fun-input {
-            background: white; border: 3px solid #e2e8f0; color: #334155;
-            border-radius: 15px; padding: 12px; width: 100%; outline: none;
-            font-family: 'Fredoka', sans-serif; transition: 0.3s;
+        /* --- 5. BARRA LATERAL (Iconos Chunk) --- */
+        .sidebar-studio {
+            width: 90px; height: 100%; background: white;
+            border-right: 3px solid #E2E8F0;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 20px 0; z-index: 40; gap: 20px;
         }
-        .fun-input:focus { border-color: var(--vivid-blue); }
 
-        /* --- 3. BARRA LATERAL --- */
-        .sidebar-gamer {
-            width: 80px; height: 90%; margin-left: 20px;
-            background: white; border-radius: 40px;
-            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            padding: 30px 0; z-index: 50; border: 4px solid #f1f5f9;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .sidebar-icon {
-            width: 55px; height: 55px; border-radius: 18px; font-size: 1.5rem;
-            cursor: pointer; position: relative; color: white;
+        .icon-chunk {
+            width: 55px; height: 55px; border-radius: 18px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.15); transition: 0.2s;
+            font-size: 1.5rem; color: white; cursor: pointer;
+            transition: 0.1s; position: relative; top: 0;
         }
-        .sidebar-icon:hover { transform: scale(1.1) rotate(5deg); }
+        .icon-chunk:active { top: 4px; box-shadow: none !important; }
+        .icon-chunk:hover { filter: brightness(1.1); }
         
-        .sidebar-icon::after {
-            content: attr(data-tooltip); position: absolute; left: 65px; 
-            background: #334155; color: white; padding: 5px 12px; border-radius: 10px;
-            font-size: 0.9rem; pointer-events: none; opacity: 0; transition: 0.2s;
-            white-space: nowrap; font-family: 'Fredoka';
+        /* Tooltip */
+        .icon-chunk::after {
+            content: attr(data-tooltip); position: absolute; left: 65px;
+            background: var(--text-main); color: white; padding: 5px 10px;
+            border-radius: 8px; font-size: 0.8rem; font-family: 'Nunito'; font-weight: 700;
+            opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap;
         }
-        .sidebar-icon:hover::after { opacity: 1; left: 70px; }
+        .icon-chunk:hover::after { opacity: 1; left: 70px; }
 
-        /* --- 4. LIENZO (MESA DE TRABAJO) --- */
-        .canvas-area {
-            position: relative; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            background-color: var(--canvas-grey); /* Gris Claro */
-            background-image: radial-gradient(#d1d5db 2px, transparent 2px); /* Puntos grises */
-            background-size: 30px 30px;
-            /* Sin márgenes que desperdicien espacio, ocupa todo el contenedor */
-        }
-
-        /* --- 5. LIBRO --- */
+        /* --- 6. LIBRO (INTACTO) --- */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
-        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
         .book.opened { transform: translateX(50%); } .book.opened::before { width: 196%; left: -95%; opacity: 0.4; background: rgba(0,0,0,0.15); } .book.closed-back { transform: translateX(100%); } .book.closed-back::before { width: 96%; left: -99%; }
-        
         .paper { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform-origin: left center; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); transform-style: preserve-3d; }
         .paper.flipped { transform: rotateY(-180deg); z-index: 0; }
         .front, .back { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: var(--paper-texture); backface-visibility: hidden; overflow: hidden; border-radius: 2px 5px 5px 2px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
@@ -173,48 +215,50 @@
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
 
-        /* --- 6. OVERLAYS DE EDICIÓN (RESTAURADOS) --- */
+        /* --- 7. OVERLAYS DE EDICIÓN (Sticker) --- */
         .edit-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.4);
+            position: absolute; inset: 0; background: rgba(248, 250, 252, 0.6);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(3px); z-index: 20;
+            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px); z-index: 20;
         }
-        .canvas-area.editor-mode .front:hover .edit-overlay, .canvas-area.editor-mode .back:hover .edit-overlay { opacity: 1; }
+        .editor-mode .front:hover .edit-overlay, .editor-mode .back:hover .edit-overlay { opacity: 1; }
 
         .upload-card {
-            background: white; border: 4px solid var(--vivid-blue);
+            background: white; border: 3px solid var(--electric-cyan);
             padding: 15px; border-radius: 20px; text-align: center;
             transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
         }
-        .canvas-area.editor-mode .front:hover .upload-card, .canvas-area.editor-mode .back:hover .upload-card { transform: scale(1); }
+        .editor-mode .front:hover .upload-card, .editor-mode .back:hover .upload-card { transform: scale(1); }
 
-        .upload-btn-cam {
-            background: var(--vivid-pink); color: white; padding: 10px; border-radius: 15px;
-            font-family: 'Fredoka', sans-serif; font-weight: bold; cursor: pointer; display: block; width: 100%;
-            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 #C2185B; transition: 0.2s;
+        .upload-btn {
+            background: var(--pop-pink); color: white; padding: 10px; border-radius: 15px;
+            font-family: 'Dosis', sans-serif; font-weight: 800; cursor: pointer; display: block; width: 100%;
+            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 var(--shadow-pink); transition: 0.1s;
         }
-        .upload-btn-cam:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #C2185B; }
+        .upload-btn:hover { transform: translateY(-2px); }
+        .upload-btn:active { transform: translateY(2px); box-shadow: none; }
         
-        .url-input-pop { width: 100%; padding: 8px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; }
-        .remove-btn { margin-top: 5px; color: #ef4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: bold; }
+        .url-input { width: 100%; padding: 8px; background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; font-family: 'Nunito'; font-weight: 700; }
+        .remove-btn { margin-top: 5px; color: #EF4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: 800; text-transform: uppercase; }
 
-        /* Botones Navegación */
+        /* Navegación */
         .nav-btn {
             position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%;
-            background: white; border: 4px solid var(--vivid-green); color: var(--vivid-green);
-            font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 90;
-            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 rgba(0, 230, 118, 0.4);
+            background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan);
+            font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 var(--shadow-cyan);
         }
-        .nav-btn:hover { transform: translateY(-55%) scale(1.1); background: var(--vivid-green); color: white; }
-        .prev-btn { left: 130px; } .next-btn { right: 40px; }
-
+        .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; }
+        .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
+        .prev-btn { left: 110px; } .next-btn { right: 40px; }
+        
         @media (max-width: 900px) {
             :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); }
             #stage { perspective: 1200px; }
-            .sidebar-gamer { width: 60px; margin-left: 10px; }
-            .sidebar-icon { width: 40px; height: 40px; font-size: 1rem; }
-            .prev-btn { left: 90px; }
+            .sidebar-studio { width: 60px; }
+            .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; }
+            .prev-btn { left: 80px; }
         }
     </style>
 </head>
@@ -243,6 +287,7 @@
         let app, auth, db;
         try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch (e) { console.error(e); }
 
+        // --- UTILS ---
         const processImage = (file, callback) => {
             if (!file) return;
             if (file.size > 2000000) { if(!confirm("Imagen grande. ¿Seguir?")) return; }
@@ -262,14 +307,15 @@
             }; reader.readAsDataURL(file);
         };
 
+        // --- PLANTILLA ---
         const MASTER_TEMPLATE = {
-            title: "Mi Aventura",
+            title: "Mi Gran Historia",
             pages: [
-                { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true', tooltip: {title:"Portada", text:"La cara de tu revista."} }, back: { type: 'endpaper', tooltip: {title:"Guardas", text:"El interior de la tapa."} } },
-                { id: 'c2', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Guardas", text:"Transición."} }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)', tooltip: {title:"Respeto", text:"Espacio para el título."} } },
-                { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024', tooltip: {title:"Créditos", text:"Datos legales."} }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...', tooltip: {title:"Dedicatoria", text:"Un mensaje especial."} } },
-                { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true', tooltip: {title:"Historia", text:"Inicio del cuento."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true', tooltip: {title:"Continuidad", text:"Sigue la acción."} } },
-                { id: 'end', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Fin", text:"Cierre."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true', tooltip: {title:"Contraportada", text:"El final externo."} } }
+                { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true' }, back: { type: 'endpaper' } },
+                { id: 'c2', type: 'structure', front: { type: 'endpaper' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)' } },
+                { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024' }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...' } },
+                { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true' } },
+                { id: 'end', type: 'structure', front: { type: 'endpaper' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true' } }
             ]
         };
 
@@ -287,7 +333,7 @@
             }, []);
 
             if (view === 'public-viewer' && publicBook) return <PublicViewer book={publicBook} />;
-            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-gray-400">CARGANDO...</div>;
+            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl" style={{color:'var(--hyper-grape)'}}>CARGANDO ESTUDIO...</div>;
 
             return (
                 <div className="flex flex-col h-full font-sans">
@@ -305,14 +351,14 @@
             const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
             return (
                 <div className="flex items-center justify-center h-full">
-                    <div className="glass-panel p-10 max-w-md w-full text-center">
-                        <h2 className="text-4xl font-bold mb-6 text-blue-500 kids-title">{isRegister ? '¡Únete!' : '¡Entrar!'}</h2>
+                    <div className="sticker-panel p-10 max-w-md w-full text-center border-t-8" style={{borderColor:'var(--hyper-grape)'}}>
+                        <h2 className="text-4xl mb-6 pop-title" style={{color:'var(--hyper-grape)'}}>{isRegister ? '¡CREAR CUENTA!' : '¡HOLA DE NUEVO!'}</h2>
                         <form onSubmit={handleAuth} className="space-y-4">
-                            <input className="fun-input" placeholder="Tu Correo" value={email} onChange={e=>setEmail(e.target.value)} required />
-                            <input className="fun-input" type="password" placeholder="Contraseña Secreta" value={password} onChange={e=>setPassword(e.target.value)} required />
-                            <button className="game-btn btn-green w-full text-xl mt-6 py-3 rounded-2xl shadow-lg">JUGAR</button>
+                            <input className="input-pop" placeholder="Tu Correo" value={email} onChange={e=>setEmail(e.target.value)} required />
+                            <input className="input-pop" type="password" placeholder="Contraseña Secreta" value={password} onChange={e=>setPassword(e.target.value)} required />
+                            <button className="btn-gummy btn-lime w-full mt-6">{isRegister ? 'REGISTRARME' : 'ENTRAR'}</button>
                         </form>
-                        <p className="mt-6 text-sm text-gray-500 cursor-pointer font-bold hover:text-blue-500" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Entra aquí' : '¿No tienes cuenta? Regístrate'}</p>
+                        <p className="mt-6 text-sm font-bold cursor-pointer hover:text-purple-500" style={{color:'var(--text-main)'}} onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Entra aquí' : '¿No tienes cuenta? Regístrate'}</p>
                     </div>
                 </div>
             );
@@ -324,38 +370,43 @@
             const createNew = async () => { const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }); localStorage.setItem('currentBookId', ref.id); setView('editor'); };
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             
-            // Colores Eléctricos
-            const colors = ['c-green', 'c-blue', 'c-purple', 'c-pink', 'c-orange'];
+            const tags = [
+                {bg:'var(--hyper-grape)', shadow:'var(--shadow-grape)'}, 
+                {bg:'var(--electric-cyan)', shadow:'var(--shadow-cyan)'}, 
+                {bg:'var(--hot-orange)', shadow:'var(--shadow-orange)'},
+                {bg:'var(--pop-pink)', shadow:'var(--shadow-pink)'}
+            ];
 
             return (
                 <div className="h-full overflow-y-auto relative">
-                    {/* HEADER BLOQUE COMPLETO */}
-                    <header className="full-header">
-                        <h2 className="text-4xl font-bold kids-title text-white">Mis Libros</h2>
+                    <header className="header-studio">
+                        <h2 className="text-3xl pop-title logo-text">CREATOR STUDIO</h2>
                         <div className="flex gap-4 items-center">
-                            <span className="text-sm text-white bg-black/20 px-4 py-2 rounded-full font-bold">Hola, {user.email.split('@')[0]}</span>
-                            <button onClick={() => signOut(auth)} className="game-btn btn-red text-sm py-2 px-4 rounded-xl">SALIR</button>
+                            <span className="text-sm font-bold px-3 py-1 rounded-full border-2 border-gray-200 text-gray-500">@{user.email.split('@')[0]}</span>
+                            <button onClick={() => signOut(auth)} className="btn-gummy btn-pink text-xs py-2 px-4">SALIR</button>
                         </div>
                     </header>
                     
                     <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-                        <div onClick={createNew} className="glass-panel h-72 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition duration-300 border-dashed border-4 border-gray-300 bg-white/50">
-                            <div className="w-20 h-20 rounded-full bg-cyan-100 flex items-center justify-center mb-4 shadow-sm"><i className="fas fa-plus text-4xl text-cyan-500"></i></div>
-                            <span className="text-gray-400 font-bold text-xl" style={{fontFamily:'Fredoka'}}>Nuevo Proyecto</span>
+                        <div onClick={createNew} className="h-72 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition duration-300 border-dashed border-4 border-gray-300 rounded-3xl bg-white">
+                            <div className="w-20 h-20 rounded-full bg-cyan-100 flex items-center justify-center mb-4"><i className="fas fa-plus text-4xl text-cyan-500"></i></div>
+                            <span className="font-bold text-xl text-gray-400 font-sans">NUEVO PROYECTO</span>
                         </div>
-                        {books.map((b, i) => (
-                            <div key={b.id} className="glass-panel overflow-hidden cursor-pointer group" onClick={()=>openBook(b.id)}>
-                                <div className="h-48 bg-gray-100 relative">
-                                    {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />}
-                                    <span className="absolute bottom-3 right-3 text-xs font-bold text-white bg-black/30 px-2 py-1 rounded-lg backdrop-blur-sm">{b.pages.length} PÁGS</span>
+                        {books.map((b, i) => {
+                            const color = tags[i % tags.length];
+                            return (
+                                <div key={b.id} className="project-card group" onClick={()=>openBook(b.id)}>
+                                    <div className="h-48 bg-gray-100 relative">
+                                        {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
+                                        <span className="absolute bottom-3 right-3 text-xs font-bold text-white bg-black/40 px-2 py-1 rounded-lg backdrop-blur-sm font-sans">{b.pages.length} PÁGS</span>
+                                    </div>
+                                    <div className="card-footer">
+                                        <h3 className="pop-title text-gray-700 text-lg truncate">{b.title}</h3>
+                                        <span className="card-tag" style={{background:color.bg, boxShadow:`0 3px 0 ${color.shadow}`}}>EDITAR</span>
+                                    </div>
                                 </div>
-                                {/* PARTE INFERIOR ELÉCTRICA */}
-                                <div className={`card-footer ${colors[i % colors.length]}`}>
-                                    <h3 className="card-title truncate">{b.title}</h3>
-                                    <p className="text-xs font-bold opacity-80">Editado recientemente</p>
-                                </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 </div>
             );
@@ -372,25 +423,23 @@
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
             const addPage = () => { const np = [...book.pages]; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: '' }, back: { type: 'image-page', bg: '' } }); setBook({...book, pages: np}); };
 
-            if(!book) return <div className="flex h-screen items-center justify-center font-bold text-gray-400 text-xl">ABRIENDO LIBRO...</div>;
+            if(!book) return <div className="flex h-screen items-center justify-center font-bold text-xl text-gray-400">ABRIENDO...</div>;
 
             return (
                 <div className="flex h-full relative">
                     
-                    {/* BARRA LATERAL FLOTANTE */}
-                    <div className="absolute left-0 top-0 h-full flex items-center z-50">
-                        <div className="sidebar-gamer">
-                            <div className="flex flex-col gap-6 w-full items-center">
-                                <div className="icon-wrap"><button onClick={()=>setView('dashboard')} className="sidebar-icon btn-purple" data-tooltip="Inicio"><i className="fas fa-home"></i></button></div>
-                                <div className="icon-wrap"><button onClick={save} className="sidebar-icon btn-green" data-tooltip="Guardar"><i className="fas fa-save"></i></button></div>
-                                <div className="icon-wrap"><button onClick={share} className="sidebar-icon btn-cyan" data-tooltip="Compartir"><i className="fas fa-share-alt"></i></button></div>
-                            </div>
-                            <div className="icon-wrap"><button onClick={addPage} className="sidebar-icon btn-orange" data-tooltip="Agregar Pág"><i className="fas fa-plus"></i></button></div>
+                    {/* BARRA LATERAL */}
+                    <div className="sidebar-studio">
+                        <div className="icon-chunk btn-grape" onClick={()=>setView('dashboard')} data-tooltip="Inicio"><i className="fas fa-home"></i></div>
+                        <div className="icon-chunk btn-lime" onClick={save} data-tooltip="Guardar"><i className="fas fa-save"></i></div>
+                        <div className="icon-chunk btn-cyan" onClick={share} data-tooltip="Compartir"><i className="fas fa-share-alt"></i></div>
+                        <div className="mt-auto">
+                            <div className="icon-chunk btn-orange" onClick={addPage} data-tooltip="Agregar Página"><i className="fas fa-plus"></i></div>
                         </div>
                     </div>
 
-                    {/* LIENZO */}
-                    <div className="canvas-area editor-mode">
+                    {/* LIENZO EDITOR (GRID) */}
+                    <div className="canvas-grid editor-mode">
                         <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
                     </div>
                 </div>
@@ -423,13 +472,13 @@
                 return (
                     <div className="edit-overlay">
                         <div className="upload-card">
-                            <label className="upload-btn-cam">
-                                <i className="fas fa-camera mr-2"></i> {currentBg ? 'CAMBIAR' : 'SUBIR FOTO'}
+                            <label className="btn-gummy btn-pink" style={{width:'100%', fontSize:'0.9rem', padding:'8px'}}>
+                                <i className="fas fa-camera mr-2"></i> {currentBg ? 'Cambiar' : 'Subir'}
                                 <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                                     const file = e.target.files[0]; if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64));
                                 }} />
                             </label>
-                            <input className="url-input-pop" placeholder="O pega un enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} />
+                            <input className="input-pop" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px'}} />
                             {currentBg && <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>BORRAR IMAGEN</button>}
                         </div>
                     </div>
