@@ -20,7 +20,7 @@
         :root {
             --book-width: 460px;
             --book-height: 600px;
-            --bg-color: #e0e0e0; /* Fondo del lienzo un poco más claro para contraste */
+            --bg-color: #e0e0e0;
             --paper-texture: #fdfbf7;
             --text-color: #2c3e50;
             --accent-color: #5d4037;
@@ -32,7 +32,7 @@
         /* Lienzo de Trabajo */
         .canvas-area {
             background-color: var(--bg-color);
-            background-image: radial-gradient(#ccc 1px, transparent 1px); /* Patrón sutil de fondo */
+            background-image: radial-gradient(#ccc 1px, transparent 1px);
             background-size: 20px 20px;
             position: relative;
             overflow: hidden;
@@ -85,13 +85,11 @@
             backface-visibility: hidden; overflow: hidden;
             border-radius: 2px 5px 5px 2px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-            /* Importante para que el overlay funcione en cualquier tipo de página */
             display: flex; flex-direction: column; 
         }
         .front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); }
         .back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
 
-        /* Sombras lomo */
         .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
         .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
 
@@ -105,52 +103,40 @@
         .front .page-number { right: 20px; }
         .back .page-number { left: 20px; }
 
-        /* OVERLAY DE EDICIÓN MEJORADO */
+        /* OVERLAY DE EDICIÓN */
         .edit-overlay {
             position: absolute; inset: 0;
-            background: rgba(0,0,0,0.3); /* Un poco más sutil */
+            background: rgba(0,0,0,0.3);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; transition: opacity 0.3s ease;
             backdrop-filter: blur(3px);
-            z-index: 20; /* Encima del contenido pero debajo de las sombras del lomo */
+            z-index: 20;
         }
         
-        /* Solo mostrar overlay si estamos en modo editor y pasamos el mouse */
         .canvas-area.editor-mode .front:hover .edit-overlay,
-        .canvas-area.editor-mode .back:hover .edit-overlay { 
-            opacity: 1; 
-        }
+        .canvas-area.editor-mode .back:hover .edit-overlay { opacity: 1; }
 
         .upload-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            text-align: center;
-            transform: translateY(10px);
-            transition: transform 0.3s;
-            width: 80%;
-            max-width: 250px;
+            background: white; padding: 20px; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;
+            transform: translateY(10px); transition: transform 0.3s;
+            width: 80%; max-width: 250px;
         }
         .canvas-area.editor-mode .front:hover .upload-card,
-        .canvas-area.editor-mode .back:hover .upload-card {
-            transform: translateY(0);
-        }
+        .canvas-area.editor-mode .back:hover .upload-card { transform: translateY(0); }
 
         .upload-btn {
             background: var(--accent-color); color: white;
             padding: 10px 15px; border-radius: 8px;
             font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.9rem;
             cursor: pointer; display: block; width: 100%;
-            margin-bottom: 10px; transition: 0.2s;
-            border: 2px solid var(--accent-color);
+            margin-bottom: 10px; transition: 0.2s; border: 2px solid var(--accent-color);
         }
         .upload-btn:hover { background: white; color: var(--accent-color); }
 
         .url-input {
             width: 100%; padding: 8px; border: 1px solid #ddd;
-            border-radius: 6px; font-size: 0.75rem; text-align: center;
-            outline: none;
+            border-radius: 6px; font-size: 0.75rem; text-align: center; outline: none;
         }
         .url-input:focus { border-color: var(--gold-color); }
 
@@ -214,7 +200,7 @@
         // --- UTILS ---
         const processImage = (file, callback) => {
             if (!file) return;
-            if (file.size > 2000000) { if(!confirm("La imagen es grande y puede tardar en guardar. ¿Continuar?")) return; }
+            if (file.size > 2000000) { if(!confirm("La imagen es grande. ¿Continuar?")) return; }
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
@@ -238,10 +224,19 @@
         const MASTER_TEMPLATE = {
             title: "Mi Revista Digital",
             pages: [
+                // 1. Portada (Editable) + Guarda (Editable)
                 { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true', tooltip: {title:"Portada", text:"La cara de tu revista."} }, back: { type: 'endpaper', tooltip: {title:"Guardas", text:"El interior de la tapa."} } },
+                
+                // 2. Guarda (Editable) + Hoja de Respeto (SOLO TITULO, NO IMAGEN)
                 { id: 'c2', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Guardas", text:"Transición."} }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)', tooltip: {title:"Respeto", text:"Espacio para el título."} } },
+                
+                // 3. Créditos (SOLO TEXTO) + Dedicatoria (SOLO TEXTO)
                 { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024', tooltip: {title:"Créditos", text:"Datos legales."} }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...', tooltip: {title:"Dedicatoria", text:"Un mensaje especial."} } },
+                
+                // 4. Contenido (TODO EDITABLE)
                 { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true', tooltip: {title:"Historia", text:"Inicio del cuento."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true', tooltip: {title:"Continuidad", text:"Sigue la acción."} } },
+                
+                // 5. Contraportada (Editable)
                 { id: 'end', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Fin", text:"Cierre."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true', tooltip: {title:"Contraportada", text:"El final externo."} } }
             ]
         };
@@ -394,11 +389,22 @@
                 setBook({...book, pages: np});
             };
 
+            // Reglas de edición de texto según la página
+            const canEditTitle = (pageId, side) => {
+                if (pageId === 'c3') return false; // Créditos y Dedicatoria (Título fijo)
+                return true; // Resto sí (incluido Hoja de Respeto)
+            };
+
+            const canEditText = (pageId, side) => {
+                if (pageId === 'c2' && side === 'back') return false; // Hoja de Respeto (Solo título, no descripción)
+                return true; 
+            };
+
             if(!book) return <div>Cargando editor...</div>;
 
             return (
                 <div className="flex h-full">
-                    {/* Panel Izquierdo (Solo Texto) */}
+                    {/* Panel Izquierdo (Textos) */}
                     <div className="w-80 bg-white border-r flex flex-col z-20 shadow-xl overflow-hidden">
                         <div className="p-4 bg-amber-50 border-b border-amber-200">
                             <button onClick={()=>setView('dashboard')} className="text-xs text-gray-500 mb-2 hover:text-amber-800"><i className="fas fa-arrow-left"></i> Volver</button>
@@ -415,15 +421,23 @@
                                 <button onClick={()=>setEditSide('back')} className={`flex-1 text-xs py-1 rounded ${editSide==='back'?'bg-white shadow font-bold text-amber-800':''}`}>Atrás</button>
                             </div>
                             {(() => {
-                                const face = book.pages[selPageIdx][editSide];
-                                if(face.type === 'endpaper') return <p className="text-xs text-gray-500 italic">Pasa el mouse sobre el libro para cambiar el fondo.</p>;
+                                const page = book.pages[selPageIdx];
+                                const face = page[editSide];
+                                const isEndpaper = face.type === 'endpaper';
+                                
+                                // Bloqueos visuales en el panel
+                                if(isEndpaper) return <p className="text-xs text-gray-500 italic p-2 bg-gray-50 rounded">Esta es una página de guardas. Puedes cambiar el fondo tocando el libro.</p>;
+
                                 return (
                                     <div className="space-y-4">
-                                        {face.type === 'image-page' && <p className="text-xs bg-blue-50 p-2 rounded text-blue-700 border border-blue-100">👉 <strong>Tip:</strong> Pasa el mouse sobre el libro para cambiar la imagen.</p>}
                                         {face.type === 'text-page' && (
                                             <>
-                                                <div><label className="text-xs font-bold text-gray-600">Título</label><input className="w-full border rounded p-1 text-sm" value={face.title} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'title', e.target.value)} /></div>
-                                                <div><label className="text-xs font-bold text-gray-600">Texto</label><textarea className="w-full border rounded p-1 text-sm" rows="4" value={face.text} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'text', e.target.value)} /></div>
+                                                {canEditTitle(page.id, editSide) && (
+                                                    <div><label className="text-xs font-bold text-gray-600">Título</label><input className="w-full border rounded p-1 text-sm" value={face.title} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'title', e.target.value)} /></div>
+                                                )}
+                                                {canEditText(page.id, editSide) && (
+                                                    <div><label className="text-xs font-bold text-gray-600">Texto / Descripción</label><textarea className="w-full border rounded p-1 text-sm" rows="6" value={face.text} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'text', e.target.value)} /></div>
+                                                )}
                                             </>
                                         )}
                                         <div className="bg-amber-50 p-2 rounded border border-amber-100 mt-4">
@@ -490,17 +504,16 @@
 
             useEffect(() => { setTimeout(() => updatePedagogical(activeIdx), 500); }, []);
 
-            // Lógica de Permisos de Edición
+            // Lógica de Permisos de Imagen (REGLA SOLICITADA)
             const isEditableImage = (pageId, side) => {
-                // Bloqueos específicos solicitados:
-                if (pageId === 'c2' && side === 'back') return false; // Hoja Respeto
-                if (pageId === 'c3') return false; // Créditos y Dedicatoria
-                return true; // El resto (Portada, Guardas, Contenido, Contraportada) es editable
+                if (pageId === 'c2' && side === 'back') return false; // Hoja Respeto NO imagen
+                if (pageId === 'c3') return false; // Créditos y Dedicatoria NO imagen
+                return true; // El resto SÍ (Portada, Guardas, Contenido, Contraportada)
             };
 
             const renderEditOverlay = (pageIdx, side, currentBg) => {
                 if (!isEditor) return null;
-                // Verificar si esta página específica permite edición de imagen
+                // Verificar permisos
                 if (!isEditableImage(pages[pageIdx].id, side)) return null;
 
                 return (
