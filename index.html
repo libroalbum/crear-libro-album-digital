@@ -93,17 +93,36 @@
         .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
         .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
 
-        /* Estilos Internos */
+        /* ESTILOS INTERNOS (TEXTOS EDITABLES) */
         .image-page { background-size: cover; background-position: center; background-color: #fff; }
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
-        .text-page h2 { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; margin-bottom: 25px; border-bottom: 1px solid var(--gold-color); padding-bottom: 10px; }
-        .text-page p { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic; white-space: pre-wrap; }
+        
+        /* Inputs transparentes que parecen texto */
+        .inline-input-title {
+            font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem;
+            background: transparent; border: 1px dashed transparent; text-align: center;
+            width: 100%; margin-bottom: 5px; outline: none; padding: 5px;
+            border-bottom: 2px solid var(--gold-color);
+        }
+        .inline-input-title:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); cursor: text; background: rgba(255,255,255,0.5); }
+        .inline-input-title:focus { border-color: var(--accent-color); background: #fff; }
+        .inline-input-title:disabled { border-bottom: 2px solid var(--gold-color); opacity: 1; color: var(--accent-color); cursor: default; }
+
+        .inline-input-text {
+            font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic;
+            background: transparent; border: 1px dashed transparent; text-align: center;
+            width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px;
+        }
+        .inline-input-text:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); cursor: text; background: rgba(255,255,255,0.5); }
+        .inline-input-text:focus { border-color: var(--accent-color); background: #fff; }
+        .inline-input-text:disabled { opacity: 1; color: #555; cursor: default; }
+
         .endpaper { background-color: var(--endpaper-bg); background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px); background-size: 20px 20px; }
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; }
         .back .page-number { left: 20px; }
 
-        /* OVERLAY DE EDICIÓN */
+        /* OVERLAY DE EDICIÓN DE IMAGEN */
         .edit-overlay {
             position: absolute; inset: 0;
             background: rgba(0,0,0,0.3);
@@ -112,7 +131,6 @@
             backdrop-filter: blur(3px);
             z-index: 20;
         }
-        
         .canvas-area.editor-mode .front:hover .edit-overlay,
         .canvas-area.editor-mode .back:hover .edit-overlay { opacity: 1; }
 
@@ -134,16 +152,9 @@
         }
         .upload-btn:hover { background: white; color: var(--accent-color); }
 
-        .url-input {
-            width: 100%; padding: 8px; border: 1px solid #ddd;
-            border-radius: 6px; font-size: 0.75rem; text-align: center; outline: none;
-        }
+        .url-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.75rem; text-align: center; outline: none; }
         .url-input:focus { border-color: var(--gold-color); }
-
-        .remove-btn {
-            margin-top: 5px; color: #999; font-size: 0.7rem; 
-            cursor: pointer; text-decoration: underline; background: none; border: none;
-        }
+        .remove-btn { margin-top: 5px; color: #999; font-size: 0.7rem; cursor: pointer; text-decoration: underline; background: none; border: none; }
         .remove-btn:hover { color: #d32f2f; }
 
         /* Capa Pedagógica */
@@ -389,25 +400,11 @@
                 setBook({...book, pages: np});
             };
 
-            // --- REGLAS DE EDICIÓN ESTRICTAS ---
-            // 1. Hoja Respeto (Pag 2 Reverso): Solo Título
-            // 2. Créditos (Pag 3 Frente): Solo Cuerpo (Título fijo)
-            // 3. Dedicatoria (Pag 3 Reverso): Solo Cuerpo (Título fijo)
-            const canEditTitle = (idx, side) => {
-                if (idx === 2) return false; // Créditos y Dedicatoria
-                return true;
-            };
-
-            const canEditText = (idx, side) => {
-                if (idx === 1 && side === 'back') return false; // Hoja de Respeto (Solo título)
-                return true; 
-            };
-
             if(!book) return <div>Cargando editor...</div>;
 
             return (
                 <div className="flex h-full">
-                    {/* Panel Izquierdo */}
+                    {/* Panel Izquierdo (Info y Guía Pedagógica) */}
                     <div className="w-80 bg-white border-r flex flex-col z-20 shadow-xl overflow-hidden">
                         <div className="p-4 bg-amber-50 border-b border-amber-200">
                             <button onClick={()=>setView('dashboard')} className="text-xs text-gray-500 mb-2 hover:text-amber-800"><i className="fas fa-arrow-left"></i> Volver</button>
@@ -418,32 +415,24 @@
                             </div>
                         </div>
                         <div className="flex-1 overflow-y-auto p-4">
-                            <h4 className="font-bold text-xs text-gray-400 uppercase mb-2">Editar Textos - Pág {selPageIdx + 1}</h4>
+                            <h4 className="font-bold text-xs text-gray-400 uppercase mb-2">Herramientas - Pág {selPageIdx + 1}</h4>
+                            
+                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 mb-4">
+                                <p className="text-xs text-blue-800 mb-1"><strong>💡 Edición:</strong></p>
+                                <p className="text-xs text-gray-600">Haz clic directamente sobre los textos o imágenes del libro para editarlos.</p>
+                            </div>
+
                             <div className="flex bg-gray-100 p-1 rounded mb-4">
                                 <button onClick={()=>setEditSide('front')} className={`flex-1 text-xs py-1 rounded ${editSide==='front'?'bg-white shadow font-bold text-amber-800':''}`}>Frente</button>
                                 <button onClick={()=>setEditSide('back')} className={`flex-1 text-xs py-1 rounded ${editSide==='back'?'bg-white shadow font-bold text-amber-800':''}`}>Atrás</button>
                             </div>
-                            {(() => {
-                                const page = book.pages[selPageIdx];
-                                const face = page[editSide];
-                                const isEndpaper = face.type === 'endpaper';
-                                
-                                if(isEndpaper) return <p className="text-xs text-gray-500 italic p-2 bg-gray-50 rounded">Página de estructura (Guardas). Fondo editable en el libro.</p>;
 
+                            {(() => {
+                                const face = book.pages[selPageIdx][editSide];
                                 return (
                                     <div className="space-y-4">
-                                        {face.type === 'text-page' && (
-                                            <>
-                                                {canEditTitle(selPageIdx, editSide) && (
-                                                    <div><label className="text-xs font-bold text-gray-600">Título</label><input className="w-full border rounded p-1 text-sm" value={face.title} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'title', e.target.value)} /></div>
-                                                )}
-                                                {canEditText(selPageIdx, editSide) && (
-                                                    <div><label className="text-xs font-bold text-gray-600">Texto / Descripción</label><textarea className="w-full border rounded p-1 text-sm" rows="6" value={face.text} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'text', e.target.value)} /></div>
-                                                )}
-                                            </>
-                                        )}
                                         <div className="bg-amber-50 p-2 rounded border border-amber-100 mt-4">
-                                            <h5 className="text-xs font-bold text-amber-800 mb-2"><i className="fas fa-comment"></i> Guía Pedagógica</h5>
+                                            <h5 className="text-xs font-bold text-amber-800 mb-2"><i className="fas fa-comment"></i> Guía Pedagógica (Personaje)</h5>
                                             <input className="w-full border rounded p-1 text-xs mb-1" placeholder="Título nube" value={face.tooltip?.title} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'tooltipTitle', e.target.value)} />
                                             <textarea className="w-full border rounded p-1 text-xs" rows="2" placeholder="Texto nube" value={face.tooltip?.text} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'tooltipText', e.target.value)} />
                                         </div>
@@ -506,20 +495,25 @@
 
             useEffect(() => { setTimeout(() => updatePedagogical(activeIdx), 500); }, []);
 
-            // === LÓGICA DE BLOQUEO DE IMÁGENES (ÍNDICES) ===
+            // === LÓGICA DE PERMISOS ===
             const isEditableImage = (idx, side) => {
-                // Hoja Respeto (Index 1 - Back) -> Bloqueado
-                if (idx === 1 && side === 'back') return false; 
-                // Créditos/Dedicatoria (Index 2 - Front & Back) -> Bloqueado
-                if (idx === 2) return false; 
+                if (idx === 1 && side === 'back') return false; // Respeto
+                if (idx === 2) return false; // Créditos/Dedicatoria
+                return true;
+            };
+
+            const isEditableTitle = (idx, side) => {
+                if (idx === 2) return false; // Créditos/Dedicatoria (Fijo)
                 return true; 
             };
 
-            const renderEditOverlay = (pageIdx, side, currentBg) => {
-                if (!isEditor) return null;
-                // Si la página está en la lista negra, no mostrar nada
-                if (!isEditableImage(pageIdx, side)) return null;
+            const isEditableText = (idx, side) => {
+                if (idx === 1 && side === 'back') return false; // Respeto (Solo título)
+                return true;
+            };
 
+            const renderEditOverlay = (pageIdx, side, currentBg) => {
+                if (!isEditor || !isEditableImage(pageIdx, side)) return null;
                 return (
                     <div className="edit-overlay">
                         <div className="upload-card">
@@ -530,17 +524,8 @@
                                     if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64));
                                 }} />
                             </label>
-                            
-                            <input className="url-input" placeholder="O pega enlace aquí..." 
-                                   value={currentBg && currentBg.startsWith('http') ? currentBg : ''}
-                                   onClick={(e) => e.stopPropagation()}
-                                   onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} />
-                            
-                            {currentBg && (
-                                <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>
-                                    <i className="fas fa-trash"></i> Quitar imagen
-                                </button>
-                            )}
+                            <input className="url-input" placeholder="O pega enlace aquí..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} />
+                            {currentBg && <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}><i className="fas fa-trash"></i> Quitar imagen</button>}
                         </div>
                     </div>
                 );
@@ -560,10 +545,20 @@
                                         {/* FRENTE */}
                                         <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
                                             {renderEditOverlay(i, 'front', p.front.bg)}
-                                            
                                             {p.front.type==='text-page' && (
                                                 <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
-                                                    <h2>{p.front.title}</h2><p dangerouslySetInnerHTML={{__html: p.front.text?.replace(/\n/g, '<br>')}}></p>
+                                                    <input 
+                                                        disabled={!isEditor || !isEditableTitle(i, 'front')} 
+                                                        value={p.front.title} 
+                                                        onChange={(e)=>onUpdatePage(i, 'front', 'title', e.target.value)}
+                                                        className="inline-input-title"
+                                                    />
+                                                    <textarea 
+                                                        disabled={!isEditor || !isEditableText(i, 'front')} 
+                                                        value={p.front.text} 
+                                                        onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)}
+                                                        className="inline-input-text" rows="6"
+                                                    />
                                                 </div>
                                             )}
                                             {i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}
@@ -572,10 +567,20 @@
                                         {/* ATRÁS */}
                                         <div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>
                                             {renderEditOverlay(i, 'back', p.back.bg)}
-
                                             {p.back.type==='text-page' && (
                                                 <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
-                                                    <h2>{p.back.title}</h2><p dangerouslySetInnerHTML={{__html: p.back.text?.replace(/\n/g, '<br>')}}></p>
+                                                    <input 
+                                                        disabled={!isEditor || !isEditableTitle(i, 'back')} 
+                                                        value={p.back.title} 
+                                                        onChange={(e)=>onUpdatePage(i, 'back', 'title', e.target.value)}
+                                                        className="inline-input-title"
+                                                    />
+                                                    <textarea 
+                                                        disabled={!isEditor || !isEditableText(i, 'back')} 
+                                                        value={p.back.text} 
+                                                        onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)}
+                                                        className="inline-input-text" rows="6"
+                                                    />
                                                 </div>
                                             )}
                                             {i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}
