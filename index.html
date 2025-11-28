@@ -8,8 +8,8 @@
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Fuentes: Titan One (Gorda), Fredoka, etc. -->
-    <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Fredoka:wght@400;600;700&family=Balsamiq+Sans:wght@700&family=Cinzel:wght@700&family=Merriweather&display=swap" rel="stylesheet">
+    <!-- Fuentes: Luckiest Guy (Título), Fredoka (Cuerpo), etc. -->
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@400;600;700&family=Balsamiq+Sans:wght@700&family=Cinzel:wght@700&family=Merriweather&display=swap" rel="stylesheet">
 
     <!-- REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -21,19 +21,18 @@
         :root {
             --ui-bg-color: #F0F9FF; 
             --ui-text-main: #334155;
-            --header-yellow: #FFC107; /* Amarillo vibrante encabezado */
             
-            /* Colores ELÉCTRICOS para Tarjetas */
-            --card-electric-green: rgba(132, 204, 22, 0.9); /* Lime */
-            --card-electric-blue: rgba(6, 182, 212, 0.9);   /* Cyan */
-            --card-electric-purple: rgba(124, 58, 237, 0.9); /* Violet */
-            --card-electric-pink: rgba(244, 63, 94, 0.9);    /* Rose */
-            --card-electric-orange: rgba(249, 115, 22, 0.9); /* Orange */
+            /* Colores Vívidos */
+            --vivid-blue: #00C6FF;
+            --vivid-pink: #FF4081;
+            --vivid-green: #00E676;
+            --vivid-orange: #FF9100;
+            --vivid-purple: #D500F9;
             
             /* Editor Fondo */
-            --editor-bg-grey: #374151; /* Gris grafito */
+            --canvas-grey: #f3f4f6;
 
-            /* Libro Clásico (INTACTO) */
+            /* Libro Clásico */
             --book-width: 460px;
             --book-height: 600px;
             --paper-texture: #fdfbf7;
@@ -49,31 +48,28 @@
             margin: 0; padding: 0; overflow: hidden; height: 100vh;
             color: var(--ui-text-main);
             background-color: var(--ui-bg-color);
-            /* Fondo claro con puntos para el Dashboard */
-            background-image: radial-gradient(#CBD5E1 2px, transparent 2px);
-            background-size: 30px 30px;
         }
 
-        /* Título GORDO Infantil */
-        .fat-title {
-            font-family: 'Titan One', cursive;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            /* Borde de texto suave */
-            text-shadow: 3px 3px 0px rgba(0,0,0,0.15);
+        /* Título Infantil "Gordo" */
+        .kids-title {
+            font-family: 'Luckiest Guy', cursive;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            font-size: 2.5rem; /* Más grande */
         }
 
         /* --- 2. INTERFAZ --- */
         
-        /* Encabezado Bloque Completo */
+        /* Encabezado Azul Degradado */
         .full-header {
             width: 100%;
-            background-color: var(--header-yellow);
-            padding: 20px 40px;
+            /* Degradado Azul Clarito Atractivo */
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            padding: 25px 50px; /* Más ancho */
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.1); /* Sombra sólida abajo */
+            box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
             position: relative; z-index: 50;
-            border-bottom: 4px solid #F59E0B; /* Borde inferior más oscuro */
+            border-bottom: 4px solid rgba(255,255,255,0.3);
         }
 
         /* Tarjetas de Proyecto */
@@ -83,90 +79,78 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
             transition: 0.3s;
         }
-        .glass-panel:hover { transform: translateY(-8px) rotate(1deg); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .glass-panel:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
 
-        /* Footer de Tarjeta Colorido */
         .card-footer {
-            padding: 15px;
-            border-radius: 0 0 20px 20px;
+            padding: 15px; border-radius: 0 0 20px 20px;
             color: white; text-align: center;
-            backdrop-filter: blur(4px);
         }
         .card-title { font-family: 'Balsamiq Sans', cursive; font-size: 1.3rem; margin-bottom: 5px; text-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
         
-        /* Clases de Color Eléctrico */
-        .c-green { background: var(--card-electric-green); }
-        .c-blue { background: var(--card-electric-blue); }
-        .c-purple { background: var(--card-electric-purple); }
-        .c-pink { background: var(--card-electric-pink); }
-        .c-orange { background: var(--card-electric-orange); }
+        .c-green { background: var(--vivid-green); }
+        .c-blue { background: var(--vivid-blue); }
+        .c-purple { background: var(--vivid-purple); }
+        .c-pink { background: var(--vivid-pink); }
+        .c-orange { background: var(--vivid-orange); }
 
-        /* Botones Generales */
+        /* Botones */
         .game-btn {
             border: none; outline: none; cursor: pointer; transition: all 0.2s;
             font-family: 'Fredoka', sans-serif; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.2); text-transform: uppercase; color: white;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.15); text-transform: uppercase; color: white;
         }
         .game-btn:active { transform: translateY(4px); box-shadow: none; }
         .game-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
         
-        /* Colores Botones */
         .btn-blue { background: #3B82F6; } .btn-red { background: #EF4444; }
-        .btn-green { background: #10B981; } .btn-purple { background: #8B5CF6; }
-        .btn-cyan { background: #06B6D4; } .btn-orange { background: #F97316; }
+        .btn-green { background: var(--vivid-green); } .btn-purple { background: var(--vivid-purple); }
+        .btn-cyan { background: var(--vivid-blue); } .btn-orange { background: var(--vivid-orange); }
 
         .fun-input {
             background: white; border: 3px solid #e2e8f0; color: #334155;
             border-radius: 15px; padding: 12px; width: 100%; outline: none;
             font-family: 'Fredoka', sans-serif; transition: 0.3s;
         }
-        .fun-input:focus { border-color: #06B6D4; }
+        .fun-input:focus { border-color: var(--vivid-blue); }
 
-        /* --- 3. BARRA LATERAL EDITOR --- */
+        /* --- 3. BARRA LATERAL --- */
         .sidebar-gamer {
-            width: 80px; height: 94%; margin-left: 20px;
+            width: 80px; height: 90%; margin-left: 20px;
             background: white; border-radius: 40px;
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
             padding: 30px 0; z-index: 50; border: 4px solid #f1f5f9;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .sidebar-icon {
-            width: 50px; height: 50px; border-radius: 16px; font-size: 1.4rem;
+            width: 55px; height: 55px; border-radius: 18px; font-size: 1.5rem;
             cursor: pointer; position: relative; color: white;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 0 rgba(0,0,0,0.15); transition: 0.2s;
         }
-        .sidebar-icon:hover { transform: scale(1.1); }
+        .sidebar-icon:hover { transform: scale(1.1) rotate(5deg); }
         
         .sidebar-icon::after {
-            content: attr(data-tooltip); position: absolute; left: 60px; 
+            content: attr(data-tooltip); position: absolute; left: 65px; 
             background: #334155; color: white; padding: 5px 12px; border-radius: 10px;
-            font-size: 0.8rem; pointer-events: none; opacity: 0; transition: 0.2s;
+            font-size: 0.9rem; pointer-events: none; opacity: 0; transition: 0.2s;
             white-space: nowrap; font-family: 'Fredoka';
         }
-        .sidebar-icon:hover::after { opacity: 1; left: 65px; }
+        .sidebar-icon:hover::after { opacity: 1; left: 70px; }
 
-        /* --- 4. LIENZO "DARK GREY MODE" (SOLO PARA EDITOR) --- */
+        /* --- 4. LIENZO (MESA DE TRABAJO) --- */
         .canvas-area {
             position: relative; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
-            border-radius: 30px; margin: 20px;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
-        }
-        
-        /* ESTILO GRIS OSCURO PARA EL EDITOR */
-        .canvas-area.dark-theme {
-            background-color: var(--editor-bg-grey); /* Gris oscuro */
-            /* Puntos blancos brillantes */
-            background-image: radial-gradient(rgba(255,255,255,0.3) 1.5px, transparent 1.5px);
+            background-color: var(--canvas-grey); /* Gris Claro */
+            background-image: radial-gradient(#d1d5db 2px, transparent 2px); /* Puntos grises */
             background-size: 30px 30px;
-            border: 4px solid #4b5563;
+            /* Sin márgenes que desperdicien espacio, ocupa todo el contenedor */
         }
 
-        /* --- 5. LIBRO (INTACTO) --- */
+        /* --- 5. LIBRO --- */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
-        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
         .book.opened { transform: translateX(50%); } .book.opened::before { width: 196%; left: -95%; opacity: 0.4; background: rgba(0,0,0,0.15); } .book.closed-back { transform: translateX(100%); } .book.closed-back::before { width: 96%; left: -99%; }
         
@@ -189,7 +173,7 @@
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
 
-        /* --- 6. OVERLAYS DE EDICIÓN --- */
+        /* --- 6. OVERLAYS DE EDICIÓN (RESTAURADOS) --- */
         .edit-overlay {
             position: absolute; inset: 0; background: rgba(0,0,0,0.4);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -198,7 +182,7 @@
         .canvas-area.editor-mode .front:hover .edit-overlay, .canvas-area.editor-mode .back:hover .edit-overlay { opacity: 1; }
 
         .upload-card {
-            background: white; border: 4px solid var(--card-electric-blue);
+            background: white; border: 4px solid var(--vivid-blue);
             padding: 15px; border-radius: 20px; text-align: center;
             transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -206,22 +190,23 @@
         .canvas-area.editor-mode .front:hover .upload-card, .canvas-area.editor-mode .back:hover .upload-card { transform: scale(1); }
 
         .upload-btn-cam {
-            background: var(--card-electric-purple); color: white; padding: 10px; border-radius: 15px;
+            background: var(--vivid-pink); color: white; padding: 10px; border-radius: 15px;
             font-family: 'Fredoka', sans-serif; font-weight: bold; cursor: pointer; display: block; width: 100%;
-            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 #6d28d9; transition: 0.2s;
+            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 #C2185B; transition: 0.2s;
         }
-        .upload-btn-cam:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #6d28d9; }
+        .upload-btn-cam:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #C2185B; }
+        
         .url-input-pop { width: 100%; padding: 8px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; }
         .remove-btn { margin-top: 5px; color: #ef4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: bold; }
 
         /* Botones Navegación */
         .nav-btn {
             position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%;
-            background: white; border: 4px solid var(--card-electric-green); color: var(--card-electric-green);
+            background: white; border: 4px solid var(--vivid-green); color: var(--vivid-green);
             font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 90;
-            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 rgba(16, 185, 129, 0.4);
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 rgba(0, 230, 118, 0.4);
         }
-        .nav-btn:hover { transform: translateY(-55%) scale(1.1); background: var(--card-electric-green); color: white; }
+        .nav-btn:hover { transform: translateY(-55%) scale(1.1); background: var(--vivid-green); color: white; }
         .prev-btn { left: 130px; } .next-btn { right: 40px; }
 
         @media (max-width: 900px) {
@@ -230,7 +215,6 @@
             .sidebar-gamer { width: 60px; margin-left: 10px; }
             .sidebar-icon { width: 40px; height: 40px; font-size: 1rem; }
             .prev-btn { left: 90px; }
-            .canvas-area { margin: 10px; }
         }
     </style>
 </head>
@@ -245,6 +229,7 @@
 
         const { useState, useEffect, useRef } = React;
 
+        // --- CLAVES FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyAThH-edUt4Ep9BR-Xuy5Zjmgl9Nky1keU",
             authDomain: "libroalbum.firebaseapp.com",
@@ -320,8 +305,8 @@
             const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
             return (
                 <div className="flex items-center justify-center h-full">
-                    <div className="bg-white p-10 rounded-3xl shadow-xl max-w-md w-full text-center border-b-8 border-blue-200">
-                        <h2 className="text-5xl font-bold mb-8 text-blue-500 fat-title">{isRegister ? '¡Únete!' : '¡Entrar!'}</h2>
+                    <div className="glass-panel p-10 max-w-md w-full text-center">
+                        <h2 className="text-4xl font-bold mb-6 text-blue-500 kids-title">{isRegister ? '¡Únete!' : '¡Entrar!'}</h2>
                         <form onSubmit={handleAuth} className="space-y-4">
                             <input className="fun-input" placeholder="Tu Correo" value={email} onChange={e=>setEmail(e.target.value)} required />
                             <input className="fun-input" type="password" placeholder="Contraseña Secreta" value={password} onChange={e=>setPassword(e.target.value)} required />
@@ -346,9 +331,9 @@
                 <div className="h-full overflow-y-auto relative">
                     {/* HEADER BLOQUE COMPLETO */}
                     <header className="full-header">
-                        <h2 className="text-4xl font-bold fat-title text-white" style={{textShadow: '3px 3px 0 rgba(0,0,0,0.1)'}}>MIS LIBROS</h2>
+                        <h2 className="text-4xl font-bold kids-title text-white">Mis Libros</h2>
                         <div className="flex gap-4 items-center">
-                            <span className="text-sm text-yellow-900 bg-white px-4 py-2 rounded-full font-bold border-2 border-yellow-200 shadow-sm">Hola, {user.email.split('@')[0]}</span>
+                            <span className="text-sm text-white bg-black/20 px-4 py-2 rounded-full font-bold">Hola, {user.email.split('@')[0]}</span>
                             <button onClick={() => signOut(auth)} className="game-btn btn-red text-sm py-2 px-4 rounded-xl">SALIR</button>
                         </div>
                     </header>
@@ -404,8 +389,8 @@
                         </div>
                     </div>
 
-                    {/* LIENZO - AQUI APLICAMOS EL DARK MODE PARA EDITOR */}
-                    <div className="canvas-area dark-theme">
+                    {/* LIENZO */}
+                    <div className="canvas-area editor-mode">
                         <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
                     </div>
                 </div>
