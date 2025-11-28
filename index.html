@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libro Álbum - Modo Arcade</title>
+    <title>Mi Libro Mágico</title>
     
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Fuentes Divertidas y de Juego -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Balsamiq+Sans:wght@700&family=Cinzel:wght@700&family=Merriweather&family=Titan+One&display=swap" rel="stylesheet">
+    <!-- Fuentes: Titan One (Gorda), Fredoka, etc. -->
+    <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Fredoka:wght@400;600;700&family=Balsamiq+Sans:wght@700&family=Cinzel:wght@700&family=Merriweather&display=swap" rel="stylesheet">
 
     <!-- REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -17,17 +17,22 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        /* --- 1. PALETA "ELECTRIC ARCADE" --- */
+        /* --- 1. VARIABLES --- */
         :root {
-            /* Colores Saturados / Videojuego */
-            --pop-purple: #8B5CF6;
-            --pop-pink: #F43F5E;
-            --pop-cyan: #06B6D4;
-            --pop-lime: #84CC16;
-            --pop-yellow: #FBBF24;
-            --pop-orange: #F97316;
-            --pop-dark: #1F2937;
+            --ui-bg-color: #F0F9FF; 
+            --ui-text-main: #334155;
+            --header-yellow: #FFC107; /* Amarillo vibrante encabezado */
             
+            /* Colores ELÉCTRICOS para Tarjetas */
+            --card-electric-green: rgba(132, 204, 22, 0.9); /* Lime */
+            --card-electric-blue: rgba(6, 182, 212, 0.9);   /* Cyan */
+            --card-electric-purple: rgba(124, 58, 237, 0.9); /* Violet */
+            --card-electric-pink: rgba(244, 63, 94, 0.9);    /* Rose */
+            --card-electric-orange: rgba(249, 115, 22, 0.9); /* Orange */
+            
+            /* Editor Fondo */
+            --editor-bg-grey: #374151; /* Gris grafito */
+
             /* Libro Clásico (INTACTO) */
             --book-width: 460px;
             --book-height: 600px;
@@ -42,217 +47,196 @@
         body {
             font-family: 'Fredoka', sans-serif;
             margin: 0; padding: 0; overflow: hidden; height: 100vh;
-            color: #333;
-            /* FONDO GLOBAL: VIBRANTE Y ELÉCTRICO */
-            background: linear-gradient(135deg, #7C3AED, #DB2777, #EA580C);
-            background-size: 200% 200%;
-            animation: gradientMove 10s ease infinite;
+            color: var(--ui-text-main);
+            background-color: var(--ui-bg-color);
+            /* Fondo claro con puntos para el Dashboard */
+            background-image: radial-gradient(#CBD5E1 2px, transparent 2px);
+            background-size: 30px 30px;
         }
 
-        @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        /* Elementos de fondo decorativos (Burbujas/Formas) */
-        .bg-shapes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none; }
-        .shape { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); animation: float linear infinite; }
-        .s1 { width: 150px; height: 150px; top: 10%; left: 10%; animation-duration: 20s; border: 2px solid rgba(255,255,255,0.3); }
-        .s2 { width: 100px; height: 100px; bottom: 20%; right: 10%; animation-duration: 15s; background: rgba(255,255,255,0.1); }
-        .s3 { width: 200px; height: 200px; top: 40%; left: 50%; animation-duration: 25s; opacity: 0.5; }
-        @keyframes float { 0% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(10deg); } 100% { transform: translateY(0) rotate(0deg); } }
-
-        /* --- 2. PANELES DE CRISTAL VIBRANTE --- */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
-            border: 4px solid #fff;
-            border-radius: 30px;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.15), 0 20px 40px rgba(0,0,0,0.2); /* Sombra 3D dura */
-            position: relative; z-index: 10;
+        /* Título GORDO Infantil */
+        .fat-title {
+            font-family: 'Titan One', cursive;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            /* Borde de texto suave */
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.15);
         }
 
-        /* Botones "Power-Up" */
-        .pop-btn {
-            border: none; outline: none; cursor: pointer;
-            font-family: 'Titan One', cursive; letter-spacing: 1px; font-size: 1.1rem;
-            border-radius: 20px; padding: 12px 24px; color: white;
-            transition: all 0.1s; position: relative;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-        }
-        .pop-btn:active { transform: translateY(6px); box-shadow: none !important; }
-        .pop-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        .btn-play { background: var(--pop-lime); box-shadow: 0 6px 0 #4d7c0f; }
-        .btn-save { background: var(--pop-cyan); box-shadow: 0 6px 0 #0e7490; }
-        .btn-share { background: var(--pop-yellow); box-shadow: 0 6px 0 #b45309; color: #444; text-shadow: none; }
-        .btn-back { background: var(--pop-pink); box-shadow: 0 6px 0 #be123c; }
-        .btn-add { background: var(--pop-purple); box-shadow: 0 6px 0 #6d28d9; }
-
-        /* Inputs Brillantes */
-        .pop-input {
-            background: #fff; border: 4px solid #e5e7eb;
-            border-radius: 15px; padding: 15px; width: 100%;
-            font-family: 'Fredoka', sans-serif; font-size: 1.1rem; color: #444;
-            outline: none; transition: 0.3s;
-        }
-        .pop-input:focus { border-color: var(--pop-cyan); box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3); }
-
-        /* --- 3. DASHBOARD: CARTAS DE JUEGO --- */
-        .project-card {
-            background: white; border-radius: 25px; overflow: hidden;
-            border: 4px solid white;
-            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote */
-            cursor: pointer; position: relative;
-        }
-        .project-card:hover {
-            transform: scale(1.05) rotate(1deg); /* Movimiento al tocar */
-            box-shadow: 0 15px 0 rgba(0,0,0,0.15);
-            z-index: 20; border-color: var(--pop-yellow);
-        }
-        .card-img-container {
-            height: 180px; background: #f3f4f6; position: relative;
-            border-bottom: 4px solid #f0f0f0;
-        }
-        .card-body { padding: 20px; text-align: center; }
-        .card-title { font-family: 'Titan One', cursive; color: var(--pop-dark); font-size: 1.2rem; }
+        /* --- 2. INTERFAZ --- */
         
-        /* Carta de "Nuevo" */
-        .new-card {
-            border: 4px dashed rgba(255,255,255,0.5); background: rgba(255,255,255,0.2);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; backdrop-filter: blur(5px);
+        /* Encabezado Bloque Completo */
+        .full-header {
+            width: 100%;
+            background-color: var(--header-yellow);
+            padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 0 rgba(0,0,0,0.1); /* Sombra sólida abajo */
+            position: relative; z-index: 50;
+            border-bottom: 4px solid #F59E0B; /* Borde inferior más oscuro */
         }
-        .new-card:hover { background: rgba(255,255,255,0.4); border-color: white; transform: scale(1.05); }
 
-        /* --- 4. BARRA LATERAL (PÍLDORA FLOTANTE) --- */
-        .sidebar-pill {
-            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
-            width: 80px; background: rgba(255,255,255,0.9);
-            border: 4px solid white; border-radius: 40px;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px 0; gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 50;
+        /* Tarjetas de Proyecto */
+        .glass-panel {
+            background: white; border: 4px solid white;
+            border-radius: 24px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            transition: 0.3s;
         }
-        .pill-icon {
-            width: 55px; height: 55px; border-radius: 50%;
-            background: #eee; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; color: #666; cursor: pointer;
-            transition: 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border: 3px solid transparent;
-        }
-        .pill-icon:hover { transform: scale(1.2); }
-        .pill-icon.home { background: #fee2e2; color: #ef4444; } .pill-icon.home:hover { border-color: #ef4444; }
-        .pill-icon.save { background: #dcfce7; color: #22c55e; } .pill-icon.save:hover { border-color: #22c55e; }
-        .pill-icon.share { background: #e0f2fe; color: #0ea5e9; } .pill-icon.share:hover { border-color: #0ea5e9; }
-        .pill-icon.add { background: var(--pop-purple); color: white; font-size: 1.8rem; box-shadow: 0 4px 0 #5b21b6; }
+        .glass-panel:hover { transform: translateY(-8px) rotate(1deg); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
 
-        /* Tooltips Divertidos */
-        .pop-tooltip {
-            position: absolute; left: 75px; background: var(--pop-dark); color: white;
-            padding: 5px 12px; border-radius: 12px; font-weight: bold; font-size: 0.8rem;
-            opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap;
-            transform: scale(0) rotate(-10deg); origin: left center;
+        /* Footer de Tarjeta Colorido */
+        .card-footer {
+            padding: 15px;
+            border-radius: 0 0 20px 20px;
+            color: white; text-align: center;
+            backdrop-filter: blur(4px);
         }
-        .icon-wrap:hover .pop-tooltip { opacity: 1; transform: scale(1) rotate(0deg); left: 85px; }
-        .icon-wrap { position: relative; display: flex; align-items: center; }
+        .card-title { font-family: 'Balsamiq Sans', cursive; font-size: 1.3rem; margin-bottom: 5px; text-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
+        
+        /* Clases de Color Eléctrico */
+        .c-green { background: var(--card-electric-green); }
+        .c-blue { background: var(--card-electric-blue); }
+        .c-purple { background: var(--card-electric-purple); }
+        .c-pink { background: var(--card-electric-pink); }
+        .c-orange { background: var(--card-electric-orange); }
 
-        /* --- 5. LIENZO DEL LIBRO (DIGITAL NEUTRO) --- */
-        /* Aquí mantenemos el gris técnico para que el libro destaque */
-        .canvas-area {
-            position: relative; width: 100%; height: 100%; z-index: 10;
-            background-color: #F3F4F6; /* Gris muy claro */
-            background-image: radial-gradient(#CBD5E1 2px, transparent 2px); /* Puntos */
-            background-size: 25px 25px;
+        /* Botones Generales */
+        .game-btn {
+            border: none; outline: none; cursor: pointer; transition: all 0.2s;
+            font-family: 'Fredoka', sans-serif; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
-            border-radius: 30px; /* Bordes redondeados del lienzo */
-            margin: 20px 20px 20px 120px; /* Espacio para la barra lateral */
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05), 0 0 0 8px rgba(255,255,255,0.5); /* Borde de cristal */
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2); text-transform: uppercase; color: white;
+        }
+        .game-btn:active { transform: translateY(4px); box-shadow: none; }
+        .game-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        
+        /* Colores Botones */
+        .btn-blue { background: #3B82F6; } .btn-red { background: #EF4444; }
+        .btn-green { background: #10B981; } .btn-purple { background: #8B5CF6; }
+        .btn-cyan { background: #06B6D4; } .btn-orange { background: #F97316; }
+
+        .fun-input {
+            background: white; border: 3px solid #e2e8f0; color: #334155;
+            border-radius: 15px; padding: 12px; width: 100%; outline: none;
+            font-family: 'Fredoka', sans-serif; transition: 0.3s;
+        }
+        .fun-input:focus { border-color: #06B6D4; }
+
+        /* --- 3. BARRA LATERAL EDITOR --- */
+        .sidebar-gamer {
+            width: 80px; height: 94%; margin-left: 20px;
+            background: white; border-radius: 40px;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 30px 0; z-index: 50; border: 4px solid #f1f5f9;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .sidebar-icon {
+            width: 50px; height: 50px; border-radius: 16px; font-size: 1.4rem;
+            cursor: pointer; position: relative; color: white;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.15); transition: 0.2s;
+        }
+        .sidebar-icon:hover { transform: scale(1.1); }
+        
+        .sidebar-icon::after {
+            content: attr(data-tooltip); position: absolute; left: 60px; 
+            background: #334155; color: white; padding: 5px 12px; border-radius: 10px;
+            font-size: 0.8rem; pointer-events: none; opacity: 0; transition: 0.2s;
+            white-space: nowrap; font-family: 'Fredoka';
+        }
+        .sidebar-icon:hover::after { opacity: 1; left: 65px; }
+
+        /* --- 4. LIENZO "DARK GREY MODE" (SOLO PARA EDITOR) --- */
+        .canvas-area {
+            position: relative; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 30px; margin: 20px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+        }
+        
+        /* ESTILO GRIS OSCURO PARA EL EDITOR */
+        .canvas-area.dark-theme {
+            background-color: var(--editor-bg-grey); /* Gris oscuro */
+            /* Puntos blancos brillantes */
+            background-image: radial-gradient(rgba(255,255,255,0.3) 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+            border: 4px solid #4b5563;
         }
 
-        /* --- LIBRO (ESTRUCTURA ORIGINAL INTACTA) --- */
+        /* --- 5. LIBRO (INTACTO) --- */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
-        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); }
-        .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.4); filter: blur(25px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.6; }
-        .book.opened { transform: translateX(50%); } .book.opened::before { width: 196%; left: -95%; opacity: 0.4; background: rgba(0,0,0,0.2); } .book.closed-back { transform: translateX(100%); } .book.closed-back::before { width: 96%; left: -99%; }
+        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
+        .book.opened { transform: translateX(50%); } .book.opened::before { width: 196%; left: -95%; opacity: 0.4; background: rgba(0,0,0,0.15); } .book.closed-back { transform: translateX(100%); } .book.closed-back::before { width: 96%; left: -99%; }
         
         .paper { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform-origin: left center; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); transform-style: preserve-3d; }
         .paper.flipped { transform: rotateY(-180deg); z-index: 0; }
         .front, .back { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: var(--paper-texture); backface-visibility: hidden; overflow: hidden; border-radius: 2px 5px 5px 2px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
         .front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); } .back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
-        .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
-        .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
-
+        .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
+        .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
+        
         .image-page { background-size: cover; background-position: center; background-color: #fff; }
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
         
         .inline-input-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; margin-bottom: 5px; outline: none; padding: 5px; border-bottom: 2px solid var(--gold-color); }
-        .inline-input-title:hover:not(:disabled) { border-color: rgba(0,0,0,0.2); background: rgba(255,255,255,0.5); cursor: text; }
+        .inline-input-title:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); cursor: text; }
         .inline-input-text { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px; }
-        .inline-input-text:hover:not(:disabled) { border-color: rgba(0,0,0,0.2); background: rgba(255,255,255,0.5); cursor: text; }
+        .inline-input-text:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); cursor: text; }
         
         .endpaper { background-color: var(--endpaper-bg); background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px); background-size: 20px 20px; }
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
 
-        /* --- OVERLAY EDICIÓN "POP-UP" --- */
+        /* --- 6. OVERLAYS DE EDICIÓN --- */
         .edit-overlay {
-            position: absolute; inset: 0; 
-            background: rgba(255,255,255,0.5); backdrop-filter: blur(4px);
+            position: absolute; inset: 0; background: rgba(0,0,0,0.4);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease; z-index: 20;
+            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(3px); z-index: 20;
         }
         .canvas-area.editor-mode .front:hover .edit-overlay, .canvas-area.editor-mode .back:hover .edit-overlay { opacity: 1; }
 
         .upload-card {
-            background: white; padding: 15px; border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15); text-align: center;
-            transform: scale(0.5) rotate(-10deg); opacity: 0; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 80%; max-width: 240px; border: 4px solid var(--pop-cyan);
+            background: white; border: 4px solid var(--card-electric-blue);
+            padding: 15px; border-radius: 20px; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        .canvas-area.editor-mode .front:hover .upload-card, .canvas-area.editor-mode .back:hover .upload-card { transform: scale(1) rotate(0deg); opacity: 1; }
+        .canvas-area.editor-mode .front:hover .upload-card, .canvas-area.editor-mode .back:hover .upload-card { transform: scale(1); }
 
-        .upload-btn {
-            background: var(--pop-cyan); color: white;
-            padding: 10px; border-radius: 50px; font-family: 'Fredoka', sans-serif; font-weight: bold;
-            cursor: pointer; display: block; width: 100%; margin-bottom: 8px; border: none;
-            box-shadow: 0 4px 0 #0891b2; transition: 0.2s;
+        .upload-btn-cam {
+            background: var(--card-electric-purple); color: white; padding: 10px; border-radius: 15px;
+            font-family: 'Fredoka', sans-serif; font-weight: bold; cursor: pointer; display: block; width: 100%;
+            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 #6d28d9; transition: 0.2s;
         }
-        .upload-btn:hover { transform: translateY(-2px); }
-        .url-input { width: 100%; padding: 8px; background: #ecfeff; border: 2px solid #cffafe; border-radius: 10px; font-size: 0.75rem; text-align: center; outline: none; }
-        .remove-btn { color: var(--pop-pink); font-size: 0.7rem; cursor: pointer; background: none; border: none; font-weight: bold; margin-top: 5px; }
+        .upload-btn-cam:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #6d28d9; }
+        .url-input-pop { width: 100%; padding: 8px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; }
+        .remove-btn { margin-top: 5px; color: #ef4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: bold; }
 
         /* Botones Navegación */
         .nav-btn {
-            position: fixed; top: 50%; transform: translateY(-50%);
-            width: 60px; height: 60px; border-radius: 50%;
-            background: white; border: 4px solid var(--pop-purple);
-            color: var(--pop-purple); font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 90;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+            position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%;
+            background: white; border: 4px solid var(--card-electric-green); color: var(--card-electric-green);
+            font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 90;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 rgba(16, 185, 129, 0.4);
         }
-        .nav-btn:hover { transform: translateY(-55%) scale(1.1); background: var(--pop-purple); color: white; }
-        .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
+        .nav-btn:hover { transform: translateY(-55%) scale(1.1); background: var(--card-electric-green); color: white; }
         .prev-btn { left: 130px; } .next-btn { right: 40px; }
 
         @media (max-width: 900px) {
             :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); }
             #stage { perspective: 1200px; }
-            .sidebar-pill { width: 60px; margin-left: 10px; }
-            .pill-icon { width: 45px; height: 45px; font-size: 1.2rem; }
-            .prev-btn { left: 80px; }
-            .canvas-area { margin: 10px; padding: 10px; }
+            .sidebar-gamer { width: 60px; margin-left: 10px; }
+            .sidebar-icon { width: 40px; height: 40px; font-size: 1rem; }
+            .prev-btn { left: 90px; }
+            .canvas-area { margin: 10px; }
         }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
     
-    <!-- FONDO ANIMADO DE FORMAS -->
-    <div class="bg-shapes">
-        <div class="shape s1"></div>
-        <div class="shape s2"></div>
-        <div class="shape s3"></div>
-    </div>
-
-    <div id="root" style="position: relative; z-index: 10; height: 100%;"></div>
+    <div id="root"></div>
 
     <script type="text/babel" data-type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -261,7 +245,6 @@
 
         const { useState, useEffect, useRef } = React;
 
-        // --- CLAVES FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyAThH-edUt4Ep9BR-Xuy5Zjmgl9Nky1keU",
             authDomain: "libroalbum.firebaseapp.com",
@@ -273,13 +256,8 @@
         };
 
         let app, auth, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-        } catch (e) { console.error("Firebase Error", e); }
+        try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch (e) { console.error(e); }
 
-        // --- UTILS ---
         const processImage = (file, callback) => {
             if (!file) return;
             if (file.size > 2000000) { if(!confirm("Imagen grande. ¿Seguir?")) return; }
@@ -295,21 +273,18 @@
                     canvas.width = width; canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
                     callback(canvas.toDataURL('image/jpeg', 0.8));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(file);
         };
 
-        // --- PLANTILLA ---
         const MASTER_TEMPLATE = {
-            title: "Mi Cuento Increíble",
+            title: "Mi Aventura",
             pages: [
-                { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true' }, back: { type: 'endpaper' } },
-                { id: 'c2', type: 'structure', front: { type: 'endpaper' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)' } },
-                { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024' }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...' } },
-                { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true' } },
-                { id: 'end', type: 'structure', front: { type: 'endpaper' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true' } }
+                { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true', tooltip: {title:"Portada", text:"La cara de tu revista."} }, back: { type: 'endpaper', tooltip: {title:"Guardas", text:"El interior de la tapa."} } },
+                { id: 'c2', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Guardas", text:"Transición."} }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)', tooltip: {title:"Respeto", text:"Espacio para el título."} } },
+                { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024', tooltip: {title:"Créditos", text:"Datos legales."} }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...', tooltip: {title:"Dedicatoria", text:"Un mensaje especial."} } },
+                { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true', tooltip: {title:"Historia", text:"Inicio del cuento."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true', tooltip: {title:"Continuidad", text:"Sigue la acción."} } },
+                { id: 'end', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Fin", text:"Cierre."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true', tooltip: {title:"Contraportada", text:"El final externo."} } }
             ]
         };
 
@@ -327,7 +302,7 @@
             }, []);
 
             if (view === 'public-viewer' && publicBook) return <PublicViewer book={publicBook} />;
-            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-white tracking-widest font-sans">CARGANDO...</div>;
+            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-gray-400">CARGANDO...</div>;
 
             return (
                 <div className="flex flex-col h-full font-sans">
@@ -345,14 +320,14 @@
             const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
             return (
                 <div className="flex items-center justify-center h-full">
-                    <div className="glass-panel p-10 max-w-md w-full text-center">
-                        <h2 className="text-4xl font-bold mb-6 text-gray-800" style={{fontFamily:'Titan One', color:'var(--pop-purple)'}}>{isRegister ? '¡ÚNETE!' : '¡HOLA!'}</h2>
+                    <div className="bg-white p-10 rounded-3xl shadow-xl max-w-md w-full text-center border-b-8 border-blue-200">
+                        <h2 className="text-5xl font-bold mb-8 text-blue-500 fat-title">{isRegister ? '¡Únete!' : '¡Entrar!'}</h2>
                         <form onSubmit={handleAuth} className="space-y-4">
-                            <input className="pop-input" placeholder="Tu Correo Mágico" value={email} onChange={e=>setEmail(e.target.value)} required />
-                            <input className="pop-input" type="password" placeholder="Contraseña Secreta" value={password} onChange={e=>setPassword(e.target.value)} required />
-                            <button className="pop-btn btn-play w-full text-lg mt-4">{isRegister ? 'CREAR CUENTA' : 'ENTRAR A JUGAR'}</button>
+                            <input className="fun-input" placeholder="Tu Correo" value={email} onChange={e=>setEmail(e.target.value)} required />
+                            <input className="fun-input" type="password" placeholder="Contraseña Secreta" value={password} onChange={e=>setPassword(e.target.value)} required />
+                            <button className="game-btn btn-green w-full text-xl mt-6 py-3 rounded-2xl shadow-lg">JUGAR</button>
                         </form>
-                        <p className="mt-6 text-sm text-gray-600 cursor-pointer font-bold hover:text-white" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Entra aquí' : '¿No tienes cuenta? Regístrate'}</p>
+                        <p className="mt-6 text-sm text-gray-500 cursor-pointer font-bold hover:text-blue-500" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Entra aquí' : '¿No tienes cuenta? Regístrate'}</p>
                     </div>
                 </div>
             );
@@ -364,30 +339,35 @@
             const createNew = async () => { const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }); localStorage.setItem('currentBookId', ref.id); setView('editor'); };
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             
+            // Colores Eléctricos
+            const colors = ['c-green', 'c-blue', 'c-purple', 'c-pink', 'c-orange'];
+
             return (
-                <div className="p-10 max-w-7xl mx-auto h-full overflow-y-auto" style={{position:'relative', zIndex:10}}>
-                    <header className="flex justify-between items-center mb-10 glass-panel p-6 px-10">
-                        <h2 className="text-4xl text-white font-bold" style={{fontFamily:'Titan One', textShadow:'3px 3px 0 rgba(0,0,0,0.1)'}}>MIS <span style={{color:'var(--pop-yellow)'}}>CUENTOS</span></h2>
+                <div className="h-full overflow-y-auto relative">
+                    {/* HEADER BLOQUE COMPLETO */}
+                    <header className="full-header">
+                        <h2 className="text-4xl font-bold fat-title text-white" style={{textShadow: '3px 3px 0 rgba(0,0,0,0.1)'}}>MIS LIBROS</h2>
                         <div className="flex gap-4 items-center">
-                            <span className="text-sm text-gray-600 bg-white px-4 py-2 rounded-full font-bold border-2 border-gray-100 shadow-sm">Explorador: {user.email.split('@')[0]}</span>
-                            <button onClick={() => signOut(auth)} className="pop-btn btn-back text-sm py-2 px-4">SALIR</button>
+                            <span className="text-sm text-yellow-900 bg-white px-4 py-2 rounded-full font-bold border-2 border-yellow-200 shadow-sm">Hola, {user.email.split('@')[0]}</span>
+                            <button onClick={() => signOut(auth)} className="game-btn btn-red text-sm py-2 px-4 rounded-xl">SALIR</button>
                         </div>
                     </header>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div onClick={createNew} className="project-card new-card cursor-pointer border-4 border-dashed border-white bg-white/30 h-64 flex flex-col items-center justify-center hover:scale-105 transition">
-                            <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-4 shadow-lg"><i className="fas fa-plus text-4xl text-purple-500"></i></div>
-                            <span className="font-bold text-2xl text-white drop-shadow-md" style={{fontFamily:'Titan One'}}>NUEVO LIBRO</span>
+                    <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+                        <div onClick={createNew} className="glass-panel h-72 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition duration-300 border-dashed border-4 border-gray-300 bg-white/50">
+                            <div className="w-20 h-20 rounded-full bg-cyan-100 flex items-center justify-center mb-4 shadow-sm"><i className="fas fa-plus text-4xl text-cyan-500"></i></div>
+                            <span className="text-gray-400 font-bold text-xl" style={{fontFamily:'Fredoka'}}>Nuevo Proyecto</span>
                         </div>
-                        {books.map(b => (
-                            <div key={b.id} className="project-card group" onClick={()=>openBook(b.id)}>
-                                <div className="card-img-container">
-                                    {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
-                                    <span className="absolute bottom-3 right-3 text-xs font-bold text-white bg-black/40 px-2 py-1 rounded-lg backdrop-blur-sm">{b.pages.length} PÁGS</span>
+                        {books.map((b, i) => (
+                            <div key={b.id} className="glass-panel overflow-hidden cursor-pointer group" onClick={()=>openBook(b.id)}>
+                                <div className="h-48 bg-gray-100 relative">
+                                    {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition" />}
+                                    <span className="absolute bottom-3 right-3 text-xs font-bold text-white bg-black/30 px-2 py-1 rounded-lg backdrop-blur-sm">{b.pages.length} PÁGS</span>
                                 </div>
-                                <div className="card-body">
+                                {/* PARTE INFERIOR ELÉCTRICA */}
+                                <div className={`card-footer ${colors[i % colors.length]}`}>
                                     <h3 className="card-title truncate">{b.title}</h3>
-                                    <p className="text-xs text-gray-400 font-bold mt-2">¡Tu gran historia!</p>
+                                    <p className="text-xs font-bold opacity-80">Editado recientemente</p>
                                 </div>
                             </div>
                         ))}
@@ -407,21 +387,25 @@
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
             const addPage = () => { const np = [...book.pages]; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: '' }, back: { type: 'image-page', bg: '' } }); setBook({...book, pages: np}); };
 
-            if(!book) return <div className="flex h-screen items-center justify-center font-bold text-white text-xl">ABRIENDO LIBRO...</div>;
+            if(!book) return <div className="flex h-screen items-center justify-center font-bold text-gray-400 text-xl">ABRIENDO LIBRO...</div>;
 
             return (
                 <div className="flex h-full relative">
                     
                     {/* BARRA LATERAL FLOTANTE */}
-                    <div className="sidebar-pill">
-                        <div className="icon-wrap"><button onClick={()=>setView('dashboard')} className="pill-icon home"><i className="fas fa-home"></i></button><span className="pop-tooltip">Inicio</span></div>
-                        <div className="icon-wrap"><button onClick={save} className="pill-icon save"><i className="fas fa-save"></i></button><span className="pop-tooltip">Guardar</span></div>
-                        <div className="icon-wrap"><button onClick={share} className="pill-icon share"><i className="fas fa-share-alt"></i></button><span className="pop-tooltip">Compartir</span></div>
-                        <div className="icon-wrap mt-auto mb-2"><button onClick={addPage} className="pill-icon add"><i className="fas fa-plus"></i></button><span className="pop-tooltip">¡Nueva Hoja!</span></div>
+                    <div className="absolute left-0 top-0 h-full flex items-center z-50">
+                        <div className="sidebar-gamer">
+                            <div className="flex flex-col gap-6 w-full items-center">
+                                <div className="icon-wrap"><button onClick={()=>setView('dashboard')} className="sidebar-icon btn-purple" data-tooltip="Inicio"><i className="fas fa-home"></i></button></div>
+                                <div className="icon-wrap"><button onClick={save} className="sidebar-icon btn-green" data-tooltip="Guardar"><i className="fas fa-save"></i></button></div>
+                                <div className="icon-wrap"><button onClick={share} className="sidebar-icon btn-cyan" data-tooltip="Compartir"><i className="fas fa-share-alt"></i></button></div>
+                            </div>
+                            <div className="icon-wrap"><button onClick={addPage} className="sidebar-icon btn-orange" data-tooltip="Agregar Pág"><i className="fas fa-plus"></i></button></div>
+                        </div>
                     </div>
 
-                    {/* LIENZO */}
-                    <div className="canvas-area">
+                    {/* LIENZO - AQUI APLICAMOS EL DARK MODE PARA EDITOR */}
+                    <div className="canvas-area dark-theme">
                         <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
                     </div>
                 </div>
@@ -454,13 +438,13 @@
                 return (
                     <div className="edit-overlay">
                         <div className="upload-card">
-                            <label className="upload-btn">
+                            <label className="upload-btn-cam">
                                 <i className="fas fa-camera mr-2"></i> {currentBg ? 'CAMBIAR' : 'SUBIR FOTO'}
                                 <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                                     const file = e.target.files[0]; if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64));
                                 }} />
                             </label>
-                            <input className="url-input" placeholder="O pega un enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} />
+                            <input className="url-input-pop" placeholder="O pega un enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} />
                             {currentBg && <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>BORRAR IMAGEN</button>}
                         </div>
                     </div>
@@ -468,7 +452,7 @@
             };
 
             return (
-                <div className={`book-wrapper ${isEditor ? 'editor-mode' : ''}`} style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center'}}>
+                <div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center'}}>
                     <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
                     <div id="stage">
                         <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
