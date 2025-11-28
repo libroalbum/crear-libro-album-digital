@@ -20,7 +20,7 @@
         :root {
             --book-width: 460px;
             --book-height: 600px;
-            --bg-color: #BDBDBD; 
+            --bg-color: #e0e0e0; /* Fondo del lienzo un poco más claro para contraste */
             --paper-texture: #fdfbf7;
             --text-color: #2c3e50;
             --accent-color: #5d4037;
@@ -32,6 +32,8 @@
         /* Lienzo de Trabajo */
         .canvas-area {
             background-color: var(--bg-color);
+            background-image: radial-gradient(#ccc 1px, transparent 1px); /* Patrón sutil de fondo */
+            background-size: 20px 20px;
             position: relative;
             overflow: hidden;
             width: 100%;
@@ -83,12 +85,18 @@
             backface-visibility: hidden; overflow: hidden;
             border-radius: 2px 5px 5px 2px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            /* Importante para que el overlay funcione en cualquier tipo de página */
+            display: flex; flex-direction: column; 
         }
         .front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); }
         .back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
 
+        /* Sombras lomo */
+        .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
+        .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
+
         /* Estilos Internos */
-        .image-page { background-size: cover; background-position: center; background-color: #fff; position: relative; }
+        .image-page { background-size: cover; background-position: center; background-color: #fff; }
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
         .text-page h2 { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; margin-bottom: 25px; border-bottom: 1px solid var(--gold-color); padding-bottom: 10px; }
         .text-page p { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic; white-space: pre-wrap; }
@@ -97,33 +105,60 @@
         .front .page-number { right: 20px; }
         .back .page-number { left: 20px; }
 
-        /* OVERLAY DE EDICIÓN (NUEVO) */
+        /* OVERLAY DE EDICIÓN MEJORADO */
         .edit-overlay {
             position: absolute; inset: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.3); /* Un poco más sutil */
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s;
-            backdrop-filter: blur(2px);
-            z-index: 100;
+            opacity: 0; transition: opacity 0.3s ease;
+            backdrop-filter: blur(3px);
+            z-index: 20; /* Encima del contenido pero debajo de las sombras del lomo */
         }
-        /* Mostrar overlay al pasar el mouse SOLO si es modo editor */
-        .canvas-area.editor-mode .image-page:hover .edit-overlay { opacity: 1; }
+        
+        /* Solo mostrar overlay si estamos en modo editor y pasamos el mouse */
+        .canvas-area.editor-mode .front:hover .edit-overlay,
+        .canvas-area.editor-mode .back:hover .edit-overlay { 
+            opacity: 1; 
+        }
+
+        .upload-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            transform: translateY(10px);
+            transition: transform 0.3s;
+            width: 80%;
+            max-width: 250px;
+        }
+        .canvas-area.editor-mode .front:hover .upload-card,
+        .canvas-area.editor-mode .back:hover .upload-card {
+            transform: translateY(0);
+        }
 
         .upload-btn {
-            background: #fff; color: #5d4037; 
-            padding: 10px 20px; border-radius: 30px; 
-            font-family: 'Cinzel', serif; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            display: flex; align-items: center; gap: 8px;
-            transition: transform 0.2s;
+            background: var(--accent-color); color: white;
+            padding: 10px 15px; border-radius: 8px;
+            font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.9rem;
+            cursor: pointer; display: block; width: 100%;
+            margin-bottom: 10px; transition: 0.2s;
+            border: 2px solid var(--accent-color);
         }
-        .upload-btn:hover { transform: scale(1.05); background: #fdfbf7; color: #d4af37; }
-        
+        .upload-btn:hover { background: white; color: var(--accent-color); }
+
         .url-input {
-            margin-top: 10px; padding: 5px 10px; border-radius: 5px; border: none; 
-            font-size: 0.7rem; width: 80%; text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 100%; padding: 8px; border: 1px solid #ddd;
+            border-radius: 6px; font-size: 0.75rem; text-align: center;
+            outline: none;
         }
+        .url-input:focus { border-color: var(--gold-color); }
+
+        .remove-btn {
+            margin-top: 5px; color: #999; font-size: 0.7rem; 
+            cursor: pointer; text-decoration: underline; background: none; border: none;
+        }
+        .remove-btn:hover { color: #d32f2f; }
 
         /* Capa Pedagógica */
         .pedagogical-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 20px; }
@@ -136,8 +171,8 @@
 
         /* Controles Lienzo */
         .canvas-controls { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 60; }
-        .canvas-btn { background: rgba(255,255,255,0.9); border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; color: #5d4037; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
-        .canvas-btn:hover:not(:disabled) { transform: scale(1.1); background: #fff; color: #d4af37; }
+        .canvas-btn { background: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; color: #5d4037; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .canvas-btn:hover:not(:disabled) { transform: scale(1.1); color: #d4af37; }
         .canvas-btn:disabled { opacity: 0.5; cursor: default; }
 
         @media (max-width: 900px) {
@@ -176,10 +211,10 @@
             db = getFirestore(app);
         } catch (e) { console.error("Firebase Error", e); }
 
-        // --- UTILS: PROCESAR IMAGEN ---
+        // --- UTILS ---
         const processImage = (file, callback) => {
             if (!file) return;
-            if (file.size > 2000000) { if(!confirm("La imagen es grande. ¿Continuar?")) return; }
+            if (file.size > 2000000) { if(!confirm("La imagen es grande y puede tardar en guardar. ¿Continuar?")) return; }
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
@@ -199,7 +234,7 @@
             reader.readAsDataURL(file);
         };
 
-        // --- PLANTILLA MAESTRA ---
+        // --- ESTRUCTURA MAESTRA ---
         const MASTER_TEMPLATE = {
             title: "Mi Revista Digital",
             pages: [
@@ -335,7 +370,7 @@
 
             const save = async () => {
                 try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); alert("¡Guardado correctamente!"); } 
-                catch (e) { alert("Error al guardar: La imagen puede ser muy pesada."); }
+                catch (e) { alert("Error: La imagen es muy pesada."); }
             };
 
             const share = () => {
@@ -363,28 +398,28 @@
 
             return (
                 <div className="flex h-full">
-                    {/* Panel Izquierdo (Textos y Estructura) */}
+                    {/* Panel Izquierdo (Solo Texto) */}
                     <div className="w-80 bg-white border-r flex flex-col z-20 shadow-xl overflow-hidden">
                         <div className="p-4 bg-amber-50 border-b border-amber-200">
-                            <button onClick={()=>setView('dashboard')} className="text-xs text-gray-500 mb-2 hover:text-amber-800"><i className="fas fa-arrow-left"></i> Volver al panel</button>
+                            <button onClick={()=>setView('dashboard')} className="text-xs text-gray-500 mb-2 hover:text-amber-800"><i className="fas fa-arrow-left"></i> Volver</button>
                             <input className="w-full bg-transparent font-bold text-lg border-b border-amber-400 focus:outline-none mb-3" value={book.title} onChange={e=>setBook({...book, title: e.target.value})} />
                             <div className="flex gap-2">
                                 <button onClick={save} className="flex-1 bg-green-600 text-white py-1 rounded text-sm hover:bg-green-700 shadow"><i className="fas fa-save"></i> Guardar</button>
-                                <button onClick={share} className="flex-1 bg-blue-600 text-white py-1 rounded text-sm hover:bg-blue-700 shadow"><i className="fas fa-share-alt"></i> Compartir</button>
+                                <button onClick={share} className="flex-1 bg-blue-600 text-white py-1 rounded text-sm hover:bg-blue-700 shadow"><i className="fas fa-share-alt"></i></button>
                             </div>
                         </div>
                         <div className="flex-1 overflow-y-auto p-4">
-                            <h4 className="font-bold text-xs text-gray-400 uppercase mb-2">Página {selPageIdx + 1}</h4>
+                            <h4 className="font-bold text-xs text-gray-400 uppercase mb-2">Editar Textos - Pág {selPageIdx + 1}</h4>
                             <div className="flex bg-gray-100 p-1 rounded mb-4">
                                 <button onClick={()=>setEditSide('front')} className={`flex-1 text-xs py-1 rounded ${editSide==='front'?'bg-white shadow font-bold text-amber-800':''}`}>Frente</button>
                                 <button onClick={()=>setEditSide('back')} className={`flex-1 text-xs py-1 rounded ${editSide==='back'?'bg-white shadow font-bold text-amber-800':''}`}>Atrás</button>
                             </div>
                             {(() => {
                                 const face = book.pages[selPageIdx][editSide];
-                                if(face.type === 'endpaper') return <p className="text-xs text-gray-500 italic">Página de estructura. No editable.</p>;
+                                if(face.type === 'endpaper') return <p className="text-xs text-gray-500 italic">Pasa el mouse sobre el libro para cambiar el fondo.</p>;
                                 return (
                                     <div className="space-y-4">
-                                        {face.type === 'image-page' && <p className="text-xs bg-blue-50 p-2 rounded text-blue-700">💡 <strong>Tip:</strong> Pasa el mouse sobre el libro para cambiar la imagen.</p>}
+                                        {face.type === 'image-page' && <p className="text-xs bg-blue-50 p-2 rounded text-blue-700 border border-blue-100">👉 <strong>Tip:</strong> Pasa el mouse sobre el libro para cambiar la imagen.</p>}
                                         {face.type === 'text-page' && (
                                             <>
                                                 <div><label className="text-xs font-bold text-gray-600">Título</label><input className="w-full border rounded p-1 text-sm" value={face.title} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'title', e.target.value)} /></div>
@@ -455,21 +490,41 @@
 
             useEffect(() => { setTimeout(() => updatePedagogical(activeIdx), 500); }, []);
 
-            // Helper para renderizar Overlay de Edición en cada página
-            const renderEditOverlay = (pageIdx, side) => {
+            // Lógica de Permisos de Edición
+            const isEditableImage = (pageId, side) => {
+                // Bloqueos específicos solicitados:
+                if (pageId === 'c2' && side === 'back') return false; // Hoja Respeto
+                if (pageId === 'c3') return false; // Créditos y Dedicatoria
+                return true; // El resto (Portada, Guardas, Contenido, Contraportada) es editable
+            };
+
+            const renderEditOverlay = (pageIdx, side, currentBg) => {
                 if (!isEditor) return null;
+                // Verificar si esta página específica permite edición de imagen
+                if (!isEditableImage(pages[pageIdx].id, side)) return null;
+
                 return (
                     <div className="edit-overlay">
-                        <label className="upload-btn">
-                            <i className="fas fa-camera"></i> Reemplazar Imagen
-                            <input type="file" accept="image/*" className="hidden" onChange={(e) => {
-                                const file = e.target.files[0];
-                                if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64));
-                            }} />
-                        </label>
-                        <input className="url-input" placeholder="O pega enlace aquí..." 
-                               onClick={(e) => e.stopPropagation()}
-                               onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} />
+                        <div className="upload-card">
+                            <label className="upload-btn">
+                                <i className="fas fa-camera"></i> {currentBg ? 'Cambiar Imagen' : 'Subir Imagen'}
+                                <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64));
+                                }} />
+                            </label>
+                            
+                            <input className="url-input" placeholder="O pega enlace aquí..." 
+                                   value={currentBg && currentBg.startsWith('http') ? currentBg : ''}
+                                   onClick={(e) => e.stopPropagation()}
+                                   onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} />
+                            
+                            {currentBg && (
+                                <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>
+                                    <i className="fas fa-trash"></i> Quitar imagen
+                                </button>
+                            )}
+                        </div>
                     </div>
                 );
             };
@@ -484,19 +539,25 @@
                                 const zIndex = activeIdx >= i ? i + 1 : pages.length - i;
                                 return (
                                     <div key={p.id} className={`paper ${i <= activeIdx ? 'flipped' : ''}`} style={{zIndex}}>
+                                        
+                                        {/* FRENTE */}
                                         <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
-                                            {p.front.type==='image-page' && renderEditOverlay(i, 'front')}
+                                            {renderEditOverlay(i, 'front', p.front.bg)}
+                                            
                                             {p.front.type==='text-page' && (
-                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center">
+                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
                                                     <h2>{p.front.title}</h2><p dangerouslySetInnerHTML={{__html: p.front.text?.replace(/\n/g, '<br>')}}></p>
                                                 </div>
                                             )}
                                             {i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}
                                         </div>
+
+                                        {/* ATRÁS */}
                                         <div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>
-                                            {p.back.type==='image-page' && renderEditOverlay(i, 'back')}
+                                            {renderEditOverlay(i, 'back', p.back.bg)}
+
                                             {p.back.type==='text-page' && (
-                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center">
+                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
                                                     <h2>{p.back.title}</h2><p dangerouslySetInnerHTML={{__html: p.back.text?.replace(/\n/g, '<br>')}}></p>
                                                 </div>
                                             )}
@@ -510,8 +571,8 @@
 
                     <div className="canvas-controls">
                         <button className="canvas-btn" disabled={activeIdx < -1} onClick={() => changePage(activeIdx - 1)}><i className="fas fa-chevron-left"></i></button>
-                        <span className="bg-white/80 px-4 py-2 rounded-full font-bold text-sm text-gray-600 flex items-center">
-                            {activeIdx === -1 ? 'Portada' : activeIdx === pages.length-1 ? 'Fin' : `Pág ${activeIdx*2+1}-${activeIdx*2+2}`}
+                        <span className="bg-white/80 px-4 py-2 rounded-full font-bold text-sm text-gray-600 flex items-center shadow">
+                            {activeIdx === -1 ? 'Portada' : activeIdx === pages.length-1 ? 'Fin' : `Pág ${activeIdx*2+1} - ${activeIdx*2+2}`}
                         </span>
                         <button className="canvas-btn" disabled={activeIdx >= pages.length - 1} onClick={() => changePage(activeIdx + 1)}><i className="fas fa-chevron-right"></i></button>
                     </div>
