@@ -16,11 +16,10 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        /* --- ESTILOS DE LA REVISTA (LIENZO) --- */
+        /* --- ESTILOS GENERALES --- */
         :root {
             --book-width: 460px;
             --book-height: 600px;
-            --bg-color: #e0e0e0;
             --paper-texture: #fdfbf7;
             --text-color: #2c3e50;
             --accent-color: #5d4037;
@@ -29,11 +28,16 @@
             --endpaper-dot: #ffffff; 
         }
 
-        /* Lienzo de Trabajo */
+        /* --- LIENZO "MESA DE TRABAJO" --- */
         .canvas-area {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(#ccc 1px, transparent 1px);
-            background-size: 20px 20px;
+            /* Fondo cálido tipo madera/escritorio */
+            background-color: #f3e5ab;
+            background-image: 
+                linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+                linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+                linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+                linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
+            background-size: 13px, 29px, 37px, 53px;
             position: relative;
             overflow: hidden;
             width: 100%;
@@ -41,6 +45,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.1); /* Viñeta suave */
         }
 
         /* ESCENARIO 3D */
@@ -97,32 +102,30 @@
         .image-page { background-size: cover; background-position: center; background-color: #fff; }
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
         
-        /* Inputs transparentes que parecen texto */
+        /* Inputs transparentes */
         .inline-input-title {
             font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem;
             background: transparent; border: 1px dashed transparent; text-align: center;
             width: 100%; margin-bottom: 5px; outline: none; padding: 5px;
             border-bottom: 2px solid var(--gold-color);
         }
-        .inline-input-title:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); cursor: text; background: rgba(255,255,255,0.5); }
-        .inline-input-title:focus { border-color: var(--accent-color); background: #fff; }
-        .inline-input-title:disabled { border-bottom: 2px solid var(--gold-color); opacity: 1; color: var(--accent-color); cursor: default; }
-
+        .inline-input-title:hover:not(:disabled) { border-color: rgba(0,0,0,0.2); cursor: text; background: rgba(255,255,255,0.6); }
+        .inline-input-title:focus { border-color: var(--accent-color); background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
         .inline-input-text {
             font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic;
             background: transparent; border: 1px dashed transparent; text-align: center;
             width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px;
         }
-        .inline-input-text:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); cursor: text; background: rgba(255,255,255,0.5); }
-        .inline-input-text:focus { border-color: var(--accent-color); background: #fff; }
-        .inline-input-text:disabled { opacity: 1; color: #555; cursor: default; }
+        .inline-input-text:hover:not(:disabled) { border-color: rgba(0,0,0,0.2); cursor: text; background: rgba(255,255,255,0.6); }
+        .inline-input-text:focus { border-color: var(--accent-color); background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
         .endpaper { background-color: var(--endpaper-bg); background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px); background-size: 20px 20px; }
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; }
         .back .page-number { left: 20px; }
 
-        /* OVERLAY DE EDICIÓN DE IMAGEN */
+        /* OVERLAY DE EDICIÓN */
         .edit-overlay {
             position: absolute; inset: 0;
             background: rgba(0,0,0,0.3);
@@ -135,47 +138,107 @@
         .canvas-area.editor-mode .back:hover .edit-overlay { opacity: 1; }
 
         .upload-card {
-            background: white; padding: 20px; border-radius: 15px;
+            background: white; padding: 15px; border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;
-            transform: translateY(10px); transition: transform 0.3s;
-            width: 80%; max-width: 250px;
+            transform: translateY(10px); transition: transform 0.3s; width: 80%; max-width: 220px;
         }
         .canvas-area.editor-mode .front:hover .upload-card,
         .canvas-area.editor-mode .back:hover .upload-card { transform: translateY(0); }
 
         .upload-btn {
             background: var(--accent-color); color: white;
-            padding: 10px 15px; border-radius: 8px;
-            font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.9rem;
+            padding: 8px 12px; border-radius: 6px;
+            font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.8rem;
             cursor: pointer; display: block; width: 100%;
-            margin-bottom: 10px; transition: 0.2s; border: 2px solid var(--accent-color);
+            margin-bottom: 8px; transition: 0.2s; border: 1px solid var(--accent-color);
         }
         .upload-btn:hover { background: white; color: var(--accent-color); }
+        .url-input { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.7rem; text-align: center; outline: none; }
+        .remove-btn { margin-top: 5px; color: #d32f2f; font-size: 0.7rem; cursor: pointer; background: none; border: none; font-weight: bold;}
 
-        .url-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.75rem; text-align: center; outline: none; }
-        .url-input:focus { border-color: var(--gold-color); }
-        .remove-btn { margin-top: 5px; color: #999; font-size: 0.7rem; cursor: pointer; text-decoration: underline; background: none; border: none; }
-        .remove-btn:hover { color: #d32f2f; }
+        /* --- NUEVO: BARRA LATERAL MINIMALISTA (THUMBNAILS) --- */
+        .sidebar-mini {
+            width: 70px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            display: flex; flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            z-index: 50;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+        
+        .thumb-list {
+            flex: 1; overflow-y: auto; width: 100%; padding: 10px 0;
+            display: flex; flex-direction: column; gap: 15px; align-items: center;
+        }
+        .thumb-list::-webkit-scrollbar { width: 4px; }
+        .thumb-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
 
-        /* Capa Pedagógica */
-        .pedagogical-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 20px; }
-        .ped-cloud { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 10px; max-width: 200px; opacity: 0; transform: translateY(20px); transition: 0.5s; border: 1px solid #ddd; }
-        .ped-cloud.active { opacity: 1; transform: translateY(0); }
-        .ped-cloud h3 { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 0.9rem; border-bottom: 2px solid var(--gold-color); margin-bottom: 5px; display: inline-block; }
-        .ped-cloud p { font-family: 'Lato', sans-serif; font-size: 0.8rem; color: #666; }
-        .ped-character { width: 100px; transition: 0.5s; opacity: 0; transform: translateY(20px); }
-        .ped-character.active { opacity: 1; transform: translateY(0); }
+        .thumbnail {
+            width: 40px; height: 50px;
+            background: #eee; border: 2px solid #ddd;
+            border-radius: 4px; cursor: pointer;
+            transition: 0.2s; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; color: #999; font-weight: bold;
+        }
+        .thumbnail:hover { transform: scale(1.1); border-color: var(--accent-color); }
+        .thumbnail.active { border-color: var(--gold-color); background: #fff8e1; box-shadow: 0 0 8px rgba(212, 175, 55, 0.5); }
+        
+        .action-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #666; cursor: pointer; transition: 0.2s;
+            margin-bottom: 10px; font-size: 1.1rem;
+        }
+        .action-icon:hover { background: #f5f5f5; color: var(--accent-color); }
+        .action-icon.primary { background: var(--accent-color); color: white; }
+        .action-icon.primary:hover { background: var(--gold-color); }
 
-        /* Controles Lienzo */
+        /* --- NUEVO: BOTÓN FLOTANTE PEDAGÓGICO --- */
+        .ped-fab {
+            position: absolute; bottom: 20px; right: 20px;
+            width: 70px; height: 70px; border-radius: 50%;
+            background: white; border: 4px solid var(--gold-color);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            cursor: pointer; z-index: 100;
+            overflow: hidden; transition: 0.3s;
+        }
+        .ped-fab:hover { transform: scale(1.1) rotate(-5deg); }
+        .ped-fab img { width: 100%; height: 100%; object-fit: cover; }
+
+        .ped-bubble {
+            position: absolute; bottom: 100px; right: 30px;
+            width: 250px; background: white; padding: 15px;
+            border-radius: 20px 20px 0 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 2px solid var(--gold-color);
+            z-index: 99; transform-origin: bottom right;
+            animation: popIn 0.3s ease;
+        }
+        .ped-bubble textarea {
+            width: 100%; border: none; outline: none;
+            font-family: 'Lato', sans-serif; font-size: 0.9rem; color: #555;
+            resize: none; background: transparent;
+        }
+        .ped-bubble h4 {
+            font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-color);
+            border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;
+        }
+
+        /* Controles Lienzo Flechas */
         .canvas-controls { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 60; }
-        .canvas-btn { background: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; color: #5d4037; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .canvas-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; color: #5d4037; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         .canvas-btn:hover:not(:disabled) { transform: scale(1.1); color: #d4af37; }
-        .canvas-btn:disabled { opacity: 0.5; cursor: default; }
+
+        @keyframes popIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
 
         @media (max-width: 900px) {
             :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); }
             #stage { perspective: 1200px; }
-            .canvas-btn { width: 40px; height: 40px; font-size: 1rem; }
+            .sidebar-mini { width: 50px; }
+            .thumbnail { width: 30px; height: 40px; font-size: 0.5rem; }
         }
     </style>
 </head>
@@ -235,19 +298,10 @@
         const MASTER_TEMPLATE = {
             title: "Mi Revista Digital",
             pages: [
-                // 1. Portada (Editable) + Guarda (Editable)
                 { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true', tooltip: {title:"Portada", text:"La cara de tu revista."} }, back: { type: 'endpaper', tooltip: {title:"Guardas", text:"El interior de la tapa."} } },
-                
-                // 2. Guarda (Editable) + Hoja de Respeto (SOLO TITULO, NO IMAGEN)
                 { id: 'c2', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Guardas", text:"Transición."} }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)', tooltip: {title:"Respeto", text:"Espacio para el título."} } },
-                
-                // 3. Créditos (SOLO TEXTO) + Dedicatoria (SOLO TEXTO)
                 { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024', tooltip: {title:"Créditos", text:"Datos legales."} }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...', tooltip: {title:"Dedicatoria", text:"Un mensaje especial."} } },
-                
-                // 4. Contenido (TODO EDITABLE)
                 { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true', tooltip: {title:"Historia", text:"Inicio del cuento."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true', tooltip: {title:"Continuidad", text:"Sigue la acción."} } },
-                
-                // 5. Contraportada (Editable)
                 { id: 'end', type: 'structure', front: { type: 'endpaper', tooltip: {title:"Fin", text:"Cierre."} }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true', tooltip: {title:"Contraportada", text:"El final externo."} } }
             ]
         };
@@ -361,12 +415,11 @@
             );
         }
 
-        // --- EDITOR ---
+        // --- EDITOR PRINCIPAL ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(0); 
-            const [selPageIdx, setSelPageIdx] = useState(0); 
-            const [editSide, setEditSide] = useState('front');
+            const [showGuide, setShowGuide] = useState(false);
 
             useEffect(() => {
                 const bid = localStorage.getItem('currentBookId');
@@ -400,61 +453,60 @@
                 setBook({...book, pages: np});
             };
 
+            // VERIFICACIÓN DE CARGA ANTES DE USAR "book"
             if(!book) return <div>Cargando editor...</div>;
+
+            // Determinar qué tooltip editar (izq o derecha segun libro abierto)
+            const getActiveTooltip = () => {
+                if (activeIdx === -1) return { idx: 0, side: 'front' }; // Portada
+                if (activeIdx >= book.pages.length - 1) return { idx: book.pages.length-1, side: 'back' }; // Contra
+                // Priorizar derecha (nuevo contenido)
+                return { idx: activeIdx + 1, side: 'front' };
+            };
+            const currentTipLoc = getActiveTooltip();
+            const currentTipPage = book.pages[currentTipLoc.idx][currentTipLoc.side];
 
             return (
                 <div className="flex h-full">
-                    {/* Panel Izquierdo (Info y Guía Pedagógica) */}
-                    <div className="w-80 bg-white border-r flex flex-col z-20 shadow-xl overflow-hidden">
-                        <div className="p-4 bg-amber-50 border-b border-amber-200">
-                            <button onClick={()=>setView('dashboard')} className="text-xs text-gray-500 mb-2 hover:text-amber-800"><i className="fas fa-arrow-left"></i> Volver</button>
-                            <input className="w-full bg-transparent font-bold text-lg border-b border-amber-400 focus:outline-none mb-3" value={book.title} onChange={e=>setBook({...book, title: e.target.value})} />
-                            <div className="flex gap-2">
-                                <button onClick={save} className="flex-1 bg-green-600 text-white py-1 rounded text-sm hover:bg-green-700 shadow"><i className="fas fa-save"></i> Guardar</button>
-                                <button onClick={share} className="flex-1 bg-blue-600 text-white py-1 rounded text-sm hover:bg-blue-700 shadow"><i className="fas fa-share-alt"></i></button>
-                            </div>
+                    
+                    {/* BARRA LATERAL MINIMALISTA (THUMBNAILS) */}
+                    <div className="sidebar-mini">
+                        <div className="flex flex-col items-center mb-4">
+                            <button onClick={()=>setView('dashboard')} title="Volver" className="action-icon"><i className="fas fa-arrow-left"></i></button>
+                            <button onClick={save} title="Guardar" className="action-icon primary"><i className="fas fa-save"></i></button>
+                            <button onClick={share} title="Compartir" className="action-icon"><i className="fas fa-share-alt"></i></button>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-4">
-                            <h4 className="font-bold text-xs text-gray-400 uppercase mb-2">Herramientas - Pág {selPageIdx + 1}</h4>
-                            
-                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 mb-4">
-                                <p className="text-xs text-blue-800 mb-1"><strong>💡 Edición:</strong></p>
-                                <p className="text-xs text-gray-600">Haz clic directamente sobre los textos o imágenes del libro para editarlos.</p>
-                            </div>
-
-                            <div className="flex bg-gray-100 p-1 rounded mb-4">
-                                <button onClick={()=>setEditSide('front')} className={`flex-1 text-xs py-1 rounded ${editSide==='front'?'bg-white shadow font-bold text-amber-800':''}`}>Frente</button>
-                                <button onClick={()=>setEditSide('back')} className={`flex-1 text-xs py-1 rounded ${editSide==='back'?'bg-white shadow font-bold text-amber-800':''}`}>Atrás</button>
-                            </div>
-
-                            {(() => {
-                                const face = book.pages[selPageIdx][editSide];
-                                return (
-                                    <div className="space-y-4">
-                                        <div className="bg-amber-50 p-2 rounded border border-amber-100 mt-4">
-                                            <h5 className="text-xs font-bold text-amber-800 mb-2"><i className="fas fa-comment"></i> Guía Pedagógica (Personaje)</h5>
-                                            <input className="w-full border rounded p-1 text-xs mb-1" placeholder="Título nube" value={face.tooltip?.title} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'tooltipTitle', e.target.value)} />
-                                            <textarea className="w-full border rounded p-1 text-xs" rows="2" placeholder="Texto nube" value={face.tooltip?.text} onChange={e=>handlePageUpdate(selPageIdx, editSide, 'tooltipText', e.target.value)} />
-                                        </div>
-                                    </div>
-                                )
-                            })()}
-                            <hr className="my-6"/>
-                            <button onClick={addPage} className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 rounded hover:border-amber-500 hover:text-amber-600 text-xs font-bold">+ Agregar Página al Libro</button>
+                        
+                        <div className="thumb-list">
+                            {book.pages.map((p, i) => (
+                                <div key={i} className={`thumbnail ${activeIdx + 1 === i ? 'active' : ''}`} onClick={() => setActiveIdx(i - 1)}>
+                                    {i+1}
+                                </div>
+                            ))}
+                            <button onClick={addPage} className="action-icon text-green-600 mt-2" title="Agregar Página"><i className="fas fa-plus-circle"></i></button>
                         </div>
                     </div>
 
-                    {/* LIENZO */}
+                    {/* LIENZO DE TRABAJO */}
                     <div className="flex-1 bg-gray-200 relative flex flex-col">
-                        <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={(idx) => {
-                                setActiveIdx(idx);
-                                if(idx === -1) setSelPageIdx(0); 
-                                else if(idx >= book.pages.length-1) setSelPageIdx(book.pages.length-1); 
-                                else setSelPageIdx(idx); 
-                            }} 
-                            isEditor={true} 
-                            onUpdatePage={handlePageUpdate} 
-                        />
+                        <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
+                        
+                        {/* GUÍA PEDAGÓGICA FLOTANTE */}
+                        <div className="ped-fab" onClick={() => setShowGuide(!showGuide)}>
+                            <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png?raw=true" alt="Guía" />
+                        </div>
+                        
+                        {showGuide && (
+                            <div className="ped-bubble">
+                                <h4>Editar Consejo Pedagógico</h4>
+                                <textarea 
+                                    rows="4" 
+                                    value={currentTipPage.tooltip.text} 
+                                    onChange={(e) => handlePageUpdate(currentTipLoc.idx, currentTipLoc.side, 'tooltipText', e.target.value)}
+                                    placeholder="Escribe aquí el consejo que dará el personaje en esta página..."
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             );
