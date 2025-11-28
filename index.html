@@ -30,13 +30,10 @@
 
         /* --- LIENZO "MESA DE TRABAJO" --- */
         .canvas-area {
-            background-color: #f3e5ab;
-            background-image: 
-                linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
-                linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
-                linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
-                linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
-            background-size: 13px, 29px, 37px, 53px;
+            /* Fondo gris con patrón de puntos */
+            background-color: #f0f0f0;
+            background-image: radial-gradient(#d0d0d0 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
             position: relative;
             overflow: hidden;
             width: 100%;
@@ -44,7 +41,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+            /* Márgenes para el libro */
+            padding: 40px;
         }
 
         /* ESCENARIO 3D */
@@ -443,7 +441,7 @@
                     </div>
 
                     {/* LIENZO DE TRABAJO */}
-                    <div className="flex-1 bg-gray-200 relative flex flex-col">
+                    <div className="flex-1 relative flex flex-col">
                         <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
                     </div>
                 </div>
