@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Studio - Aula Virtual</title>
+    <title>Creator Studio Pop - Aula Virtual</title>
     
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,7 +47,6 @@
         html, body, #root { height: 100%; margin: 0; padding: 0; overflow: hidden; }
         body { font-family: 'Nunito', sans-serif; color: var(--text-main); background-color: var(--bg-ice); background-image: radial-gradient(#E2E8F0 1px, transparent 1px); background-size: 20px 20px; }
         
-        /* Títulos */
         h1, h2, h3, .pop-title { font-family: 'Dosis', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .kids-title { font-family: 'Luckiest Guy', cursive; letter-spacing: 1px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); font-size: 2rem; }
 
@@ -67,80 +66,20 @@
 
         /* --- LAYOUT CLASSROOM --- */
         .classroom-container { display: flex; height: 100%; width: 100%; }
-        
-        /* Sidebar Izquierda */
         .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; }
         .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-        
         .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 800; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Dosis'; font-size: 1.1rem; }
         .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
         .menu-item.active { background: #E0F2FE; color: var(--electric-cyan); box-shadow: inset 4px 0 0 var(--electric-cyan); }
         .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; }
 
-        /* Contenido Principal */
         .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 40px; position: relative; }
-        
-        /* Header del Módulo */
         .module-header { margin-bottom: 30px; border-bottom: 3px solid #E2E8F0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .module-title { font-size: 2rem; color: var(--text-main); font-family: 'Luckiest Guy'; }
 
-        /* Tarjetas de Resumen (Inicio) */
         .summary-card { background: white; padding: 20px; border-radius: 20px; border-bottom: 4px solid #E2E8F0; display: flex; align-items: center; gap: 20px; }
         .summary-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; }
 
-        /* Tarjetas de Proyecto */
-        .project-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid white; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; height: 300px; }
-        .project-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .card-img-container { flex: 1; background-color: #f1f5f9; position: relative; overflow: hidden; border-radius: 20px 20px 0 0; }
-        .card-footer { padding: 15px; text-align: center; border-radius: 0 0 20px 20px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90px; }
-        .card-title { font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .simple-edit-input { background: transparent; border: none; border-bottom: 2px solid white; color: white; font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; text-align: center; width: 90%; outline: none; padding-bottom: 2px; }
-        .simple-edit-input::placeholder { color: rgba(255,255,255,0.7); }
-        .card-tag { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; background: rgba(255,255,255,0.25); color: white; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
-        .project-card:hover .card-tag { background: white; color: #333; }
-
-        /* --- ESTILOS NUEVOS: PLANTILLA DE PORTAFOLIO (WYSIWYG) --- */
-        .portfolio-template-container {
-            background: white; border-radius: 30px; padding: 30px;
-            border: 4px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; gap: 30px; align-items: center;
-        }
-        .template-header { text-align: center; margin-bottom: 10px; }
-        
-        .template-book-slot {
-            width: 100%; height: 400px; 
-            border: 4px dashed #cbd5e1; border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            background: #f8fafc; cursor: pointer; transition: 0.2s;
-            position: relative; overflow: hidden;
-        }
-        .template-book-slot:hover { border-color: var(--electric-cyan); background: #f0f9ff; }
-        .template-book-slot.filled { border-style: solid; border-color: var(--electric-cyan); background: #1e293b; }
-        
-        .template-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
-        
-        .template-evidence-slot {
-            height: 250px; border: 4px dashed #cbd5e1; border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #f8fafc; cursor: pointer; transition: 0.2s;
-            position: relative; overflow: hidden; text-align: center;
-        }
-        .template-evidence-slot:hover { transform: translateY(-2px); }
-        .template-evidence-slot.moodboard:hover { border-color: var(--hyper-grape); background: #faf5ff; }
-        .template-evidence-slot.storyboard:hover { border-color: var(--hot-orange); background: #fff7ed; }
-        
-        .slot-label { font-family: 'Luckiest Guy'; font-size: 1.5rem; opacity: 0.5; margin-bottom: 10px; }
-        .slot-instruction { font-family: 'Dosis'; font-weight: 800; color: #94a3b8; text-transform: uppercase; font-size: 0.9rem; background: white; padding: 5px 15px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        
-        .filled-img { width: 100%; height: 100%; object-fit: cover; }
-        .change-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; color: white; font-weight: bold; font-family: 'Dosis'; }
-        .template-evidence-slot:hover .change-overlay, .template-book-slot:hover .change-overlay { opacity: 1; }
-
-        /* Modal Selector de Libros */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); }
-
-        /* Inputs y Formularios */
         .input-pop { background: white; border: 3px solid #E2E8F0; border-radius: 15px; padding: 12px 15px; width: 100%; font-family: 'Nunito', font-weight: 700; color: #475569; outline: none; }
         .input-pop:focus { border-color: var(--electric-cyan); }
 
@@ -164,13 +103,10 @@
         .front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); } .back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
         .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
         .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
-        
         .image-page { background-size: cover; background-position: center; background-color: #fff; }
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
         .inline-input-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; margin-bottom: 5px; outline: none; padding: 5px; border-bottom: 2px solid var(--gold-color); }
-        .inline-input-title:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); cursor: text; }
         .inline-input-text { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px; }
-        .inline-input-text:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); cursor: text; }
         .endpaper { background-color: var(--endpaper-bg); background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px); background-size: 20px 20px; }
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
@@ -188,15 +124,59 @@
         .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; } .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
         
-        /* --- PUBLIC PORTFOLIO STYLES --- */
-        .portfolio-container { height: 100vh; overflow-y: auto; background: #F8FAFC; }
-        .portfolio-header { background: var(--header-blue); color: white; padding: 60px 20px 100px 20px; text-align: center; clip-path: ellipse(150% 100% at 50% 0%); }
-        .gallery-content { max-width: 1000px; margin: -60px auto 0; padding: 0 20px; }
-        .book-showcase { background: #1e293b; padding: 40px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); margin-bottom: 50px; border: 6px solid white; height: 600px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .evidence-item { background: white; border-radius: 20px; overflow: hidden; border: 3px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .evidence-item img { width: 100%; height: 300px; object-fit: cover; }
-        .evidence-tag { background: var(--electric-cyan); color: white; padding: 10px; text-align: center; font-weight: 800; letter-spacing: 1px; }
+        /* --- TARJETAS HERRAMIENTAS --- */
+        .tool-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 0 rgba(0,0,0,0.05); border: 4px solid white; transition: 0.2s; position: relative; display: flex; flex-direction: column; height: 260px; }
+        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); z-index: 10; }
+        .tool-header { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
+        .tool-icon-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 1.8rem; color: white; }
+        .tool-title { font-family: 'Luckiest Guy', cursive; font-size: 1.4rem; color: white; text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
+        .tool-footer { background: #f8fafc; padding: 10px; border-top: 2px dashed #e2e8f0; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 5px; }
+        .evidence-preview { width: 100%; height: 80px; border-radius: 10px; object-fit: cover; border: 2px solid #ddd; margin-bottom: 5px; }
+        .evidence-label { font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
+
+        /* --- TARJETAS PROYECTO --- */
+        .project-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid white; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; height: 300px; }
+        .project-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .card-img-container { flex: 1; background-color: #f1f5f9; position: relative; overflow: hidden; border-radius: 20px 20px 0 0; }
+        .card-footer { padding: 15px; text-align: center; border-radius: 0 0 20px 20px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90px; }
+        .card-title { font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .simple-edit-input { background: transparent; border: none; border-bottom: 2px solid white; color: white; font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; text-align: center; width: 90%; outline: none; padding-bottom: 2px; }
+        .card-tag { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; background: rgba(255,255,255,0.25); color: white; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
+        .project-card:hover .card-tag { background: white; color: #333; }
+
+        /* --- PUBLIC PORTFOLIO STYLES (REUSADOS EN EDICIÓN) --- */
+        .portfolio-container { height: auto; min-height: 100vh; background: #F8FAFC; padding-bottom: 50px; }
+        .portfolio-header-bg { width: 100%; background: var(--header-blue); color: white; padding: 60px 20px 100px 20px; text-align: center; clip-path: ellipse(150% 100% at 50% 0%); margin-bottom: -60px; }
+        .gallery-content { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Showcase del Libro */
+        .book-showcase { 
+            background: #1e293b; width: 100%; max-width: 900px; height: 550px; 
+            border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+            border: 6px solid white; display: flex; align-items: center; justify-content: center; 
+            position: relative; overflow: hidden; margin-bottom: 40px; z-index: 10;
+        }
+        
+        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; width: 100%; max-width: 900px; }
+        .evidence-item { 
+            background: white; border-radius: 20px; overflow: hidden; 
+            border: 3px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+            position: relative; cursor: pointer; display: flex; flex-direction: column;
+        }
+        .evidence-item img { width: 100%; height: 250px; object-fit: cover; background: #f0f0f0; }
+        .evidence-tag { 
+            color: white; padding: 15px; text-align: center; font-weight: 800; 
+            letter-spacing: 1px; font-family: 'Dosis'; font-size: 1.2rem; 
+        }
+        .overlay-edit-evidence { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; }
+        .evidence-item:hover .overlay-edit-evidence { opacity: 1; }
+
+        /* MODAL SELECTOR DE LIBRO */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); }
+        .book-select-item { border: 2px solid #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
+        .book-select-item:hover { border-color: var(--electric-cyan); background: #f0f9ff; }
+        .book-select-thumb { width: 60px; height: 60px; background: #ddd; border-radius: 10px; object-fit: cover; }
 
         @media (max-width: 900px) { :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); } #stage { perspective: 1200px; } .sidebar-editor { width: 60px; } .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; } .prev-btn { left: 80px; } .classroom-container { flex-direction: column; } .classroom-sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; } }
     </style>
@@ -324,19 +304,20 @@
             );
         }
 
-        function Dashboard({ user, setView }) {
-            const [activeSection, setActiveSection] = useState('inicio'); 
+        function Dashboard({ user, setView, setExternalTool }) {
+            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
             const [editingId, setEditingId] = useState(null);
             const [tempTitle, setTempTitle] = useState("");
-            // Nuevo estado para el modal de libros
             const [showBookSelector, setShowBookSelector] = useState(false);
 
+            // Cargar libros y datos de portafolio
             useEffect(() => { 
                 if(!user || !db) return; 
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
                 onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()}))));
+                
                 onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (doc) => {
                     if(doc.exists()) setPortfolioData(doc.data());
                 });
@@ -346,6 +327,7 @@
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             const launchTool = (url) => { user.toolUrl = url; setView('external'); };
             
+            // Manejo de Evidencias Portafolio
             const uploadEvidence = (type, e) => {
                 const file = e.target.files[0]; if(!file) return;
                 processImage(file, async (base64) => {
@@ -363,17 +345,11 @@
                 navigator.clipboard.writeText(url);
                 alert("Enlace público copiado.");
             };
-            
             const deleteBook = async (e, bookId) => { e.stopPropagation(); if(confirm("¿Borrar?")) await deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId)); };
             const startRename = (e, book) => { e.stopPropagation(); setEditingId(book.id); setTempTitle(book.title); };
             const saveRename = async (e, bookId) => { e.stopPropagation(); if(tempTitle.trim()) await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId), { title: tempTitle }); setEditingId(null); };
             
-            // Helper para encontrar el título del libro seleccionado
-            const getFeaturedBookTitle = () => {
-                const book = books.find(b => b.id === portfolioData.featuredBookId);
-                return book ? book.title : null;
-            };
-
+            const getFeaturedBook = () => books.find(b => b.id === portfolioData.featuredBookId);
             const colors = ['var(--hot-orange)', 'var(--lime-punch)', 'var(--hyper-grape)', 'var(--pop-pink)', 'var(--electric-cyan)'];
             const textColors = ['#444', '#fff', '#fff', '#fff', '#fff'];
 
@@ -414,10 +390,7 @@
                         {/* VISTA INICIO */}
                         {activeSection === 'inicio' && (
                             <div>
-                                <div className="module-header">
-                                    <h2 className="module-title text-cyan-500">MIS PROYECTOS</h2>
-                                    <button onClick={createNew} className="btn-gummy btn-lime text-sm"><i className="fas fa-plus mr-2"></i> NUEVO LIBRO</button>
-                                </div>
+                                <div className="module-header"><h2 className="module-title text-cyan-500">MIS PROYECTOS</h2><button onClick={createNew} className="btn-gummy btn-lime text-sm"><i className="fas fa-plus mr-2"></i> NUEVO LIBRO</button></div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     {books.map((b, i) => {
                                         const bgColor = colors[i % colors.length];
@@ -437,10 +410,7 @@
                                                         </div>
                                                     ) : (
                                                         <div className="flex flex-col items-center justify-center w-full">
-                                                            <div className="card-title-row">
-                                                                <h3 className="card-title truncate">{b.title}</h3>
-                                                                <button className="text-sm opacity-60 hover:opacity-100 text-white hover:scale-110 transition" onClick={(e) => startRename(e, b)}><i className="fas fa-pencil-alt"></i></button>
-                                                            </div>
+                                                            <div className="card-title-row"><h3 className="card-title truncate">{b.title}</h3><button className="text-sm opacity-60 hover:opacity-100 text-white hover:scale-110 transition" onClick={(e) => startRename(e, b)}><i className="fas fa-pencil-alt"></i></button></div>
                                                             <span className="card-tag">EDITAR</span>
                                                         </div>
                                                     )}
@@ -452,66 +422,53 @@
                             </div>
                         )}
 
-                        {/* VISTA PORTAFOLIO (NUEVO DISEÑO VISUAL) */}
+                        {/* VISTA PORTAFOLIO (WYSIWYG - VISUALIZACIÓN REAL) */}
                         {activeSection === 'portafolio' && (
                             <div>
-                                <div className="module-header">
-                                    <h2 className="module-title text-blue-600">MI PORTAFOLIO</h2>
-                                    <button onClick={copyLink} className="btn-gummy btn-cyan text-sm"><i className="fas fa-link mr-2"></i> COPIAR ENLACE PÚBLICO</button>
-                                </div>
+                                <div className="module-header"><h2 className="module-title text-blue-600">GESTIÓN DE PORTAFOLIO</h2><button onClick={copyLink} className="btn-gummy btn-cyan text-sm"><i className="fas fa-link mr-2"></i> COPIAR ENLACE PÚBLICO</button></div>
                                 
-                                <div className="portfolio-template-container">
-                                    <div className="template-header">
-                                        <h3 className="kids-title text-3xl text-gray-700">PORTAFOLIO DE: {user.email.split('@')[0].toUpperCase()}</h3>
-                                        <p className="text-gray-500">Toca los recuadros para completar tu exhibición</p>
+                                {/* Plantilla Visual IDÉNTICA a la pública (Dentro del Dashboard) */}
+                                <div className="portfolio-container" style={{height:'auto', minHeight:'80vh', borderRadius:'20px', boxShadow:'0 0 20px rgba(0,0,0,0.05)'}}>
+                                    <div className="portfolio-header-bg">
+                                        <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
+                                        <p className="text-xl opacity-80 font-sans">De: {user.email.split('@')[0].toUpperCase()}</p>
                                     </div>
 
-                                    {/* SLOT LIBRO */}
-                                    <div className={`template-book-slot ${portfolioData.featuredBookId ? 'filled' : ''}`} onClick={() => setShowBookSelector(true)}>
-                                        {portfolioData.featuredBookId ? (
-                                            <div className="text-center text-white">
-                                                <i className="fas fa-book-open text-4xl mb-2"></i>
-                                                <h4 className="font-bold text-xl font-sans">{getFeaturedBookTitle() || "Libro Seleccionado"}</h4>
-                                                <div className="change-overlay">CAMBIAR LIBRO</div>
-                                            </div>
-                                        ) : (
-                                            <div className="text-center text-gray-400">
-                                                <i className="fas fa-plus-circle text-5xl mb-2 text-blue-300"></i>
-                                                <h4 className="font-bold text-lg">TOCA AQUÍ PARA ELEGIR TU LIBRO</h4>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* SLOTS EVIDENCIAS */}
-                                    <div className="template-gallery">
-                                        <div className="template-evidence-slot moodboard">
-                                            <div className="slot-label" style={{color:'var(--hyper-grape)'}}>MOODBOARD</div>
-                                            {portfolioData.moodboard ? (
-                                                <div className="w-full h-full relative">
-                                                    <img src={portfolioData.moodboard} className="filled-img" />
-                                                    <label className="change-overlay cursor-pointer">CAMBIAR FOTO <input type="file" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/></label>
+                                    <div className="gallery-content">
+                                        {/* SLOT LIBRO (Con opción de cambiar) */}
+                                        <div className="book-showcase cursor-pointer hover:border-yellow-400 transition relative group" onClick={() => setShowBookSelector(true)} style={{height: '550px'}}>
+                                            {getFeaturedBook() ? (
+                                                <div className="w-full h-full flex flex-col items-center justify-center relative">
+                                                    {/* Miniatura del Libro Interactivo (Solo Lectura) */}
+                                                    <div style={{transform: 'scale(0.8)', pointerEvents: 'none'}}>
+                                                        <BookViewer pages={getFeaturedBook().pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
+                                                    </div>
+                                                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-50 rounded-3xl backdrop-blur-sm">
+                                                        <span className="btn-gummy btn-orange"><i className="fas fa-exchange-alt mr-2"></i> CAMBIAR LIBRO</span>
+                                                    </div>
                                                 </div>
                                             ) : (
-                                                <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center">
-                                                    <span className="slot-instruction border-2 border-purple-200 text-purple-400">TOCA PARA SUBIR FOTO</span>
-                                                    <input type="file" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
-                                                </label>
+                                                <div className="flex flex-col items-center justify-center text-gray-400">
+                                                    <i className="fas fa-plus-circle text-6xl mb-4 text-gray-500"></i>
+                                                    <h3 className="text-2xl font-bold text-white">TOCA PARA ELEGIR TU LIBRO</h3>
+                                                </div>
                                             )}
                                         </div>
 
-                                        <div className="template-evidence-slot storyboard">
-                                            <div className="slot-label" style={{color:'var(--hot-orange)'}}>STORYBOARD</div>
-                                            {portfolioData.storyboard ? (
-                                                <div className="w-full h-full relative">
-                                                    <img src={portfolioData.storyboard} className="filled-img" />
-                                                    <label className="change-overlay cursor-pointer">CAMBIAR FOTO <input type="file" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/></label>
-                                                </div>
-                                            ) : (
-                                                <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center">
-                                                    <span className="slot-instruction border-2 border-orange-200 text-orange-400">TOCA PARA SUBIR FOTO</span>
-                                                    <input type="file" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
-                                                </label>
-                                            )}
+                                        {/* SLOTS EVIDENCIAS */}
+                                        <div className="evidence-grid">
+                                            <div className="evidence-item relative group" onClick={() => document.getElementById('mood-up').click()}>
+                                                <div className="evidence-tag bg-purple-500">MOODBOARD</div>
+                                                {portfolioData.moodboard ? <img src={portfolioData.moodboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400 h-[300px] flex items-center justify-center">SIN IMAGEN</div>}
+                                                <div className="overlay-edit-evidence"><span className="btn-gummy btn-grape text-xs">CAMBIAR FOTO</span></div>
+                                                <input id="mood-up" type="file" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
+                                            </div>
+                                            <div className="evidence-item relative group" onClick={() => document.getElementById('story-up').click()}>
+                                                <div className="evidence-tag bg-orange-500">STORYBOARD</div>
+                                                {portfolioData.storyboard ? <img src={portfolioData.storyboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400 h-[300px] flex items-center justify-center">SIN IMAGEN</div>}
+                                                <div className="overlay-edit-evidence"><span className="btn-gummy btn-orange text-xs">CAMBIAR FOTO</span></div>
+                                                <input id="story-up" type="file" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -525,7 +482,7 @@
                                     <h3 className="text-2xl font-bold text-center mb-6 pop-title text-cyan-600">ELIGE TU LIBRO MAESTRO</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                         {books.map(b => (
-                                            <div key={b.id} className="border-2 border-gray-200 p-3 rounded-xl cursor-pointer hover:border-cyan-400 hover:bg-cyan-50 transition flex items-center gap-3" onClick={() => selectBookForPortfolio(b.id)}>
+                                            <div key={b.id} className="book-select-item" onClick={() => selectBookForPortfolio(b.id)}>
                                                 <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                                                     {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
                                                 </div>
@@ -568,7 +525,7 @@
             );
         }
 
-        // --- EDITOR ---
+        // --- EDITOR (Lienzo Completo) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(0); 
@@ -596,36 +553,44 @@
         function PublicGallery({ uid }) {
             const [portfolio, setPortfolio] = useState({});
             const [book, setBook] = useState(null);
+            const [loading, setLoading] = useState(true);
             useEffect(() => {
                 if(!db) return;
-                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid), (d) => { if(d.exists()) setPortfolio(d.data()); });
+                const load = async () => {
+                    onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid), (d) => { if(d.exists()) setPortfolio(d.data()); });
+                    const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
+                    onSnapshot(q, (snap) => { /* Just to trigger updates if needed */ });
+                }; load();
             }, [uid]);
             useEffect(() => {
                 if(portfolio.featuredBookId) {
-                    getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', portfolio.featuredBookId)).then(snap => { if(snap.exists()) setBook({id: snap.id, ...snap.data()}); });
-                }
+                    getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', portfolio.featuredBookId)).then(snap => { 
+                        if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
+                        setLoading(false);
+                    });
+                } else { setLoading(false); }
             }, [portfolio]);
+
+            if(loading) return <div className="flex h-screen items-center justify-center">Cargando Portafolio...</div>;
 
             return (
                 <div className="portfolio-container">
-                    <div className="portfolio-header">
+                    <div className="portfolio-header-bg">
                         <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
-                        <p className="text-xl opacity-80">Mira lo que he creado</p>
+                        <p className="text-xl opacity-80 font-sans">Explorando el mundo de la narración</p>
                     </div>
                     <div className="gallery-content">
-                        {book && (
-                            <div className="book-showcase">
-                                <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
-                            </div>
-                        )}
+                        <div className="book-showcase">
+                            {book ? <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /> : <div className="text-white font-bold">Libro no disponible</div>}
+                        </div>
                         <div className="evidence-grid">
                             <div className="evidence-item">
-                                <div className="evidence-tag">MOODBOARD</div>
-                                {portfolio.moodboard ? <img src={portfolio.moodboard} /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
+                                <div className="evidence-tag bg-purple-500">MOODBOARD</div>
+                                {portfolio.moodboard ? <img src={portfolio.moodboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
                             </div>
                             <div className="evidence-item">
-                                <div className="evidence-tag">STORYBOARD</div>
-                                {portfolio.storyboard ? <img src={portfolio.storyboard} /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
+                                <div className="evidence-tag bg-orange-500">STORYBOARD</div>
+                                {portfolio.storyboard ? <img src={portfolio.storyboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
                             </div>
                         </div>
                     </div>
@@ -633,7 +598,7 @@
             );
         }
 
-        // --- COMPONENTE DEL LIBRO (REUTILIZABLE) ---
+        // --- COMPONENTE DEL LIBRO ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx === -1 ? 0 : activeIdx);
@@ -641,6 +606,7 @@
             const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
             const isClosedBack = currentIdx === pages.length - 1;
             const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx); };
+            
             useEffect(() => {
                 const handleKeyDown = (e) => { 
                     if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); 
@@ -648,9 +614,11 @@
                 };
                 window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown);
             }, [currentIdx, pages]);
+
             const isEditableImage = (idx, side) => { if (idx === 1 && side === 'back') return false; if (idx === 2) return false; return true; };
             const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
             const isEditableText = (idx, side) => { if (idx === 1 && side === 'back') return false; return true; };
+
             const renderEditOverlay = (pageIdx, side, currentBg) => {
                 if (!isEditor || !isEditableImage(pageIdx, side)) return null;
                 return (
@@ -666,6 +634,7 @@
                     </div>
                 );
             };
+
             return (
                 <div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}>
                     <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
