@@ -526,7 +526,9 @@
         // --- EDITOR (Lienzo Completo) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
-            const [activeIdx, setActiveIdx] = useState(0); 
+            // CORRECCIÓN: Iniciar en -1 para que el libro aparezca CERRADO al entrar a editar
+            const [activeIdx, setActiveIdx] = useState(-1); 
+            
             useEffect(() => { const bid = localStorage.getItem('currentBookId'); if(!bid || !db) return; getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid)).then(snap => { if(snap.exists()) setBook({id: snap.id, ...snap.data()}); }); }, []);
             const save = async () => { try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); alert("¡GUARDADO!"); } catch (e) { alert("Error."); } };
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
@@ -561,17 +563,11 @@
                 }; load();
             }, [uid]);
             useEffect(() => {
-                // Lógica Simplificada: Siempre busca el primer libro del usuario si no hay featured ID explícito, 
-                // o usa el featured ID si existe.
                 const fetchBook = async () => {
                      let bookIdToFetch = portfolio.featuredBookId;
-                     
-                     // Fallback: si no hay ID guardado, buscar cualquier libro de este usuario
                      if (!bookIdToFetch) {
                          const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
                          const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books')); 
-                         // Nota: Firestore query necesita getDocs no getDoc para colecciones, pero aquí simplificamos
-                         // En vista pública real, mejor confiar en el featuredBookId que guardamos al crear.
                      }
 
                      if(bookIdToFetch) {
@@ -596,6 +592,7 @@
                     </div>
                     <div className="gallery-content">
                         <div className="book-showcase">
+                            {/* CORRECCIÓN: Pasar activeIdx={-1} asegura que se muestre cerrado */}
                             {book ? <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /> : <div className="text-white font-bold">Libro no disponible</div>}
                         </div>
                         <div className="evidence-grid">
@@ -616,7 +613,11 @@
         // --- COMPONENTE DEL LIBRO ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
-            const [localIdx, setLocalIdx] = useState(activeIdx === -1 ? 0 : activeIdx);
+            
+            // CORRECCIÓN: Permitir que localIdx sea -1 para mostrar portada cerrada
+            // Antes estaba forzando 0 si recibía -1, lo que causaba el error visual
+            const [localIdx, setLocalIdx] = useState(activeIdx); 
+            
             const currentIdx = isEditor ? activeIdx : localIdx;
             const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
             const isClosedBack = currentIdx === pages.length - 1;
@@ -684,7 +685,9 @@
                             })}
                         </div>
                     </div>
+                    {/* Botón Prev solo aparece si currentIdx >= 0 (libro abierto) */}
                     {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
+                    {/* Botón Next siempre aparece si no es el final */}
                     {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
                 </div>
             );
