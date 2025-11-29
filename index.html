@@ -305,7 +305,7 @@
         }
 
         function Dashboard({ user, setView, setExternalTool }) {
-            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard
+            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard | quiz
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
             const [editingId, setEditingId] = useState(null);
@@ -386,6 +386,10 @@
                         </div>
                         <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
                             <i className="fas fa-film text-orange-500"></i> STORYBOARD
+                        </div>
+                         {/* --- NUEVA SECCIÓN: QUIZ --- */}
+                         <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
+                            <i className="fas fa-puzzle-piece text-yellow-500"></i> QUIZ INTERACTIVO
                         </div>
                         
                         {/* BOTÓN UNIFICADO: MI LIBRO (Crear o Editar) */}
@@ -514,6 +518,19 @@
                                 </div>
                                 <div className="flex-1 bg-white rounded-3xl border-4 border-orange-100 overflow-hidden relative shadow-lg">
                                     <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- NUEVA VISTA ACTIVIDAD: QUIZ --- */}
+                        {activeSection === 'quiz' && (
+                            <div className="h-full flex flex-col">
+                                <div className="mb-6">
+                                    <h2 className="module-title text-yellow-500 mb-2">QUIZ TIME</h2>
+                                    <p className="text-gray-600">¡Demuestra lo que has aprendido!</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg">
+                                    <iframe src="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" className="w-full h-full border-none"></iframe>
                                 </div>
                             </div>
                         )}
