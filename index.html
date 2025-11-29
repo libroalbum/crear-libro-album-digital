@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Studio Pop</title>
+    <title>Creator Studio Pop - Portafolio</title>
     
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,7 +24,7 @@
             --text-main: #334155;
             --header-blue: #00C6FF; 
             
-            /* Acentos de Energía */
+            /* Acentos */
             --hyper-grape: #8B5CF6;
             --lime-punch: #84CC16;
             --electric-cyan: #06B6D4;
@@ -40,7 +40,7 @@
 
             --canvas-dark: #1e293b;
 
-            /* Variables del Libro */
+            /* Variables Libro */
             --book-width: 460px;
             --book-height: 600px;
             --paper-texture: #fdfbf7;
@@ -61,28 +61,15 @@
             background-size: 20px 20px;
         }
 
-        /* Títulos */
-        h1, h2, h3, .pop-title {
-            font-family: 'Dosis', sans-serif;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .kids-title {
-            font-family: 'Luckiest Guy', cursive;
-            letter-spacing: 1px;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-            font-size: 2.5rem;
-        }
+        h1, h2, h3, .pop-title { font-family: 'Dosis', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .kids-title { font-family: 'Luckiest Guy', cursive; letter-spacing: 1px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); font-size: 2.5rem; }
 
         /* --- UI GUMMY --- */
         .btn-gummy {
             border: none; outline: none; cursor: pointer;
-            font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.1rem;
+            font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1rem;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 12px 24px; border-radius: 20px;
-            color: white; text-transform: uppercase;
+            padding: 10px 20px; border-radius: 20px; color: white; text-transform: uppercase;
             transition: transform 0.1s; position: relative; top: 0;
         }
         .btn-gummy:active { top: 6px; box-shadow: 0 0 0 transparent !important; }
@@ -94,69 +81,50 @@
         .btn-orange { background: var(--hot-orange); box-shadow: 0 6px 0 var(--shadow-orange); }
         .btn-pink { background: var(--pop-pink); box-shadow: 0 6px 0 var(--shadow-pink); }
 
-        .sticker-panel {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px); border: 4px solid white;
-            border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .input-pop {
-            background: white; border: 3px solid #E2E8F0;
-            border-radius: 15px; padding: 12px 15px; width: 100%;
-            font-family: 'Nunito', sans-serif; font-weight: 700; color: #475569;
-            outline: none; transition: 0.2s;
-        }
+        .sticker-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 4px solid white; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .input-pop { background: white; border: 3px solid #E2E8F0; border-radius: 15px; padding: 12px 15px; width: 100%; font-family: 'Nunito', sans-serif; font-weight: 700; color: #475569; outline: none; transition: 0.2s; }
         .input-pop:focus { border-color: var(--electric-cyan); box-shadow: 0 0 0 4px rgba(0, 198, 255, 0.2); }
 
         /* --- ESTRUCTURA --- */
         .header-studio {
-            width: 100%;
-            background-color: var(--header-blue);
-            padding: 15px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 4px solid rgba(0,0,0,0.1);
-            z-index: 50;
-            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
-            flex-shrink: 0;
+            width: 100%; background-color: var(--header-blue);
+            padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 4px solid rgba(0,0,0,0.1); z-index: 50;
+            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3); flex-shrink: 0;
         }
         .logo-text { font-size: 2rem; color: white; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
 
-        /* --- TARJETAS DE HERRAMIENTAS (NUEVO) --- */
+        /* --- TARJETAS HERRAMIENTAS --- */
         .tool-card {
             background: white; border-radius: 24px; overflow: hidden;
-            box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: 3px solid white;
-            transition: 0.2s; cursor: pointer; position: relative;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 200px;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.05); border: 4px solid white;
+            transition: 0.2s; position: relative; display: flex; flex-direction: column;
+            height: 260px; /* Más alto para acomodar la imagen subida */
         }
-        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 12px 0 rgba(0,0,0,0.15); z-index: 10; }
-        .tool-icon { font-size: 3rem; margin-bottom: 15px; color: white; drop-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
-        .tool-title { font-family: 'Luckiest Guy', cursive; font-size: 1.5rem; color: white; text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
+        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); z-index: 10; }
+        
+        .tool-header { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
+        .tool-icon-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 1.8rem; color: white; }
+        .tool-title { font-family: 'Luckiest Guy', cursive; font-size: 1.4rem; color: white; text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
+        
+        .tool-footer { background: #f8fafc; padding: 10px; border-top: 2px dashed #e2e8f0; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 5px; }
+        
+        .evidence-preview { width: 100%; height: 80px; border-radius: 10px; object-fit: cover; border: 2px solid #ddd; margin-bottom: 5px; }
+        .evidence-label { font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
 
-        /* --- TARJETAS DE PROYECTO --- */
-        .project-card {
-            background: white; border-radius: 24px; overflow: hidden;
-            box-shadow: 0 8px 0 #E2E8F0; border: 3px solid #E2E8F0;
-            transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; height: 300px;
-        }
-        .project-card:hover { transform: translateY(-5px); border-color: var(--electric-cyan); box-shadow: 0 12px 0 var(--shadow-cyan); }
-        
+        /* --- TARJETAS PROYECTO --- */
+        .project-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid white; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; height: 300px; }
+        .project-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .card-img-container { flex: 1; background-color: #f1f5f9; position: relative; overflow: hidden; border-radius: 20px 20px 0 0; }
-        
-        .card-footer {
-            padding: 10px; text-align: center; border-radius: 0 0 20px 20px;
-            color: white; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; min-height: 85px;
-        }
-        .card-title { font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .simple-edit-input { background: transparent; border: none; border-bottom: 2px solid white; color: white; font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.2rem; text-align: center; width: 90%; outline: none; padding-bottom: 2px; }
-        .card-tag { display: inline-block; padding: 4px 12px; border-radius: 15px; font-size: 0.7rem; font-weight: 800; background: rgba(255,255,255,0.25); color: white; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
+        .card-footer { padding: 15px; text-align: center; border-radius: 0 0 20px 20px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90px; }
+        .card-title { font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .simple-edit-input { background: transparent; border: none; border-bottom: 2px solid white; color: white; font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; text-align: center; width: 90%; outline: none; padding-bottom: 2px; }
+        .simple-edit-input::placeholder { color: rgba(255,255,255,0.7); }
+        .card-tag { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; background: rgba(255,255,255,0.25); color: white; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
         .project-card:hover .card-tag { background: white; color: #333; }
 
-        /* --- LIENZO --- */
+        /* --- EDITOR & LIBRO --- */
         .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: var(--canvas-dark); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; width: 100%; height: 100%; margin: 0; padding: 0; }
-
-        /* --- BARRA LATERAL --- */
         .sidebar-studio { width: 80px; height: 100%; background: white; border-right: 3px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 40; gap: 20px; flex-shrink: 0; }
         .icon-chunk { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; cursor: pointer; transition: 0.1s; position: relative; top: 0; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); }
         .icon-chunk:active { top: 4px; box-shadow: inset 0 0 0 rgba(0,0,0,0) !important; }
@@ -164,7 +132,6 @@
         .icon-chunk::after { content: attr(data-tooltip); position: absolute; left: 65px; background: var(--text-main); color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-family: 'Nunito'; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; z-index: 100; }
         .icon-chunk:hover::after { opacity: 1; left: 70px; }
 
-        /* --- LIBRO --- */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
         .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
@@ -175,6 +142,7 @@
         .front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); } .back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
         .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
         .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
+        
         .image-page { background-size: cover; background-position: center; background-color: #fff; }
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
         .inline-input-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; margin-bottom: 5px; outline: none; padding: 5px; border-bottom: 2px solid var(--gold-color); }
@@ -185,7 +153,6 @@
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
 
-        /* --- OVERLAYS --- */
         .edit-overlay { position: absolute; inset: 0; background: rgba(248, 250, 252, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px); z-index: 20; }
         .editor-mode .front:hover .edit-overlay, .editor-mode .back:hover .edit-overlay { opacity: 1; }
         .upload-card { background: white; border: 3px solid var(--electric-cyan); padding: 15px; border-radius: 20px; text-align: center; transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2); }
@@ -195,15 +162,18 @@
         .url-input { width: 100%; padding: 8px; background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; font-family: 'Nunito'; font-weight: 700; }
         .remove-btn { margin-top: 5px; color: #EF4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: 800; text-transform: uppercase; }
 
-        /* Navegación */
         .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan); font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 var(--shadow-cyan); }
         .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; } .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
         
-        /* --- COMPONENTE DE HERRAMIENTA EXTERNA --- */
-        .iframe-container { width: 100%; height: 100%; border: none; background: white; }
-        .close-tool-btn { position: absolute; top: 20px; right: 20px; background: #EF4444; color: white; padding: 10px 20px; border-radius: 15px; font-family: 'Dosis', sans-serif; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #B91C1C; z-index: 100; text-transform: uppercase; }
-        .close-tool-btn:active { transform: translateY(4px); box-shadow: none; }
+        /* --- PUBLIC PORTFOLIO STYLES --- */
+        .portfolio-container { height: 100vh; overflow-y: auto; background: var(--bg-ice); }
+        .portfolio-header { background: var(--header-blue); color: white; padding: 40px; text-align: center; margin-bottom: 40px; border-radius: 0 0 50% 50% / 30px; }
+        .portfolio-section { max-width: 1000px; margin: 0 auto 60px auto; padding: 0 20px; }
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .evidence-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 4px solid white; }
+        .evidence-img { width: 100%; height: 250px; object-fit: cover; background: #f0f0f0; }
+        .evidence-title { padding: 15px; text-align: center; font-family: 'Dosis'; font-weight: 800; font-size: 1.5rem; color: var(--text-main); background: #f8fafc; }
 
         @media (max-width: 900px) { :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); } #stage { perspective: 1200px; } .sidebar-studio { width: 60px; } .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; } .prev-btn { left: 80px; } }
     </style>
@@ -215,7 +185,7 @@
     <script type="text/babel" data-type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const { useState, useEffect, useRef } = React;
 
@@ -266,47 +236,47 @@
         function App() {
             const [user, setUser] = useState(null);
             const [view, setView] = useState('loading'); 
-            const [publicBook, setPublicBook] = useState(null);
-            // Estado para las herramientas externas
-            const [externalTool, setExternalTool] = useState(null); // 'moodboard' | 'storyboard' | 'reference'
+            const [publicPortfolio, setPublicPortfolio] = useState(null);
 
             useEffect(() => {
                 const params = new URLSearchParams(window.location.search);
-                const sharedUid = params.get('uid'); const sharedBookId = params.get('book');
-                if (sharedUid && sharedBookId) {
-                    if(db) { getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', sharedUid, 'books', sharedBookId)).then(snap => { if(snap.exists()) { setPublicBook({ id: snap.id, ...snap.data() }); setView('public-viewer'); } else { alert("Libro no encontrado."); setView('login'); } }); }
-                } else { if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); } }
+                const portfolioUid = params.get('portfolio');
+                
+                if (portfolioUid) {
+                    // Cargar Portafolio Público (Libros + Evidencias)
+                    const loadPortfolio = async () => {
+                        if(!db) return;
+                        // Cargar evidencia
+                        const pfDoc = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', portfolioUid));
+                        const evidence = pfDoc.exists() ? pfDoc.data() : {};
+                        
+                        // Cargar Libros
+                        const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', portfolioUid, 'books'));
+                        const booksSnap = await getSnapshot(q); // Helper needed? No, standard way
+                        // Actually, to use query inside useEffect easily with cleanups is hard, let's fetch once for portfolio
+                        // We need onSnapshot? For public view maybe just getDocs is enough but let's stick to pattern if possible
+                        // For simplicity in one file, let's just fetch once.
+                        // Wait, I need the function getDocs, I only imported onSnapshot.
+                        // I will use onSnapshot for consistency.
+                    };
+                    // Since I can't easily import getDocs without changing top imports (risk), I'll use a simple component logic
+                    setPublicPortfolio(portfolioUid);
+                    setView('public-portfolio');
+                } else {
+                    if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); }
+                }
             }, []);
 
-            if (view === 'public-viewer' && publicBook) return <PublicViewer book={publicBook} />;
-            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl" style={{color:'var(--hyper-grape)'}}>CARGANDO ESTUDIO...</div>;
+            if (view === 'public-portfolio' && publicPortfolio) return <PublicPortfolioView uid={publicPortfolio} />;
+            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl" style={{color:'var(--hyper-grape)'}}>CARGANDO...</div>;
 
             return (
                 <div className="flex flex-col h-full font-sans">
                     <main className="flex-1 relative overflow-hidden">
                         {view === 'login' && <LoginScreen setUser={setUser} setView={setView} />}
-                        
-                        {/* DASHBOARD */}
-                        {view === 'dashboard' && (
-                            <Dashboard 
-                                user={user} 
-                                setView={setView} 
-                                setExternalTool={setExternalTool}
-                            />
-                        )}
-                        
-                        {/* EDITOR */}
+                        {view === 'dashboard' && <Dashboard user={user} setView={setView} />}
                         {view === 'editor' && <Editor user={user} setView={setView} />}
-                        
-                        {/* HERRAMIENTA EXTERNA (FULLSCREEN) */}
-                        {view === 'external' && (
-                            <div className="w-full h-full bg-white relative">
-                                <button onClick={() => setView('dashboard')} className="close-tool-btn">
-                                    <i className="fas fa-times mr-2"></i> Cerrar Herramienta
-                                </button>
-                                <iframe src={externalTool} className="iframe-container" title="Herramienta Externa"></iframe>
-                            </div>
-                        )}
+                        {view === 'external' && <ExternalToolView url={user.toolUrl} setView={setView} />}
                     </main>
                 </div>
             );
@@ -330,23 +300,47 @@
             );
         }
 
-        function Dashboard({ user, setView, setExternalTool }) {
+        function Dashboard({ user, setView }) {
             const [books, setBooks] = useState([]);
             const [editingId, setEditingId] = useState(null);
             const [tempTitle, setTempTitle] = useState("");
+            const [portfolioData, setPortfolioData] = useState({});
 
-            useEffect(() => { if(!user || !db) return; const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()})))); }, [user]);
+            useEffect(() => { 
+                if(!user || !db) return; 
+                const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
+                onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()}))));
+                
+                // Load Portfolio Data
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (doc) => {
+                    if(doc.exists()) setPortfolioData(doc.data());
+                });
+            }, [user]);
             
             const createNew = async () => { const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }); localStorage.setItem('currentBookId', ref.id); setView('editor'); };
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             
-            // Acciones para las herramientas
-            const launchTool = (url) => {
-                setExternalTool(url);
-                setView('external');
+            // External Tools
+            const launchTool = (url) => { user.toolUrl = url; setView('external'); };
+            
+            // Upload Evidence
+            const handleEvidenceUpload = (type, e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+                processImage(file, async (base64) => {
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), {
+                        [type]: base64
+                    }, { merge: true });
+                    alert("¡Evidencia subida con éxito!");
+                });
             };
 
-            // Delete & Rename logic (igual que antes)
+            const copyPortfolioLink = () => {
+                const url = `${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`;
+                navigator.clipboard.writeText(url);
+                alert("¡Enlace de tu Portafolio copiado! Compártelo con todos.");
+            };
+
             const deleteBook = async (e, bookId) => { e.stopPropagation(); if(confirm("¿Borrar cuento?")) await deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId)); };
             const startRename = (e, book) => { e.stopPropagation(); setEditingId(book.id); setTempTitle(book.title); };
             const saveRename = async (e, bookId) => { e.stopPropagation(); if(tempTitle.trim()) await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId), { title: tempTitle }); setEditingId(null); };
@@ -359,36 +353,71 @@
                     <header className="header-studio">
                         <h2 className="text-3xl pop-title logo-text text-white kids-title">CREATOR STUDIO</h2>
                         <div className="flex gap-4 items-center">
-                            <span className="text-sm font-bold px-3 py-1 rounded-full border-2 border-white text-white">@{user.email.split('@')[0]}</span>
+                            <button onClick={copyPortfolioLink} className="btn-gummy btn-cyan text-xs px-4 shadow-lg border-2 border-white">🌍 MI PORTAFOLIO</button>
                             <button onClick={() => signOut(auth)} className="btn-gummy btn-pink text-xs py-2 px-4">SALIR</button>
                         </div>
                     </header>
                     
                     <div className="p-8 max-w-7xl mx-auto">
-                        
-                        {/* ZONA DE HERRAMIENTAS (NUEVO) */}
+                        {/* MISIONES */}
                         <div className="mb-10">
-                            <h3 className="text-2xl font-bold text-gray-700 mb-6 pop-title pl-2 border-l-4 border-yellow-400">HERRAMIENTAS DE CREACIÓN</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div onClick={() => launchTool('https://libroalbum.github.io/mooboard/')} className="tool-card" style={{borderColor:'var(--hyper-grape)', backgroundColor:'#F3E8FF'}}>
-                                    <i className="fas fa-palette tool-icon" style={{color:'var(--hyper-grape)'}}></i>
-                                    <span className="tool-title" style={{color:'var(--hyper-grape)'}}>MOODBOARD</span>
-                                    <span className="text-xs font-bold text-gray-500 mt-2">INSPÍRATE AQUÍ</span>
+                            <h3 className="text-2xl font-bold text-gray-700 mb-6 pop-title pl-2 border-l-4 border-yellow-400">MISIONES CREATIVAS</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* MOODBOARD */}
+                                <div className="tool-card" style={{borderColor:'var(--hyper-grape)', backgroundColor:'#F3E8FF'}}>
+                                    <div className="tool-header" onClick={() => launchTool('https://libroalbum.github.io/mooboard/')}>
+                                        <div className="tool-icon-circle bg-purple-400"><i className="fas fa-palette"></i></div>
+                                        <span className="tool-title" style={{color:'var(--hyper-grape)'}}>MOODBOARD</span>
+                                    </div>
+                                    <div className="tool-footer">
+                                        {portfolioData.moodboard ? (
+                                            <div className="text-center w-full">
+                                                <img src={portfolioData.moodboard} className="evidence-preview" />
+                                                <span className="text-green-600 font-bold text-xs">¡ENTREGADO!</span>
+                                                <label className="cursor-pointer text-xs underline text-gray-500 block mt-1">Cambiar foto<input type="file" className="hidden" onChange={(e)=>handleEvidenceUpload('moodboard', e)}/></label>
+                                            </div>
+                                        ) : (
+                                            <label className="btn-gummy btn-grape text-xs w-full">
+                                                <i className="fas fa-camera mr-2"></i> SUBIR EVIDENCIA
+                                                <input type="file" className="hidden" onChange={(e)=>handleEvidenceUpload('moodboard', e)} />
+                                            </label>
+                                        )}
+                                    </div>
                                 </div>
-                                <div onClick={() => launchTool('https://libroalbum.github.io/tablero/')} className="tool-card" style={{borderColor:'var(--hot-orange)', backgroundColor:'#FFEDD5'}}>
-                                    <i className="fas fa-film tool-icon" style={{color:'var(--hot-orange)'}}></i>
-                                    <span className="tool-title" style={{color:'var(--hot-orange)'}}>STORYBOARD</span>
-                                    <span className="text-xs font-bold text-gray-500 mt-2">PLANEA TU HISTORIA</span>
+
+                                {/* STORYBOARD */}
+                                <div className="tool-card" style={{borderColor:'var(--hot-orange)', backgroundColor:'#FFEDD5'}}>
+                                    <div className="tool-header" onClick={() => launchTool('https://libroalbum.github.io/tablero/')}>
+                                        <div className="tool-icon-circle bg-orange-400"><i className="fas fa-film"></i></div>
+                                        <span className="tool-title" style={{color:'var(--hot-orange)'}}>STORYBOARD</span>
+                                    </div>
+                                    <div className="tool-footer">
+                                        {portfolioData.storyboard ? (
+                                            <div className="text-center w-full">
+                                                <img src={portfolioData.storyboard} className="evidence-preview" />
+                                                <span className="text-green-600 font-bold text-xs">¡ENTREGADO!</span>
+                                                <label className="cursor-pointer text-xs underline text-gray-500 block mt-1">Cambiar foto<input type="file" className="hidden" onChange={(e)=>handleEvidenceUpload('storyboard', e)}/></label>
+                                            </div>
+                                        ) : (
+                                            <label className="btn-gummy btn-orange text-xs w-full">
+                                                <i className="fas fa-camera mr-2"></i> SUBIR EVIDENCIA
+                                                <input type="file" className="hidden" onChange={(e)=>handleEvidenceUpload('storyboard', e)} />
+                                            </label>
+                                        )}
+                                    </div>
                                 </div>
-                                <div onClick={() => launchTool('https://libroalbum.github.io/libro-lbum-pedag-gico/')} className="tool-card" style={{borderColor:'var(--lime-punch)', backgroundColor:'#ECFCCB'}}>
-                                    <i className="fas fa-book-reader tool-icon" style={{color:'var(--lime-punch)'}}></i>
-                                    <span className="tool-title" style={{color:'var(--lime-punch)'}}>REFERENCIA</span>
-                                    <span className="text-xs font-bold text-gray-500 mt-2">EJEMPLO DE LIBRO</span>
+                            </div>
+                            
+                            {/* REFERENCIA (SOLO LINK) */}
+                            <div className="mt-6">
+                                <div onClick={() => launchTool('https://libroalbum.github.io/libro-lbum-pedag-gico/')} className="bg-white p-4 rounded-xl border-2 border-green-200 flex items-center justify-center gap-4 cursor-pointer hover:bg-green-50 transition shadow-sm">
+                                    <i className="fas fa-book-reader text-green-500 text-2xl"></i>
+                                    <span className="font-bold text-green-700 font-sans">VER LIBRO DE EJEMPLO (REFERENCIA)</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* ZONA DE PROYECTOS */}
+                        {/* PROYECTOS */}
                         <div>
                             <h3 className="text-2xl font-bold text-gray-700 mb-6 pop-title pl-2 border-l-4 border-blue-400">MIS LIBROS</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -427,7 +456,84 @@
                                 })}
                             </div>
                         </div>
+                    </div>
+                </div>
+            );
+        }
 
+        function ExternalToolView({ url, setView }) {
+            return (
+                <div className="w-full h-full bg-white relative flex flex-col">
+                    <div className="h-14 bg-gray-800 flex items-center justify-between px-4 shadow-lg z-50">
+                        <span className="text-white font-bold">Herramienta Externa</span>
+                        <button onClick={() => setView('dashboard')} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded font-bold text-sm">CERRAR Y VOLVER</button>
+                    </div>
+                    <iframe src={url} className="flex-1 border-none w-full" title="Herramienta"></iframe>
+                </div>
+            );
+        }
+
+        // --- VISTA PÚBLICA (PORTAFOLIO) ---
+        function PublicPortfolioView({ uid }) {
+            const [portfolio, setPortfolio] = useState({});
+            const [books, setBooks] = useState([]);
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                if(!db) return;
+                // Cargar datos
+                const load = async () => {
+                    // Portfolio (Moodboard/Storyboard)
+                    onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid), (d) => {
+                        if(d.exists()) setPortfolio(d.data());
+                    });
+                    // Libros
+                    const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
+                    onSnapshot(q, (snap) => {
+                        setBooks(snap.docs.map(d => ({id: d.id, ...d.data()})));
+                        setLoading(false);
+                    });
+                };
+                load();
+            }, [uid]);
+
+            if(loading) return <div className="flex h-screen items-center justify-center">Cargando Portafolio...</div>;
+
+            // Si hay libros, mostramos el primero en el visor grande
+            const featuredBook = books.length > 0 ? books[0] : null;
+
+            return (
+                <div className="portfolio-container">
+                    <div className="portfolio-header">
+                        <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
+                        <p className="text-xl opacity-80 font-sans">Explorando el mundo de la narración</p>
+                    </div>
+
+                    {/* 1. LIBRO DESTACADO */}
+                    <div className="portfolio-section">
+                        <h2 className="text-3xl text-center font-bold text-gray-700 mb-8 pop-title">MI LIBRO ÁLBUM</h2>
+                        <div className="bg-gray-200 rounded-3xl overflow-hidden shadow-2xl border-4 border-white" style={{height:'600px'}}>
+                            {featuredBook ? (
+                                <BookViewer pages={featuredBook.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
+                            ) : (
+                                <div className="flex items-center justify-center h-full text-gray-400 font-bold">El estudiante aún no ha publicado libros.</div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* 2. GALERÍA DE EVIDENCIAS */}
+                    <div className="portfolio-section pb-20">
+                        <h2 className="text-3xl text-center font-bold text-gray-700 mb-8 pop-title">PROCESO CREATIVO</h2>
+                        <div className="portfolio-grid">
+                            <div className="evidence-card">
+                                <div className="evidence-title text-purple-600">MOODBOARD</div>
+                                {portfolio.moodboard ? <img src={portfolio.moodboard} className="evidence-img" /> : <div className="evidence-img flex items-center justify-center text-gray-300">Sin entrega</div>}
+                            </div>
+                            <div className="evidence-card">
+                                <div className="evidence-title text-orange-600">STORYBOARD</div>
+                                {portfolio.storyboard ? <img src={portfolio.storyboard} className="evidence-img" /> : <div className="evidence-img flex items-center justify-center text-gray-300">Sin entrega</div>}
+                            </div>
+                        </div>
                     </div>
                 </div>
             );
@@ -440,7 +546,6 @@
 
             useEffect(() => { const bid = localStorage.getItem('currentBookId'); if(!bid || !db) return; getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid)).then(snap => { if(snap.exists()) setBook({id: snap.id, ...snap.data()}); }); }, []);
             const save = async () => { try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); alert("¡GUARDADO!"); } catch (e) { alert("Error guardando."); } };
-            const share = () => { const url = `${window.location.origin}${window.location.pathname}?uid=${user.uid}&book=${book.id}`; navigator.clipboard.writeText(url); alert("¡Link copiado!"); };
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
             const addPage = () => { const np = [...book.pages]; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: '' }, back: { type: 'image-page', bg: '' } }); setBook({...book, pages: np}); };
 
@@ -451,7 +556,6 @@
                     <div className="sidebar-studio">
                         <div className="icon-chunk btn-grape" onClick={()=>setView('dashboard')} data-tooltip="Inicio"><i className="fas fa-home"></i></div>
                         <div className="icon-chunk btn-lime" onClick={save} data-tooltip="Guardar"><i className="fas fa-save"></i></div>
-                        <div className="icon-chunk btn-cyan" onClick={share} data-tooltip="Compartir"><i className="fas fa-share-alt"></i></div>
                         <div className="mt-auto">
                             <div className="icon-chunk btn-orange" onClick={addPage} data-tooltip="Agregar Página"><i className="fas fa-plus"></i></div>
                         </div>
@@ -463,22 +567,29 @@
             );
         }
 
-        function PublicViewer({ book }) {
-            const [activeIdx, setActiveIdx] = useState(-1);
-            return <div className="h-screen w-screen bg-gray-100 flex items-center justify-center"><BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={false} /></div>
-        }
-
-        // --- COMPONENTE DEL LIBRO ---
+        // --- COMPONENTE DEL LIBRO (REUTILIZABLE) ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
-            const isOpen = activeIdx >= 0 && activeIdx < pages.length - 1;
-            const isClosedBack = activeIdx === pages.length - 1;
+            // Estado local para visor público si no se pasa control externo
+            const [localIdx, setLocalIdx] = useState(activeIdx);
+            const currentIdx = isEditor ? activeIdx : localIdx;
+            
+            const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
+            const isClosedBack = currentIdx === pages.length - 1;
 
-            const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } setActiveIdx(newIdx); };
+            const changePage = (newIdx) => { 
+                if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } 
+                if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx);
+            };
+            
+            // Teclado
             useEffect(() => {
-                const handleKeyDown = (e) => { if (e.key === "ArrowRight" && activeIdx < pages.length-1) changePage(activeIdx+1); if (e.key === "ArrowLeft" && activeIdx >= 0) changePage(activeIdx-1); };
+                const handleKeyDown = (e) => { 
+                    if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); 
+                    if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); 
+                };
                 window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [activeIdx, pages]);
+            }, [currentIdx, pages]);
 
             const isEditableImage = (idx, side) => { if (idx === 1 && side === 'back') return false; if (idx === 2) return false; return true; };
             const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
@@ -503,14 +614,14 @@
             };
 
             return (
-                <div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center'}}>
+                <div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}>
                     <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
                     <div id="stage">
                         <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
                             {pages.map((p, i) => {
-                                const zIndex = activeIdx >= i ? i + 1 : pages.length - i;
+                                const zIndex = currentIdx >= i ? i + 1 : pages.length - i;
                                 return (
-                                    <div key={p.id} className={`paper ${i <= activeIdx ? 'flipped' : ''}`} style={{zIndex}}>
+                                    <div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}>
                                         <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
                                             {renderEditOverlay(i, 'front', p.front.bg)}
                                             {p.front.type==='text-page' && (
@@ -536,8 +647,8 @@
                             })}
                         </div>
                     </div>
-                    {activeIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(activeIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
-                    {activeIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(activeIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
+                    {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
+                    {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
                 </div>
             );
         }
