@@ -24,10 +24,13 @@
             --bg-ice: #F8FAFC; 
             --text-main: #334155;
             
+            /* AJUSTE ESPECÍFICO: Color del Encabezado (Cian Eléctrico de la imagen) */
+            --header-blue: #00C6FF; 
+            
             /* Acentos de Energía */
             --hyper-grape: #8B5CF6;
             --lime-punch: #84CC16;
-            --electric-cyan: #00C6FF; /* Azul Eléctrico Ajustado */
+            --electric-cyan: #06B6D4;
             --hot-orange: #F97316;
             --pop-pink: #EC4899;
             
@@ -38,10 +41,10 @@
             --shadow-orange: #C2410C;
             --shadow-pink: #BE185D;
 
-            /* Editor Fondo */
-            --canvas-grey: #f3f4f6;
+            /* Editor Fondo Dark Mode */
+            --canvas-dark: #1e293b;
 
-            /* Variables del Libro */
+            /* Variables del Libro (INTACTAS) */
             --book-width: 460px;
             --book-height: 600px;
             --paper-texture: #fdfbf7;
@@ -110,10 +113,10 @@
 
         /* --- 3. ESTRUCTURA --- */
         
-        /* Encabezado AZUL ELÉCTRICO (Ajustado) */
+        /* Encabezado con el color AJUSTADO */
         .header-studio {
             width: 100%;
-            background-color: var(--electric-cyan); /* Azul Eléctrico */
+            background-color: var(--header-blue); /* AQUI SE APLICA EL COLOR NUEVO */
             padding: 15px 40px;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 4px solid rgba(0,0,0,0.1);
@@ -124,7 +127,7 @@
         .logo-text {
             font-size: 2rem;
             color: white; /* Texto Blanco */
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
         }
 
         /* Tarjetas */
@@ -142,10 +145,12 @@
         .card-footer {
             padding: 15px; text-align: center;
             border-top: 1px solid rgba(255,255,255,0.2);
+            position: relative;
         }
         .card-title { 
             font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.2rem; 
             margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .card-tag {
             display: inline-block; padding: 4px 12px; border-radius: 12px;
@@ -154,7 +159,7 @@
             text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* --- 4. LIENZO DEL EDITOR (CORREGIDO: CERO MÁRGENES) --- */
+        /* --- 4. LIENZO DEL EDITOR --- */
         .canvas-grid {
             flex: 1; 
             position: relative; 
@@ -162,14 +167,14 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
-            background-color: var(--canvas-grey);
+            background-color: var(--canvas-dark);
+            /* Patrón de Cuadrícula */
             background-image: 
-                linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
             background-size: 40px 40px;
             width: 100%;
             height: 100%;
-            /* Eliminamos cualquier margen que cause espacios */
             margin: 0; 
             padding: 0; 
         }
@@ -239,7 +244,7 @@
             background: white; border: 3px solid var(--electric-cyan);
             padding: 15px; border-radius: 20px; text-align: center;
             transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px;
-            box-shadow: 0 10px 30px rgba(0, 198, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
         }
         .editor-mode .front:hover .upload-card, .editor-mode .back:hover .upload-card { transform: scale(1); }
 
@@ -378,12 +383,41 @@
 
         function Dashboard({ user, setView }) {
             const [books, setBooks] = useState([]);
+            const [editingId, setEditingId] = useState(null);
+            const [tempTitle, setTempTitle] = useState("");
+
             useEffect(() => { if(!user || !db) return; const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()})))); }, [user]);
             const createNew = async () => { const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }); localStorage.setItem('currentBookId', ref.id); setView('editor'); };
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             
+            // Delete
+            const deleteBook = async (e, bookId) => {
+                e.stopPropagation();
+                if(confirm("¿Estás seguro de querer borrar este cuento mágico?")) {
+                    await deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId));
+                }
+            }
+
+            // Start Rename
+            const startRename = (e, book) => {
+                e.stopPropagation();
+                setEditingId(book.id);
+                setTempTitle(book.title);
+            }
+
+            // Save Rename
+            const saveRename = async (e, bookId) => {
+                e.stopPropagation();
+                if(tempTitle.trim()) {
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId), {
+                        title: tempTitle
+                    });
+                }
+                setEditingId(null);
+            }
+
             /* COLORES VIBRANTES PARA TARJETAS */
-            const colors = ['var(--vib-yellow)', 'var(--vib-green)', 'var(--vib-purple)', 'var(--vib-pink)', 'var(--electric-cyan)'];
+            const colors = ['var(--hot-orange)', 'var(--lime-punch)', 'var(--hyper-grape)', 'var(--pop-pink)', 'var(--electric-cyan)'];
             const textColors = ['#444', '#fff', '#fff', '#fff', '#fff'];
 
             return (
@@ -391,7 +425,7 @@
                     <header className="header-studio">
                         <h2 className="text-3xl pop-title logo-text">CREATOR STUDIO</h2>
                         <div className="flex gap-4 items-center">
-                            <span className="text-sm font-bold px-3 py-1 rounded-full border-2 border-gray-200 text-gray-500">@{user.email.split('@')[0]}</span>
+                            <span className="text-sm font-bold px-3 py-1 rounded-full border-2 border-white text-white">@{user.email.split('@')[0]}</span>
                             <button onClick={() => signOut(auth)} className="btn-gummy btn-pink text-xs py-2 px-4">SALIR</button>
                         </div>
                     </header>
@@ -409,11 +443,48 @@
                                     <div className="h-48 bg-gray-100 relative">
                                         {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
                                         <span className="absolute bottom-3 right-3 text-xs font-bold text-white bg-black/40 px-2 py-1 rounded-lg backdrop-blur-sm font-sans">{b.pages.length} PÁGS</span>
+                                        
+                                        {/* DELETE BUTTON */}
+                                        <button 
+                                            className="absolute top-2 right-2 bg-white text-red-500 w-8 h-8 rounded-full shadow flex items-center justify-center hover:bg-red-50 transition z-20"
+                                            onClick={(e) => deleteBook(e, b.id)}
+                                            title="Borrar"
+                                        >
+                                            <i className="fas fa-trash-alt text-sm"></i>
+                                        </button>
                                     </div>
+                                    
                                     {/* FOOTER COLORIDO */}
-                                    <div className="card-footer" style={{backgroundColor: bgColor}}>
-                                        <h3 className="pop-title text-lg truncate" style={{color: textColor}}>{b.title}</h3>
-                                        <span className="card-tag">EDITAR</span>
+                                    <div className="card-footer" style={{backgroundColor: bgColor, color: textColor}}>
+                                        {editingId === b.id ? (
+                                            <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
+                                                <input 
+                                                    className="text-xs p-1 rounded text-gray-700 w-full text-center"
+                                                    value={tempTitle}
+                                                    onChange={e => setTempTitle(e.target.value)}
+                                                    autoFocus
+                                                />
+                                                <div className="flex justify-center gap-2">
+                                                    <button onClick={(e) => saveRename(e, b.id)} className="text-xs bg-white text-green-600 px-2 py-1 rounded font-bold hover:scale-110 transition"><i className="fas fa-check"></i></button>
+                                                    <button onClick={(e) => {e.stopPropagation(); setEditingId(null);}} className="text-xs bg-white text-red-500 px-2 py-1 rounded font-bold hover:scale-110 transition"><i className="fas fa-times"></i></button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center">
+                                                <h3 className="pop-title text-lg truncate flex items-center gap-2">
+                                                    {b.title}
+                                                    <button 
+                                                        className="text-sm opacity-60 hover:opacity-100 transition hover:scale-110"
+                                                        onClick={(e) => startRename(e, b)}
+                                                        title="Cambiar Nombre"
+                                                        style={{color: textColor}}
+                                                    >
+                                                        <i className="fas fa-pencil-alt"></i>
+                                                    </button>
+                                                </h3>
+                                                <span className="card-tag">EDITAR</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )
