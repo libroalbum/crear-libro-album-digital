@@ -585,24 +585,26 @@
             if(loading) return <div className="flex h-screen items-center justify-center">Cargando Portafolio...</div>;
 
             return (
-                <div className="portfolio-container">
-                    <div className="portfolio-header-bg">
-                        <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
-                        <p className="text-xl opacity-80 font-sans">Explorando el mundo de la narración</p>
-                    </div>
-                    <div className="gallery-content">
-                        <div className="book-showcase">
-                            {/* CORRECCIÓN: Pasar activeIdx={-1} asegura que se muestre cerrado */}
-                            {book ? <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /> : <div className="text-white font-bold">Libro no disponible</div>}
+                <div className="h-full overflow-y-auto"> {/* WRAPPER ADDED TO FIX SCROLL */}
+                    <div className="portfolio-container">
+                        <div className="portfolio-header-bg">
+                            <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
+                            <p className="text-xl opacity-80 font-sans">Explorando el mundo de la narración</p>
                         </div>
-                        <div className="evidence-grid">
-                            <div className="evidence-item">
-                                <div className="evidence-tag bg-purple-500">MOODBOARD</div>
-                                {portfolio.moodboard ? <img src={portfolio.moodboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
+                        <div className="gallery-content">
+                            <div className="book-showcase">
+                                {/* CORRECCIÓN: Pasar activeIdx={-1} asegura que se muestre cerrado */}
+                                {book ? <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /> : <div className="text-white font-bold">Libro no disponible</div>}
                             </div>
-                            <div className="evidence-item">
-                                <div className="evidence-tag bg-orange-500">STORYBOARD</div>
-                                {portfolio.storyboard ? <img src={portfolio.storyboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
+                            <div className="evidence-grid">
+                                <div className="evidence-item">
+                                    <div className="evidence-tag bg-purple-500">MOODBOARD</div>
+                                    {portfolio.moodboard ? <img src={portfolio.moodboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
+                                </div>
+                                <div className="evidence-item">
+                                    <div className="evidence-tag bg-orange-500">STORYBOARD</div>
+                                    {portfolio.storyboard ? <img src={portfolio.storyboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
+                                </div>
                             </div>
                         </div>
                     </div>
