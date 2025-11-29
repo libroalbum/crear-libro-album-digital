@@ -522,15 +522,33 @@
                             </div>
                         )}
 
-                        {/* --- NUEVA VISTA ACTIVIDAD: QUIZ --- */}
+                        {/* --- SECCIÓN ACTUALIZADA: QUIZ CON IMAGEN Y BOTÓN --- */}
                         {activeSection === 'quiz' && (
                             <div className="h-full flex flex-col">
                                 <div className="mb-6">
                                     <h2 className="module-title text-yellow-500 mb-2">QUIZ TIME</h2>
                                     <p className="text-gray-600">¡Demuestra lo que has aprendido!</p>
                                 </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg">
-                                    <iframe src="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" className="w-full h-full border-none"></iframe>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg group">
+                                     {/* Imagen de fondo solicitada */}
+                                    <img 
+                                        src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" 
+                                        alt="Kahoot Quiz" 
+                                        className="w-full h-full object-cover"
+                                    />
+                                    
+                                    {/* Overlay con botón de redirección */}
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                        <a 
+                                            href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform"
+                                            style={{textDecoration: 'none'}}
+                                        >
+                                            <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         )}
