@@ -279,6 +279,8 @@
             const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
+            const [editingId, setEditingId] = useState(null);
+            const [tempTitle, setTempTitle] = useState("");
 
             // Cargar libros y datos de portafolio
             useEffect(() => { 
@@ -312,7 +314,13 @@
                 navigator.clipboard.writeText(url);
                 alert("Enlace público copiado.");
             };
+            
+            // Funciones de Edición/Borrado
             const deleteBook = async (e, bookId) => { e.stopPropagation(); if(confirm("¿Borrar?")) await deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId)); };
+            const startRename = (e, book) => { e.stopPropagation(); setEditingId(book.id); setTempTitle(book.title); };
+            const saveRename = async (e, bookId) => { e.stopPropagation(); if(tempTitle.trim()) await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId), { title: tempTitle }); setEditingId(null); };
+
+            const colors = ['var(--hot-orange)', 'var(--lime-punch)', 'var(--hyper-grape)', 'var(--pop-pink)', 'var(--electric-cyan)'];
 
             return (
                 <div className="classroom-container">
@@ -353,42 +361,41 @@
                             <div>
                                 <div className="module-header">
                                     <h2 className="module-title text-cyan-500">MIS PROYECTOS</h2>
+                                    <button onClick={createNew} className="btn-gummy btn-lime text-sm"><i className="fas fa-plus mr-2"></i> NUEVO LIBRO</button>
                                 </div>
-                                
-                                {/* RESUMEN RÁPIDO */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                                    <div className="summary-card border-l-8 border-pink-400">
-                                        <div className="summary-icon bg-pink-400"><i className="fas fa-book"></i></div>
-                                        <div>
-                                            <h4 className="font-bold text-gray-600">Libros Creados</h4>
-                                            <p className="text-2xl font-bold text-pink-500">{books.length}</p>
-                                        </div>
-                                    </div>
-                                    <div className="summary-card border-l-8 border-green-400">
-                                        <div className="summary-icon bg-green-400"><i className="fas fa-check-circle"></i></div>
-                                        <div>
-                                            <h4 className="font-bold text-gray-600">Misiones Listas</h4>
-                                            <p className="text-2xl font-bold text-green-500">{(portfolioData.moodboard ? 1 : 0) + (portfolioData.storyboard ? 1 : 0)} / 2</p>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {books.map((b, i) => (
-                                        <div key={b.id} className="glass-panel p-4 cursor-pointer hover:border-cyan-400 border-2 border-transparent" onClick={()=>openBook(b.id)}>
-                                            <div className="h-40 bg-gray-100 rounded-xl mb-3 relative overflow-hidden">
-                                                {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
-                                                <button className="absolute top-2 right-2 text-red-400 hover:text-red-600 bg-white rounded-full p-1 px-2 shadow" onClick={(e)=>deleteBook(e,b.id)}><i className="fas fa-trash"></i></button>
+                                    {books.map((b, i) => {
+                                        const bgColor = colors[i % colors.length];
+                                        return (
+                                            <div key={b.id} className="project-card group" onClick={()=>openBook(b.id)}>
+                                                <div className="card-img-container h-48 bg-gray-100 relative overflow-hidden">
+                                                    {b.pages[0].front.bg ? <img src={b.pages[0].front.bg} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><i className="fas fa-book text-4xl"></i></div>}
+                                                    <span className="card-page-badge">{b.pages.length} PÁGS</span>
+                                                    <div className="card-delete-btn" onClick={(e)=>deleteBook(e,b.id)}><i className="fas fa-trash-alt"></i></div>
+                                                </div>
+                                                
+                                                <div className="card-footer" style={{backgroundColor: bgColor}}>
+                                                    {editingId === b.id ? (
+                                                        <div className="flex flex-col gap-2 w-full" onClick={e => e.stopPropagation()}>
+                                                            <input className="simple-edit-input" value={tempTitle} onChange={e => setTempTitle(e.target.value)} autoFocus />
+                                                            <div className="flex justify-center gap-2">
+                                                                <button onClick={(e) => saveRename(e, b.id)} className="text-xs bg-white text-green-600 px-2 py-1 rounded font-bold hover:scale-110 transition"><i className="fas fa-check"></i></button>
+                                                                <button onClick={(e) => {e.stopPropagation(); setEditingId(null);}} className="text-xs bg-white text-red-500 px-2 py-1 rounded font-bold hover:scale-110 transition"><i className="fas fa-times"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center w-full">
+                                                            <div className="card-title-row">
+                                                                <h3 className="card-title truncate">{b.title}</h3>
+                                                                <button className="text-sm opacity-60 hover:opacity-100 text-white hover:scale-110 transition" onClick={(e) => startRename(e, b)}><i className="fas fa-pencil-alt"></i></button>
+                                                            </div>
+                                                            <span className="card-tag">EDITAR</span>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <h3 className="font-bold text-gray-700 text-lg truncate text-center font-sans">{b.title}</h3>
-                                            <div className="text-center mt-2"><span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded font-bold">{b.pages.length} Págs</span></div>
-                                        </div>
-                                    ))}
-                                    {/* BOTÓN NUEVO RÁPIDO */}
-                                     <div onClick={createNew} className="glass-panel p-4 cursor-pointer border-2 border-dashed border-gray-300 hover:border-green-400 flex flex-col items-center justify-center min-h-[200px]">
-                                        <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-3"><i className="fas fa-plus text-green-500 text-2xl"></i></div>
-                                        <span className="font-bold text-gray-400">Crear Nuevo Libro</span>
-                                     </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}
@@ -444,13 +451,6 @@
                                 </div>
                                 <div className="flex-1 bg-white rounded-3xl border-4 border-purple-100 overflow-hidden relative shadow-lg">
                                     <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
-                                    <div className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-xl shadow-lg backdrop-blur border border-purple-200">
-                                        <p className="text-xs font-bold text-purple-600 mb-2 text-center">¿Terminaste?</p>
-                                        <label className="btn-gummy btn-purple text-xs px-4 py-2">
-                                            <i className="fas fa-camera mr-2"></i> SUBIR EVIDENCIA
-                                            <input type="file" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
                         )}
@@ -463,13 +463,6 @@
                                 </div>
                                 <div className="flex-1 bg-white rounded-3xl border-4 border-orange-100 overflow-hidden relative shadow-lg">
                                     <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
-                                    <div className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-xl shadow-lg backdrop-blur border border-orange-200">
-                                        <p className="text-xs font-bold text-orange-600 mb-2 text-center">¿Terminaste?</p>
-                                        <label className="btn-gummy btn-orange text-xs px-4 py-2">
-                                            <i className="fas fa-camera mr-2"></i> SUBIR EVIDENCIA
-                                            <input type="file" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
                         )}
@@ -552,13 +545,19 @@
             const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
             const isClosedBack = currentIdx === pages.length - 1;
             const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx); };
+            
             useEffect(() => {
-                const handleKeyDown = (e) => { if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); };
+                const handleKeyDown = (e) => { 
+                    if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); 
+                    if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); 
+                };
                 window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown);
             }, [currentIdx, pages]);
+
             const isEditableImage = (idx, side) => { if (idx === 1 && side === 'back') return false; if (idx === 2) return false; return true; };
             const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
             const isEditableText = (idx, side) => { if (idx === 1 && side === 'back') return false; return true; };
+
             const renderEditOverlay = (pageIdx, side, currentBg) => {
                 if (!isEditor || !isEditableImage(pageIdx, side)) return null;
                 return (
@@ -574,6 +573,7 @@
                     </div>
                 );
             };
+
             return (
                 <div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}>
                     <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
