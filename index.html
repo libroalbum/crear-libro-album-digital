@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- FUENTES ORIGINALES (Dosis, Nunito, etc.) -->
+    <!-- FUENTES -->
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;700&family=Cinzel:wght@700&family=Merriweather&display=swap" rel="stylesheet">
 
     <!-- REACT -->
@@ -24,8 +24,8 @@
             --bg-ice: #F8FAFC; 
             --text-main: #334155;
             
-            /* COLORES VIBRANTES (Paleta solicitada) */
-            --vib-blue: #00C6FF;   /* Azul Encabezado */
+            /* COLORES VIBRANTES */
+            --vib-blue: #00C6FF;   
             --vib-purple: #D500F9;
             --vib-green: #64DD17;
             --vib-yellow: #FFD600;
@@ -34,7 +34,7 @@
             /* Editor Fondo */
             --canvas-grey: #f3f4f6;
 
-            /* Variables del Libro (INTACTAS) */
+            /* Variables del Libro */
             --book-width: 460px;
             --book-height: 600px;
             --paper-texture: #fdfbf7;
@@ -54,15 +54,15 @@
             background-size: 20px 20px;
         }
 
-        /* Títulos con Actitud */
+        /* Títulos */
         h1, h2, h3, .pop-title {
             font-family: 'Dosis', sans-serif;
-            font-weight: 800; /* Extra Bold */
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        /* --- 2. UI GUMMY (Botones) --- */
+        /* --- 2. UI GUMMY --- */
         .btn-gummy {
             border: none; outline: none; cursor: pointer;
             font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.1rem;
@@ -100,7 +100,7 @@
         /* Encabezado AZUL ELÉCTRICO */
         .header-studio {
             width: 100%;
-            background-color: var(--vib-blue); /* Azul Vibrante */
+            background-color: var(--vib-blue);
             padding: 15px 40px;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 4px solid rgba(0,0,0,0.1);
@@ -110,11 +110,11 @@
         
         .logo-text {
             font-size: 2rem;
-            color: white; /* Blanco */
+            color: white;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
 
-        /* Tarjetas de Proyecto */
+        /* Tarjetas */
         .project-card {
             background: white; border-radius: 24px; overflow: hidden;
             box-shadow: 0 8px 0 #E2E8F0; border: 3px solid #E2E8F0;
@@ -126,54 +126,53 @@
             border-color: var(--vib-blue);
             box-shadow: 0 12px 0 #0099cc;
         }
-        
-        /* Footer de Tarjeta COLOREADO */
         .card-footer {
             padding: 15px; text-align: center;
-            /* El color de fondo se inyecta dinámicamente */
             border-top: 1px solid rgba(255,255,255,0.2);
         }
         .card-title { 
             font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.2rem; 
             margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
         }
-        
-        /* Etiqueta "EDITAR" dentro de la tarjeta */
         .card-tag {
             display: inline-block; padding: 4px 12px; border-radius: 12px;
             font-size: 0.75rem; font-weight: 800; 
             background: rgba(0,0,0,0.2); color: white;
             text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.2s;
         }
-        .project-card:hover .card-tag { background: white; color: #333; }
 
-        /* --- 4. LIENZO DEL EDITOR (AJUSTADO AL 100%) --- */
+        /* --- 4. LIENZO DEL EDITOR (CORREGIDO: FULL HEIGHT) --- */
         .canvas-grid {
-            flex: 1; 
-            position: relative; 
-            overflow: hidden;
+            /* Ocupar todo el espacio disponible */
+            position: absolute; 
+            top: 0; 
+            left: 80px; /* Espacio para el sidebar */
+            right: 0; 
+            bottom: 0;
+            
             display: flex; 
             align-items: center; 
             justify-content: center;
+            
             background-color: var(--canvas-grey);
             /* Patrón de Cuadrícula */
             background-image: 
                 linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
             background-size: 40px 40px;
-            /* AJUSTE: Altura 100% para quitar franja */
-            height: 100%;
-            width: 100%;
+            
+            overflow: hidden;
+            z-index: 0;
         }
 
-        /* --- 5. BARRA LATERAL (Iconos Chunk) --- */
+        /* --- 5. BARRA LATERAL --- */
         .sidebar-studio {
-            width: 90px; height: 100%; background: white;
+            width: 80px; height: 100%; background: white;
             border-right: 3px solid #E2E8F0;
             display: flex; flex-direction: column; align-items: center;
             padding: 20px 0; z-index: 40; gap: 20px;
             box-shadow: 5px 0 15px rgba(0,0,0,0.02);
+            position: relative; z-index: 10;
         }
 
         .icon-chunk {
@@ -194,7 +193,7 @@
         }
         .icon-chunk:hover::after { opacity: 1; left: 70px; }
 
-        /* --- 6. LIBRO (INTACTO) --- */
+        /* --- 6. LIBRO --- */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
         .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
@@ -260,6 +259,7 @@
             :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); }
             #stage { perspective: 1200px; }
             .sidebar-studio { width: 60px; }
+            .canvas-grid { left: 60px; }
             .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; }
             .prev-btn { left: 80px; }
         }
