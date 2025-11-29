@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Creator Studio Pop - Aula Virtual</title>
     
     <!-- LIBRERÍAS -->
@@ -40,8 +40,15 @@
 
             --canvas-dark: #1e293b;
 
-            /* Variables Libro */
-            --book-width: 460px; --book-height: 600px; --paper-texture: #fdfbf7; --text-color: #2c3e50; --accent-color: #5d4037; --gold-color: #d4af37; --endpaper-bg: #a5d6a7; --endpaper-dot: #ffffff; 
+            /* Variables Libro - Base Desktop */
+            --book-width: 460px; 
+            --book-height: 600px; 
+            --paper-texture: #fdfbf7; 
+            --text-color: #2c3e50; 
+            --accent-color: #5d4037; 
+            --gold-color: #d4af37; 
+            --endpaper-bg: #a5d6a7; 
+            --endpaper-dot: #ffffff; 
         }
 
         html, body, #root { height: 100%; margin: 0; padding: 0; overflow: hidden; }
@@ -66,7 +73,7 @@
 
         /* --- LAYOUT CLASSROOM --- */
         .classroom-container { display: flex; height: 100%; width: 100%; }
-        .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; }
+        .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; transition: all 0.3s ease; }
         .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
         .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 800; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Dosis'; font-size: 1.1rem; }
         .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
@@ -74,7 +81,7 @@
         .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; }
 
         .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 40px; position: relative; }
-        .module-header { margin-bottom: 30px; border-bottom: 3px solid #E2E8F0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .module-header { margin-bottom: 30px; border-bottom: 3px solid #E2E8F0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .module-title { font-size: 2rem; color: var(--text-main); font-family: 'Luckiest Guy'; }
 
         .summary-card { background: white; padding: 20px; border-radius: 20px; border-bottom: 4px solid #E2E8F0; display: flex; align-items: center; gap: 20px; }
@@ -92,8 +99,8 @@
         .icon-chunk::after { content: attr(data-tooltip); position: absolute; left: 65px; background: var(--text-main); color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-family: 'Nunito'; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; z-index: 100; }
         .icon-chunk:hover::after { opacity: 1; left: 70px; }
 
-        /* Libro Clásico */
-        #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
+        /* Libro Clásico & Responsive Logic */
+        #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; width: 100%; height: 100%; }
         .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
         .book.opened { transform: translateX(50%); } .book.opened::before { width: 196%; left: -95%; opacity: 0.4; background: rgba(0,0,0,0.15); } .book.closed-back { transform: translateX(100%); } .book.closed-back::before { width: 96%; left: -99%; }
@@ -104,9 +111,9 @@
         .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
         .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
         .image-page { background-size: cover; background-position: center; background-color: #fff; }
-        .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
-        .inline-input-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; margin-bottom: 5px; outline: none; padding: 5px; border-bottom: 2px solid var(--gold-color); }
-        .inline-input-text { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px; }
+        .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10%; text-align: center; }
+        .inline-input-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: clamp(1rem, 4vw, 1.4rem); background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; margin-bottom: 5px; outline: none; padding: 5px; border-bottom: 2px solid var(--gold-color); }
+        .inline-input-text { font-family: 'Merriweather', serif; font-size: clamp(0.7rem, 2.5vw, 0.95rem); line-height: 1.6; color: #555; font-style: italic; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px; }
         .endpaper { background-color: var(--endpaper-bg); background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px); background-size: 20px 20px; }
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
@@ -120,6 +127,7 @@
         .upload-btn:hover { transform: translateY(-2px); } .upload-btn:active { transform: translateY(2px); box-shadow: none; }
         .url-input { width: 100%; padding: 8px; background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; font-family: 'Nunito'; font-weight: 700; }
         .remove-btn { margin-top: 5px; color: #EF4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: 800; text-transform: uppercase; }
+        
         .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan); font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #0099cc; }
         .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; } .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
@@ -178,7 +186,75 @@
         .book-select-item:hover { border-color: var(--electric-cyan); background: #f0f9ff; }
         .book-select-thumb { width: 60px; height: 60px; background: #ddd; border-radius: 10px; object-fit: cover; }
 
-        @media (max-width: 900px) { :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); } #stage { perspective: 1200px; } .sidebar-editor { width: 60px; } .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; } .prev-btn { left: 80px; } .classroom-container { flex-direction: column; } .classroom-sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; } }
+        /* --- RESPONSIVE / MEDIA QUERIES (MAGIA AQUÍ) --- */
+        @media (max-width: 900px) { 
+            :root { 
+                /* Tablet / Laptop pequeño: El libro se ajusta al ancho */
+                --book-width: 42vw; 
+                --book-height: calc(42vw * 1.35); 
+            } 
+            #stage { perspective: 1200px; } 
+            
+            /* Sidebar cambia a estilo "App" con scroll horizontal arriba */
+            .classroom-container { flex-direction: column; } 
+            .classroom-sidebar { 
+                width: 100%; 
+                height: auto; 
+                flex-direction: row; 
+                overflow-x: auto; 
+                padding: 10px;
+                border-right: none;
+                border-bottom: 2px solid #E2E8F0;
+            }
+            .sidebar-logo { 
+                font-size: 1.2rem; 
+                margin-bottom: 0; 
+                margin-right: 20px; 
+                white-space: nowrap;
+            }
+            .menu-item { 
+                margin-bottom: 0; 
+                margin-right: 10px; 
+                white-space: nowrap;
+                font-size: 0.9rem;
+            }
+            .mt-auto { margin-top: 0 !important; margin-left: auto; border-t: none !important; padding-top: 0 !important; border-left: 2px solid #E2E8F0; padding-left: 10px;}
+            
+            /* Ajustes de contenido */
+            .classroom-content { padding: 20px; }
+            .book-showcase { height: 400px; }
+            
+            /* Editor Sidebar se vuelve barra inferior en móviles */
+            .flex-col.h-full.w-full.relative.overflow-hidden { flex-direction: column-reverse; }
+            .sidebar-editor { 
+                width: 100%; 
+                height: 60px; 
+                flex-direction: row; 
+                border-right: none; 
+                border-top: 3px solid #E2E8F0; 
+                padding: 0 20px; 
+                justify-content: space-around;
+            }
+            .icon-chunk::after { display: none; } /* Ocultar tooltips en móvil */
+            .mt-auto { margin-left: 0; }
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                /* Móvil Portrait: Ajuste más agresivo */
+                --book-width: 44vw; /* Un poco más ancho para que se vea */
+                --book-height: calc(44vw * 1.35);
+            }
+            .nav-btn { width: 45px; height: 45px; font-size: 1rem; top: auto; bottom: 20px; transform: none; background: rgba(255,255,255,0.9); }
+            .prev-btn { left: 20px; }
+            .next-btn { right: 20px; }
+            .nav-btn:hover { transform: scale(1.1); }
+            
+            .module-title { font-size: 1.5rem; }
+            .portfolio-header-bg { padding: 40px 10px 80px 10px; }
+            .kids-title { font-size: 1.8rem; }
+            .book-showcase { height: 350px; border-width: 3px; }
+        }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
@@ -205,6 +281,177 @@
 
         let app, auth, db;
         try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch (e) { console.error(e); }
+
+        // --- DATOS DEL CURSO (ACORDEÓN) ---
+        const courseData = [
+            {
+                id: 0,
+                label: "Introducción",
+                title: "¡A la Carga! Tu Misión de Autor",
+                subtitle: "Misión 0: Presentación y Mapa del Tesoro",
+                color: 'pink',
+                intro: "¡Hola, Aventurero Creativo! Estás a punto de empezar un viaje épico: crear tu propio **Libro-Álbum Digital**. Este curso es tu mapa para ir de una idea genial a un libro publicado. ¿Listo para desbloquear tus habilidades de **Conceptualización, Narrativa, Diseño y Maquetación**? ¡Tu historia espera!",
+                progress: 0,
+                lessons: [
+                    {
+                    id: 0.1,
+                    type: "El Gran Objetivo",
+                    title: "Alcance y Entregables del Proyecto",
+                    description: "Definiremos el **Objetivo Final**: la creación de un libro-álbum digital completo y funcional. Conocerás los **Entregables Clave** requeridos en cada fase: el guion literario, el Moodboard, el Storyboard visual, las ilustraciones finales y el archivo de maquetación listo para publicación.",
+                    icon: 'fas fa-star',
+                    tags: ["Alcance", "Metas", "Hitos"]
+                    },
+                    {
+                    id: 0.2,
+                    type: "Tu Kit de Herramientas",
+                    title: "Definición de Software y Roles",
+                    description: "Revisaremos las **Herramientas Esenciales** para el flujo de trabajo digital. Se definirán las aplicaciones de software recomendadas para cada fase, desde la conceptualización y el bocetaje digital (como Procreate o Krita) hasta la maquetación profesional (Adobe InDesign o similar).",
+                    icon: 'fas fa-chevron-right',
+                    tags: ["Software", "Flujo de trabajo", "Recursos"]
+                    }
+                ]
+            },
+            {
+                id: 1,
+                label: "Unidad 1",
+                title: "Nivel 1: El Código Secreto del Libro-Álbum",
+                subtitle: "Unidad 1: Descifrando el Lenguaje Visual",
+                color: 'indigo',
+                intro: "¡Bienvenido al Nivel 1! El Libro-Álbum es un formato con **súper poderes**. Aquí aprenderás a leer y usar la magia de la imagen y el texto juntos. Es la base para que tu historia no solo se cuente, sino que deje una huella inolvidable.",
+                progress: 15,
+                lessons: [
+                    {
+                    id: 1.1,
+                    type: "Concepto Clave",
+                    title: "La Relación Interdependiente Texto-Imagen",
+                    description: "El concepto fundamental del **Libro-Álbum** es la **Interdependencia Narrativa**: la imagen y el texto se complementan y, en ocasiones, se contradicen para generar nuevos significados. Analizaremos ejemplos de **Páginas Mudas** y cómo la omisión intencional de texto construye tensión o emoción.",
+                    icon: 'fas fa-book-open',
+                    tags: ["Definición", "Sinergia", "Secuencialidad"]
+                    },
+                    {
+                    id: 1.2,
+                    type: "Anatomía Narrativa",
+                    title: "Elementos Estructurales y Pacing",
+                    description: "Estudiaremos las partes concretas del libro: las **Guardas** (elementos de transición visual y temática), la **Doble Página** (espacio de máxima composición y clímax visual), y el **Paginado** como factor de **Ritmo** (*pacing*). Definiremos cómo la ubicación del texto afecta la velocidad de lectura.",
+                    icon: 'fas fa-layer-group',
+                    tags: ["Guardas", "Doble Página", "Paginado", "Ritmo"]
+                    },
+                    {
+                    id: 1.3,
+                    type: "Análisis de Caso",
+                    title: "Semiótica Visual y Composición",
+                    description: "Analizaremos cómo los elementos visuales comunican significado. Estudiaremos la **Teoría del Color** (simbolismo y emoción), la **Angulación de la Cámara** (picado, contrapicado, etc.) y la **Ley de Tercios** para entender cómo la composición guía la mirada del lector y refuerza el mensaje narrativo.",
+                    icon: 'fas fa-search',
+                    tags: ["Composición", "Color", "Angulación", "Referentes"]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                label: "Unidad 2",
+                title: "Nivel 2: Diseña tu Historia Épica",
+                subtitle: "Unidad 2: Del *Concept Art* al Storyboard",
+                color: 'green',
+                intro: "¡Hora de poner orden! Las mejores historias tienen una **estructura a prueba de fallos**. Aquí transformarás esa idea genial en un guion detallado y planificarás cada imagen antes de dibujar la ilustración final. ¡El arte de la planificación te espera!",
+                progress: 30,
+                lessons: [
+                    {
+                    id: 2.1,
+                    type: "Estructura Base",
+                    title: "El Guion: La Estructura de Tres Actos",
+                    description: "Definición y aplicación de la **Estructura de Tres Actos** al guion de libro-álbum: 1. **Planteamiento** (presentación de personaje y conflicto), 2. **Nudo** (desarrollo, crisis y puntos de giro), y 3. **Desenlace** (resolución y conclusión). Se definirán la motivación y el conflicto central del protagonista.",
+                    icon: 'fas fa-map-marked-alt',
+                    tags: ["Guion", "Trama", "Personajes", "Actos"]
+                    },
+                    {
+                    id: 2.2,
+                    type: "Pre-visualización",
+                    title: "Creación del Moodboard y Tono Estético",
+                    description: "El **Moodboard** es la herramienta de referencia visual que define el **Tono Estético** y la **Consistencia** del proyecto. Aprenderás a recopilar imágenes de color, estilos de ilustración, texturas y referencias tipográficas para establecer una paleta visual coherente antes de iniciar la producción artística.",
+                    icon: 'fas fa-feather-alt',
+                    tags: ["Moodboard", "Paleta", "Referencia Estética"]
+                    },
+                    {
+                    id: 2.3,
+                    type: "Planificación Visual",
+                    title: "El Storyboard (Maqueta Conceptual Visual)",
+                    description: "El **Storyboard** es la representación secuencial de cada página o doble página. Sirve para definir la **Composición de Página**, la ubicación del texto y el **Ritmo Narrativo** visual. Es una herramienta clave de prevención de errores en el flujo de la historia antes de la fase de ilustración final.",
+                    icon: 'fas fa-th-large',
+                    tags: ["Ritmo", "Composición", "Secuencia"]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                label: "Unidad 3",
+                title: "Nivel 3: Dando Vida a tus Personajes (y Mundos)",
+                subtitle: "Unidad 3: Diseño y Estilo de Ilustración",
+                color: 'amber',
+                intro: "¡Tu lápiz (o stylus) está listo! Ahora vamos a diseñar a tus héroes y villanos. Cada línea, cada color que elijas, debe contar una historia. Prepárate para que tus creaciones salten de la página.",
+                progress: 55,
+                lessons: [
+                    {
+                    id: 3.1,
+                    type: "Diseño de Protagonistas",
+                    title: "Principios de Diseño y Arco de Personaje",
+                    description: "El diseño de personajes debe reflejar su **Arco Emocional**. Se definirán técnicas como el **Turnaround** (vista 360°) y el diseño de *Props* (objetos clave). El color, la forma y la vestimenta se analizan como herramientas para comunicar la personalidad y la evolución del personaje.",
+                    icon: 'fas fa-feather-alt',
+                    tags: ["Diseño", "Carácter", "Prop", "Turnaround"]
+                    },
+                    {
+                    id: 3.2,
+                    type: "Ambientación",
+                    title: "Diseño de Escenarios y Creación de Atmósfera",
+                    description: "El escenario es un **Elemento Narrativo**. Aprenderás a utilizar la **Iluminación** (clave alta/baja, sombras) y la **Perspectiva** (líneas de fuga, punto de vista) para establecer la **Atmósfera** emocional (felicidad, misterio, amenaza) y contextualizar las acciones del personaje.",
+                    icon: 'fas fa-map-marked-alt',
+                    tags: ["Fondo", "Iluminación", "Perspectiva"]
+                    },
+                    {
+                    id: 3.3,
+                    type: "Técnicas de Ilustración",
+                    title: "Representación de Gesto y Emoción",
+                    description: "Estudio de la **Anatomía Emocional**: cómo la **Postura**, el **Gesto** (movimiento corporal) y las **Micro-expresiones** faciales transmiten el estado de ánimo. Se explorarán técnicas para exagerar o simplificar estos elementos para lograr un mayor impacto dramático o cómico en la ilustración.",
+                    icon: 'fas fa-book-open',
+                    tags: ["Gesto", "Emoción", "Expresión"]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                label: "Unidad 4",
+                title: "Nivel 4: ¡Maquetación Final y a Publicar!",
+                subtitle: "Unidad 4: El Gran Montaje y Salida al Mundo",
+                color: 'emerald',
+                intro: "¡Felicitaciones! Tienes tu guion, tus bocetos y tus ilustraciones TOP. Esta es la fase técnica: montar el rompecabezas en el formato digital correcto. Prepárate para el **Montaje Final** y para que tu obra vea la luz.",
+                progress: 85,
+                lessons: [
+                    {
+                    id: 4.1,
+                    type: "Diseño Técnico",
+                    title: "Maquetación Digital: Sangría y Márgenes de Seguridad",
+                    description: "Implementación de la plantilla de maquetación en el software de diseño. Definición y aplicación de la **Sangría (Bleed)**: el área de la ilustración que excede el corte final. Definición y respeto de los **Márgenes de Seguridad** para asegurar que el texto y los elementos clave no se corten o queden demasiado cerca del borde.",
+                    icon: 'fas fa-th-large',
+                    tags: ["Plantilla", "Márgenes", "Sangría", "Bleed"]
+                    },
+                    {
+                    id: 4.2,
+                    type: "Control de Calidad",
+                    title: "Consistencia Visual y Revisión de Arte Final",
+                    description: "Proceso de **Revisión Nivel Élite**: Verificar la legibilidad y jerarquía de la **Tipografía**. Asegurar la **Consistencia del Color** y la **Resolución** (DPI) de todas las imágenes. Se realiza un chequeo final de la coherencia visual, narrativa y técnica antes de la exportación.",
+                    icon: 'fas fa-search',
+                    tags: ["Tipografía", "Color", "Resolución", "QC"]
+                    },
+                    {
+                    id: 4.3,
+                    type: "Entrega Final",
+                    title: "Exportación y Archivo de Publicación",
+                    description: "Proceso de exportación al formato digital final: **PDF Interactivo** o **ePub** (según requisitos de la plataforma). Se configuran los parámetros técnicos (compresión, incrustación de fuentes) para crear un archivo que cumpla con los requisitos de publicación y que sea visualmente fiel a la obra original.",
+                    icon: 'fas fa-paper-plane',
+                    tags: ["Exportación", "ePub", "PDF", "Entrega"]
+                    }
+                ]
+            }
+        ];
 
         const processImage = (file, callback) => {
             if (!file) return;
@@ -234,6 +481,133 @@
                 { id: 'end', type: 'structure', front: { type: 'endpaper' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true' } }
             ]
         };
+
+        // --- COMPONENTE DE ACORDEÓN ---
+        function CourseAccordion() {
+            const [openUnit, setOpenUnit] = useState(null); 
+            
+            const toggleUnit = (unitId) => {
+                setOpenUnit(openUnit === unitId ? null : unitId);
+            };
+
+            const totalProgress = courseData.length > 1 
+                ? (courseData.slice(1).reduce((sum, unit) => sum + unit.progress, 0) / (courseData.length - 1)).toFixed(0)
+                : 0;
+            
+            const getColors = (color) => {
+                switch(color) {
+                    case 'indigo': return { primary: 'bg-indigo-600', text: 'text-indigo-600', hover: 'hover:bg-indigo-700', bg: 'bg-indigo-50', border: 'border-indigo-200' };
+                    case 'green': return { primary: 'bg-green-600', text: 'text-green-600', hover: 'hover:bg-green-700', bg: 'bg-green-50', border: 'border-green-200' };
+                    case 'amber': return { primary: 'bg-amber-600', text: 'text-amber-600', hover: 'hover:bg-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' };
+                    case 'emerald': return { primary: 'bg-emerald-600', text: 'text-emerald-600', hover: 'hover:bg-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' };
+                    case 'pink':
+                    default: return { primary: 'bg-pink-600', text: 'text-pink-600', hover: 'hover:bg-pink-700', bg: 'bg-pink-50', border: 'border-pink-200' };
+                }
+            };
+
+            return (
+                <div className="p-4 lg:p-8 bg-slate-50 min-h-full rounded-3xl">
+                    <div className="max-w-4xl mx-auto space-y-4 lg:space-y-6">
+                        
+                        <h1 className="text-3xl lg:text-4xl font-extrabold text-slate-800 border-b pb-3 mb-6 pop-title">Estructura del Curso: Introducción y Unidades</h1>
+
+                        {courseData.map((unit) => {
+                            const colors = getColors(unit.color);
+                            const isOpen = openUnit === unit.id;
+
+                            return (
+                                <div key={unit.id} className="rounded-xl overflow-hidden shadow-lg border border-slate-200 transition-all duration-300">
+                                    
+                                    {/* Botón Acordeón (Encabezado) */}
+                                    <button 
+                                        onClick={() => toggleUnit(unit.id)}
+                                        className={`w-full flex items-center p-4 lg:p-6 text-left transition-all duration-300 ${isOpen ? 'bg-white shadow-md' : 'bg-white hover:bg-slate-50'}`}
+                                    >
+                                        <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-colors mr-4 ${colors.primary} text-white`}>
+                                            {unit.id === 0 ? 'I' : unit.id}
+                                        </div>
+                                        
+                                        <div className="flex-1">
+                                            <p className="text-xs font-semibold uppercase text-slate-500">{unit.label}</p>
+                                            <h2 className="text-lg lg:text-xl font-bold text-slate-800 leading-snug">{unit.title}</h2>
+                                        </div>
+
+                                        <div className="flex flex-col items-end ml-4">
+                                            <span className="text-xs font-medium text-slate-400 mb-1 hidden lg:block">{unit.progress}%</span>
+                                            <i className={`fas fa-chevron-down text-slate-500 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}></i>
+                                        </div>
+                                    </button>
+
+                                    {/* Contenido Desplegable */}
+                                    {isOpen && (
+                                        <div className="transition-all duration-500 ease-in-out">
+                                            <div className={`p-4 lg:p-6 ${colors.bg}`}>
+                                                
+                                                <div className="mb-6 pb-4 border-b border-slate-200">
+                                                    <p className="text-sm lg:text-base italic text-slate-700 mb-3">{unit.intro}</p>
+                                                    
+                                                    {unit.id !== 0 && (
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex-1 h-2 bg-white rounded-full">
+                                                                <div className={`${colors.primary} h-full rounded-full`} style={{ width: `${unit.progress}%` }}></div>
+                                                            </div>
+                                                            <span className={`text-sm font-medium ${colors.text}`}>{unit.progress}% Completado</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    {unit.lessons.map((lesson) => (
+                                                        <div key={lesson.id} className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex flex-col">
+                                                            <div className="flex items-start gap-3 mb-2">
+                                                                <div className={`p-2 rounded-lg border ${colors.border} bg-white shrink-0`}>
+                                                                    <i className={`${lesson.icon} text-lg ${colors.text}`}></i>
+                                                                </div>
+                                                                <div className='flex-1'>
+                                                                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{lesson.type}</span>
+                                                                    <h3 className="text-lg font-bold text-slate-800">{lesson.title}</h3>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <p className="text-sm text-slate-600 leading-relaxed mt-1 mb-3">{lesson.description}</p>
+
+                                                            <div className="flex flex-wrap gap-2 mt-auto pt-2 border-t border-slate-100">
+                                                                {lesson.tags.map(tag => (
+                                                                    <span key={tag} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full font-medium border border-slate-200">
+                                                                        #{tag}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                            
+                                                            <div className="mt-4 p-3 bg-slate-100 rounded-lg flex items-center justify-center gap-2 text-slate-500 text-xs font-medium cursor-not-allowed opacity-70">
+                                                                <i className="fas fa-play-circle"></i> Video Recurso (Enlace Pendiente)
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    
+                    <div className="w-full bg-white border-t p-4 mt-8 rounded-xl">
+                        <div className="max-w-4xl mx-auto flex items-center justify-between text-slate-700">
+                            <p className="text-sm font-medium">Progreso General del Curso:</p>
+                            <div className="flex items-center gap-3">
+                                <div className="w-40 h-2 bg-slate-200 rounded-full">
+                                    <div className="bg-pink-600 h-full rounded-full" style={{ width: `${totalProgress}%` }}></div>
+                                </div>
+                                <p className="text-sm font-bold">{totalProgress}%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
 
         // --- COMPONENTE PRINCIPAL ---
         function App() {
@@ -403,40 +777,9 @@
                     {/* AREA DE CONTENIDO */}
                     <div className="classroom-content">
                         
-                        {/* VISTA INICIO - AHORA MUESTRA VIDEO Y BIENVENIDA */}
+                        {/* VISTA INICIO - ACTUALIZADA CON ACORDEÓN */}
                         {activeSection === 'inicio' && (
-                            <div className="max-w-4xl mx-auto">
-                                <div className="module-header">
-                                    <h2 className="module-title text-cyan-500">BIENVENIDOS AL CURSO</h2>
-                                </div>
-                                
-                                <div className="glass-panel p-8 mb-8">
-                                    <h3 className="text-3xl font-bold font-sans text-gray-700 mb-4">Introducción al Taller</h3>
-                                    <p className="text-lg text-gray-600 mb-6">
-                                        Hola creador. En este espacio encontrarás todas las herramientas necesarias para construir tu propio Libro Álbum. 
-                                        Mira el siguiente video para comenzar tu aventura creativa.
-                                    </p>
-                                    
-                                    {/* CONTENEDOR DE VIDEO */}
-                                    <div className="w-full relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white" style={{paddingBottom: '56.25%', background: '#000'}}>
-                                        <iframe 
-                                            className="absolute top-0 left-0 w-full h-full"
-                                            src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" 
-                                            title="YouTube video player" 
-                                            frameBorder="0" 
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                            referrerPolicy="strict-origin-when-cross-origin" 
-                                            allowFullScreen>
-                                        </iframe>
-                                    </div>
-
-                                    <div className="mt-8 flex justify-center">
-                                        <button onClick={handleMyBook} className="btn-gummy btn-orange text-xl px-8 py-4">
-                                            <i className="fas fa-rocket mr-2"></i> ¡EMPEZAR MI LIBRO!
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <CourseAccordion />
                         )}
 
                         {/* VISTA PORTAFOLIO (WYSIWYG - VISUALIZACIÓN REAL) */}
