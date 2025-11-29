@@ -24,13 +24,20 @@
             --bg-ice: #F8FAFC; 
             --text-main: #334155;
             
-            /* COLORES VIBRANTES */
-            --vib-blue: #00C6FF;   
-            --vib-purple: #D500F9;
-            --vib-green: #64DD17;
-            --vib-yellow: #FFD600;
-            --vib-pink: #FF1744;
+            /* Acentos de Energía */
+            --hyper-grape: #8B5CF6;
+            --lime-punch: #84CC16;
+            --electric-cyan: #00C6FF; /* Azul Eléctrico Ajustado */
+            --hot-orange: #F97316;
+            --pop-pink: #EC4899;
             
+            /* Sombras Sólidas */
+            --shadow-grape: #6D28D9;
+            --shadow-lime: #4D7C0F;
+            --shadow-cyan: #0097bd;
+            --shadow-orange: #C2410C;
+            --shadow-pink: #BE185D;
+
             /* Editor Fondo */
             --canvas-grey: #f3f4f6;
 
@@ -45,9 +52,16 @@
             --endpaper-dot: #ffffff; 
         }
 
+        /* AJUSTE CRÍTICO: Asegurar altura completa para evitar franja blanca */
+        html, body, #root {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Nunito', sans-serif;
-            margin: 0; padding: 0; overflow: hidden; height: 100vh;
             color: var(--text-main);
             background-color: var(--bg-ice);
             background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
@@ -74,17 +88,16 @@
         .btn-gummy:active { top: 6px; box-shadow: 0 0 0 transparent !important; }
         .btn-gummy:hover { filter: brightness(1.05); }
 
-        /* Colores Botones */
-        .btn-grape { background: var(--vib-purple); box-shadow: 0 6px 0 #AA00C7; }
-        .btn-lime { background: var(--vib-green); box-shadow: 0 6px 0 #4CAF00; }
-        .btn-cyan { background: var(--vib-blue); box-shadow: 0 6px 0 #0099cc; }
-        .btn-orange { background: var(--vib-yellow); box-shadow: 0 6px 0 #b29600; color: #444; }
-        .btn-pink { background: var(--vib-pink); box-shadow: 0 6px 0 #C4002F; }
+        .btn-grape { background: var(--hyper-grape); box-shadow: 0 6px 0 var(--shadow-grape); }
+        .btn-lime { background: var(--lime-punch); box-shadow: 0 6px 0 var(--shadow-lime); }
+        .btn-cyan { background: var(--electric-cyan); box-shadow: 0 6px 0 var(--shadow-cyan); }
+        .btn-orange { background: var(--hot-orange); box-shadow: 0 6px 0 var(--shadow-orange); }
+        .btn-pink { background: var(--pop-pink); box-shadow: 0 6px 0 var(--shadow-pink); }
 
         .sticker-panel {
-            background: rgba(255, 255, 255, 0.95);
-            border: 4px solid white;
-            border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px); border: 4px solid white;
+            border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
 
         .input-pop {
@@ -93,24 +106,24 @@
             font-family: 'Nunito', sans-serif; font-weight: 700; color: #475569;
             outline: none; transition: 0.2s;
         }
-        .input-pop:focus { border-color: var(--vib-blue); box-shadow: 0 0 0 4px rgba(0, 198, 255, 0.2); }
+        .input-pop:focus { border-color: var(--electric-cyan); box-shadow: 0 0 0 4px rgba(0, 198, 255, 0.2); }
 
         /* --- 3. ESTRUCTURA --- */
         
-        /* Encabezado AZUL ELÉCTRICO */
+        /* Encabezado AZUL ELÉCTRICO (Ajustado) */
         .header-studio {
             width: 100%;
-            background-color: var(--vib-blue);
+            background-color: var(--electric-cyan); /* Azul Eléctrico */
             padding: 15px 40px;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 4px solid rgba(0,0,0,0.1);
             z-index: 50;
-            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
         }
         
         .logo-text {
             font-size: 2rem;
-            color: white;
+            color: white; /* Texto Blanco */
             text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
 
@@ -123,8 +136,8 @@
         }
         .project-card:hover {
             transform: translateY(-5px);
-            border-color: var(--vib-blue);
-            box-shadow: 0 12px 0 #0099cc;
+            border-color: var(--electric-cyan);
+            box-shadow: 0 12px 0 var(--shadow-cyan);
         }
         .card-footer {
             padding: 15px; text-align: center;
@@ -141,38 +154,35 @@
             text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* --- 4. LIENZO DEL EDITOR (CORREGIDO: FULL HEIGHT) --- */
+        /* --- 4. LIENZO DEL EDITOR (CORREGIDO: CERO MÁRGENES) --- */
         .canvas-grid {
-            /* Ocupar todo el espacio disponible */
-            position: absolute; 
-            top: 0; 
-            left: 80px; /* Espacio para el sidebar */
-            right: 0; 
-            bottom: 0;
-            
+            flex: 1; 
+            position: relative; 
+            overflow: hidden;
             display: flex; 
             align-items: center; 
             justify-content: center;
-            
             background-color: var(--canvas-grey);
-            /* Patrón de Cuadrícula */
             background-image: 
                 linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
             background-size: 40px 40px;
-            
-            overflow: hidden;
-            z-index: 0;
+            width: 100%;
+            height: 100%;
+            /* Eliminamos cualquier margen que cause espacios */
+            margin: 0; 
+            padding: 0; 
         }
 
         /* --- 5. BARRA LATERAL --- */
         .sidebar-studio {
-            width: 80px; height: 100%; background: white;
+            width: 80px; 
+            height: 100%; 
+            background: white;
             border-right: 3px solid #E2E8F0;
             display: flex; flex-direction: column; align-items: center;
             padding: 20px 0; z-index: 40; gap: 20px;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.02);
-            position: relative; z-index: 10;
+            flex-shrink: 0; 
         }
 
         .icon-chunk {
@@ -183,7 +193,7 @@
             box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2);
         }
         .icon-chunk:active { top: 4px; box-shadow: inset 0 0 0 rgba(0,0,0,0) !important; }
-        .icon-chunk:hover { filter: brightness(1.1); transform: scale(1.05); }
+        .icon-chunk:hover { filter: brightness(1.1); }
         
         .icon-chunk::after {
             content: attr(data-tooltip); position: absolute; left: 65px;
@@ -193,7 +203,7 @@
         }
         .icon-chunk:hover::after { opacity: 1; left: 70px; }
 
-        /* --- 6. LIBRO --- */
+        /* --- 6. LIBRO (INTACTO) --- */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
         .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
@@ -226,17 +236,17 @@
         .editor-mode .front:hover .edit-overlay, .editor-mode .back:hover .edit-overlay { opacity: 1; }
 
         .upload-card {
-            background: white; border: 3px solid var(--vib-blue);
+            background: white; border: 3px solid var(--electric-cyan);
             padding: 15px; border-radius: 20px; text-align: center;
             transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px;
-            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 198, 255, 0.2);
         }
         .editor-mode .front:hover .upload-card, .editor-mode .back:hover .upload-card { transform: scale(1); }
 
         .upload-btn {
-            background: var(--vib-pink); color: white; padding: 10px; border-radius: 15px;
+            background: var(--pop-pink); color: white; padding: 10px; border-radius: 15px;
             font-family: 'Dosis', sans-serif; font-weight: 800; cursor: pointer; display: block; width: 100%;
-            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 #C4002F; transition: 0.1s;
+            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 var(--shadow-pink); transition: 0.1s;
         }
         .upload-btn:hover { transform: translateY(-2px); }
         .upload-btn:active { transform: translateY(2px); box-shadow: none; }
@@ -247,11 +257,11 @@
         /* Navegación */
         .nav-btn {
             position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%;
-            background: white; border: 3px solid var(--vib-blue); color: var(--vib-blue);
+            background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan);
             font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90;
-            display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #0099cc;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 var(--shadow-cyan);
         }
-        .nav-btn:hover { transform: translateY(-55%); background: var(--vib-blue); color: white; }
+        .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; }
         .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
         
@@ -259,7 +269,6 @@
             :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); }
             #stage { perspective: 1200px; }
             .sidebar-studio { width: 60px; }
-            .canvas-grid { left: 60px; }
             .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; }
             .prev-btn { left: 80px; }
         }
@@ -290,6 +299,7 @@
         let app, auth, db;
         try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch (e) { console.error(e); }
 
+        // --- UTILS ---
         const processImage = (file, callback) => {
             if (!file) return;
             if (file.size > 2000000) { if(!confirm("Imagen grande. ¿Seguir?")) return; }
@@ -309,6 +319,7 @@
             }; reader.readAsDataURL(file);
         };
 
+        // --- PLANTILLA ---
         const MASTER_TEMPLATE = {
             title: "Mi Gran Historia",
             pages: [
@@ -352,8 +363,8 @@
             const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
             return (
                 <div className="flex items-center justify-center h-full">
-                    <div className="sticker-panel p-10 max-w-md w-full text-center border-t-8" style={{borderColor:'var(--vib-purple)'}}>
-                        <h2 className="text-4xl mb-6 pop-title" style={{color:'var(--vib-purple)'}}>{isRegister ? '¡CREAR CUENTA!' : '¡HOLA DE NUEVO!'}</h2>
+                    <div className="sticker-panel p-10 max-w-md w-full text-center border-t-8" style={{borderColor:'var(--hyper-grape)'}}>
+                        <h2 className="text-4xl mb-6 pop-title" style={{color:'var(--hyper-grape)'}}>{isRegister ? '¡CREAR CUENTA!' : '¡HOLA DE NUEVO!'}</h2>
                         <form onSubmit={handleAuth} className="space-y-4">
                             <input className="input-pop" placeholder="Tu Correo" value={email} onChange={e=>setEmail(e.target.value)} required />
                             <input className="input-pop" type="password" placeholder="Contraseña Secreta" value={password} onChange={e=>setPassword(e.target.value)} required />
@@ -372,7 +383,7 @@
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             
             /* COLORES VIBRANTES PARA TARJETAS */
-            const colors = ['var(--vib-yellow)', 'var(--vib-green)', 'var(--vib-purple)', 'var(--vib-pink)', 'var(--vib-blue)'];
+            const colors = ['var(--vib-yellow)', 'var(--vib-green)', 'var(--vib-purple)', 'var(--vib-pink)', 'var(--electric-cyan)'];
             const textColors = ['#444', '#fff', '#fff', '#fff', '#fff'];
 
             return (
@@ -426,7 +437,7 @@
             if(!book) return <div className="flex h-screen items-center justify-center font-bold text-xl text-gray-400">ABRIENDO...</div>;
 
             return (
-                <div className="flex h-full relative">
+                <div className="flex h-full w-full relative overflow-hidden">
                     
                     {/* BARRA LATERAL */}
                     <div className="sidebar-studio">
