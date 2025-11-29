@@ -10,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- FUENTES -->
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;700&family=Cinzel:wght@700&family=Merriweather&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;700&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
 
     <!-- REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -20,11 +20,8 @@
     <style>
         /* --- 1. PALETA "ELECTRIC PASTELS" --- */
         :root {
-            /* Fondo Base */
             --bg-ice: #F8FAFC; 
             --text-main: #334155;
-            
-            /* Colores Interfaz */
             --header-blue: #00C6FF; 
             
             /* Acentos de Energía */
@@ -34,14 +31,13 @@
             --hot-orange: #F97316;
             --pop-pink: #EC4899;
             
-            /* Sombras Sólidas */
+            /* Sombras */
             --shadow-grape: #6D28D9;
             --shadow-lime: #4D7C0F;
             --shadow-cyan: #0097bd;
             --shadow-orange: #C2410C;
             --shadow-pink: #BE185D;
 
-            /* Editor Fondo Dark Mode */
             --canvas-dark: #1e293b;
 
             /* Variables del Libro */
@@ -55,13 +51,7 @@
             --endpaper-dot: #ffffff; 
         }
 
-        /* AJUSTE CRÍTICO: Asegurar altura completa */
-        html, body, #root {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+        html, body, #root { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 
         body {
             font-family: 'Nunito', sans-serif;
@@ -78,8 +68,15 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        
+        .kids-title {
+            font-family: 'Luckiest Guy', cursive;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            font-size: 2.5rem;
+        }
 
-        /* --- 2. UI GUMMY --- */
+        /* --- UI GUMMY --- */
         .btn-gummy {
             border: none; outline: none; cursor: pointer;
             font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.1rem;
@@ -111,9 +108,7 @@
         }
         .input-pop:focus { border-color: var(--electric-cyan); box-shadow: 0 0 0 4px rgba(0, 198, 255, 0.2); }
 
-        /* --- 3. ESTRUCTURA --- */
-        
-        /* Encabezado */
+        /* --- ESTRUCTURA --- */
         .header-studio {
             width: 100%;
             background-color: var(--header-blue);
@@ -122,124 +117,54 @@
             border-bottom: 4px solid rgba(0,0,0,0.1);
             z-index: 50;
             box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+            flex-shrink: 0;
         }
-        
-        .logo-text {
-            font-size: 2rem;
-            color: white; 
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-        }
+        .logo-text { font-size: 2rem; color: white; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
 
-        /* --- AJUSTE ESPECÍFICO: TARJETAS DE PROYECTO --- */
+        /* --- TARJETAS DE HERRAMIENTAS (NUEVO) --- */
+        .tool-card {
+            background: white; border-radius: 24px; overflow: hidden;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: 3px solid white;
+            transition: 0.2s; cursor: pointer; position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 200px;
+        }
+        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 12px 0 rgba(0,0,0,0.15); z-index: 10; }
+        .tool-icon { font-size: 3rem; margin-bottom: 15px; color: white; drop-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+        .tool-title { font-family: 'Luckiest Guy', cursive; font-size: 1.5rem; color: white; text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
+
+        /* --- TARJETAS DE PROYECTO --- */
         .project-card {
             background: white; border-radius: 24px; overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
-            border: 4px solid white; /* Borde blanco grueso estilo sticker */
-            transition: 0.3s; cursor: pointer;
-            display: flex; flex-direction: column;
-            height: 300px; /* Altura fija para uniformidad */
+            box-shadow: 0 8px 0 #E2E8F0; border: 3px solid #E2E8F0;
+            transition: 0.2s; cursor: pointer; display: flex; flex-direction: column; height: 300px;
         }
-        .project-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
+        .project-card:hover { transform: translateY(-5px); border-color: var(--electric-cyan); box-shadow: 0 12px 0 var(--shadow-cyan); }
         
-        .card-img-container {
-            flex: 1;
-            background-color: #f1f5f9;
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px 20px 0 0; /* Redondear arriba */
-        }
+        .card-img-container { flex: 1; background-color: #f1f5f9; position: relative; overflow: hidden; border-radius: 20px 20px 0 0; }
         
         .card-footer {
-            padding: 15px; text-align: center;
-            border-radius: 0 0 20px 20px; /* Redondear abajo */
-            color: white;
-            display: flex; flex-direction: column; 
-            justify-content: center; align-items: center;
-            min-height: 90px;
+            padding: 10px; text-align: center; border-radius: 0 0 20px 20px;
+            color: white; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; min-height: 85px;
         }
-        
-        .card-title { 
-            font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; 
-            margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            width: 100%;
-        }
-
-        /* Input de edición "Sencillito" */
-        .simple-edit-input {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid white;
-            color: white;
-            font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem;
-            text-align: center;
-            width: 90%;
-            outline: none;
-            padding-bottom: 2px;
-        }
-        .simple-edit-input::placeholder { color: rgba(255,255,255,0.7); }
-        
-        .card-tag {
-            display: inline-block; padding: 5px 15px; border-radius: 20px;
-            font-size: 0.7rem; font-weight: 800; 
-            background: rgba(255,255,255,0.25); color: white;
-            text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.2s;
-        }
+        .card-title { font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .simple-edit-input { background: transparent; border: none; border-bottom: 2px solid white; color: white; font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.2rem; text-align: center; width: 90%; outline: none; padding-bottom: 2px; }
+        .card-tag { display: inline-block; padding: 4px 12px; border-radius: 15px; font-size: 0.7rem; font-weight: 800; background: rgba(255,255,255,0.25); color: white; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
         .project-card:hover .card-tag { background: white; color: #333; }
 
-        /* --- 4. LIENZO DEL EDITOR --- */
-        .canvas-grid {
-            flex: 1; 
-            position: relative; 
-            overflow: hidden;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            background-color: var(--canvas-dark);
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            width: 100%;
-            height: 100%;
-            margin: 0; 
-            padding: 0; 
-        }
+        /* --- LIENZO --- */
+        .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: var(--canvas-dark); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; width: 100%; height: 100%; margin: 0; padding: 0; }
 
-        /* --- 5. BARRA LATERAL --- */
-        .sidebar-studio {
-            width: 80px; 
-            height: 100%; 
-            background: white;
-            border-right: 3px solid #E2E8F0;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px 0; z-index: 40; gap: 20px;
-            flex-shrink: 0; 
-        }
-
-        .icon-chunk {
-            width: 55px; height: 55px; border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; color: white; cursor: pointer;
-            transition: 0.1s; position: relative; top: 0;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2);
-        }
+        /* --- BARRA LATERAL --- */
+        .sidebar-studio { width: 80px; height: 100%; background: white; border-right: 3px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 40; gap: 20px; flex-shrink: 0; }
+        .icon-chunk { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; cursor: pointer; transition: 0.1s; position: relative; top: 0; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); }
         .icon-chunk:active { top: 4px; box-shadow: inset 0 0 0 rgba(0,0,0,0) !important; }
         .icon-chunk:hover { filter: brightness(1.1); }
-        
-        .icon-chunk::after {
-            content: attr(data-tooltip); position: absolute; left: 65px;
-            background: var(--text-main); color: white; padding: 5px 10px;
-            border-radius: 8px; font-size: 0.8rem; font-family: 'Nunito'; font-weight: 700;
-            opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; z-index: 100;
-        }
+        .icon-chunk::after { content: attr(data-tooltip); position: absolute; left: 65px; background: var(--text-main); color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-family: 'Nunito'; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; z-index: 100; }
         .icon-chunk:hover::after { opacity: 1; left: 70px; }
 
-        /* --- 6. LIBRO (INTACTO) --- */
+        /* --- LIBRO --- */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
         .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
@@ -250,64 +175,37 @@
         .front { z-index: 2; border-right: 1px solid rgba(0,0,0,0.1); } .back { z-index: 1; transform: rotateY(180deg); border-left: 1px solid rgba(0,0,0,0.1); border-radius: 5px 2px 2px 5px; }
         .front::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
         .back::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 10; }
-        
         .image-page { background-size: cover; background-position: center; background-color: #fff; }
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
-        
         .inline-input-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; margin-bottom: 5px; outline: none; padding: 5px; border-bottom: 2px solid var(--gold-color); }
         .inline-input-title:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); cursor: text; }
         .inline-input-text { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px; }
         .inline-input-text:hover:not(:disabled) { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); cursor: text; }
-        
         .endpaper { background-color: var(--endpaper-bg); background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px); background-size: 20px 20px; }
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
 
-        /* --- 7. OVERLAYS DE EDICIÓN --- */
-        .edit-overlay {
-            position: absolute; inset: 0; background: rgba(248, 250, 252, 0.6);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px); z-index: 20;
-        }
+        /* --- OVERLAYS --- */
+        .edit-overlay { position: absolute; inset: 0; background: rgba(248, 250, 252, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px); z-index: 20; }
         .editor-mode .front:hover .edit-overlay, .editor-mode .back:hover .edit-overlay { opacity: 1; }
-
-        .upload-card {
-            background: white; border: 3px solid var(--electric-cyan);
-            padding: 15px; border-radius: 20px; text-align: center;
-            transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px;
-            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
-        }
+        .upload-card { background: white; border: 3px solid var(--electric-cyan); padding: 15px; border-radius: 20px; text-align: center; transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2); }
         .editor-mode .front:hover .upload-card, .editor-mode .back:hover .upload-card { transform: scale(1); }
-
-        .upload-btn {
-            background: var(--pop-pink); color: white; padding: 10px; border-radius: 15px;
-            font-family: 'Dosis', sans-serif; font-weight: 800; cursor: pointer; display: block; width: 100%;
-            margin-bottom: 8px; border: none; box-shadow: 0 4px 0 var(--shadow-pink); transition: 0.1s;
-        }
-        .upload-btn:hover { transform: translateY(-2px); }
-        .upload-btn:active { transform: translateY(2px); box-shadow: none; }
-        
+        .upload-btn { background: var(--pop-pink); color: white; padding: 10px; border-radius: 15px; font-family: 'Dosis', sans-serif; font-weight: 800; cursor: pointer; display: block; width: 100%; margin-bottom: 8px; border: none; box-shadow: 0 4px 0 var(--shadow-pink); transition: 0.1s; }
+        .upload-btn:hover { transform: translateY(-2px); } .upload-btn:active { transform: translateY(2px); box-shadow: none; }
         .url-input { width: 100%; padding: 8px; background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; font-family: 'Nunito'; font-weight: 700; }
         .remove-btn { margin-top: 5px; color: #EF4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: 800; text-transform: uppercase; }
 
         /* Navegación */
-        .nav-btn {
-            position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%;
-            background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan);
-            font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90;
-            display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 var(--shadow-cyan);
-        }
-        .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; }
-        .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
+        .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan); font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 var(--shadow-cyan); }
+        .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; } .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
         
-        @media (max-width: 900px) {
-            :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); }
-            #stage { perspective: 1200px; }
-            .sidebar-studio { width: 60px; }
-            .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; }
-            .prev-btn { left: 80px; }
-        }
+        /* --- COMPONENTE DE HERRAMIENTA EXTERNA --- */
+        .iframe-container { width: 100%; height: 100%; border: none; background: white; }
+        .close-tool-btn { position: absolute; top: 20px; right: 20px; background: #EF4444; color: white; padding: 10px 20px; border-radius: 15px; font-family: 'Dosis', sans-serif; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #B91C1C; z-index: 100; text-transform: uppercase; }
+        .close-tool-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        @media (max-width: 900px) { :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); } #stage { perspective: 1200px; } .sidebar-studio { width: 60px; } .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; } .prev-btn { left: 80px; } }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
@@ -321,7 +219,7 @@
 
         const { useState, useEffect, useRef } = React;
 
-        // --- CLAVES FIREBASE ---
+        // CLAVES FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAThH-edUt4Ep9BR-Xuy5Zjmgl9Nky1keU",
             authDomain: "libroalbum.firebaseapp.com",
@@ -335,7 +233,6 @@
         let app, auth, db;
         try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch (e) { console.error(e); }
 
-        // --- UTILS ---
         const processImage = (file, callback) => {
             if (!file) return;
             if (file.size > 2000000) { if(!confirm("Imagen grande. ¿Seguir?")) return; }
@@ -355,7 +252,6 @@
             }; reader.readAsDataURL(file);
         };
 
-        // --- PLANTILLA ---
         const MASTER_TEMPLATE = {
             title: "Mi Gran Historia",
             pages: [
@@ -371,6 +267,8 @@
             const [user, setUser] = useState(null);
             const [view, setView] = useState('loading'); 
             const [publicBook, setPublicBook] = useState(null);
+            // Estado para las herramientas externas
+            const [externalTool, setExternalTool] = useState(null); // 'moodboard' | 'storyboard' | 'reference'
 
             useEffect(() => {
                 const params = new URLSearchParams(window.location.search);
@@ -381,14 +279,34 @@
             }, []);
 
             if (view === 'public-viewer' && publicBook) return <PublicViewer book={publicBook} />;
-            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl" style={{color:'var(--vib-purple)'}}>CARGANDO ESTUDIO...</div>;
+            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl" style={{color:'var(--hyper-grape)'}}>CARGANDO ESTUDIO...</div>;
 
             return (
                 <div className="flex flex-col h-full font-sans">
                     <main className="flex-1 relative overflow-hidden">
                         {view === 'login' && <LoginScreen setUser={setUser} setView={setView} />}
-                        {view === 'dashboard' && <Dashboard user={user} setView={setView} />}
+                        
+                        {/* DASHBOARD */}
+                        {view === 'dashboard' && (
+                            <Dashboard 
+                                user={user} 
+                                setView={setView} 
+                                setExternalTool={setExternalTool}
+                            />
+                        )}
+                        
+                        {/* EDITOR */}
                         {view === 'editor' && <Editor user={user} setView={setView} />}
+                        
+                        {/* HERRAMIENTA EXTERNA (FULLSCREEN) */}
+                        {view === 'external' && (
+                            <div className="w-full h-full bg-white relative">
+                                <button onClick={() => setView('dashboard')} className="close-tool-btn">
+                                    <i className="fas fa-times mr-2"></i> Cerrar Herramienta
+                                </button>
+                                <iframe src={externalTool} className="iframe-container" title="Herramienta Externa"></iframe>
+                            </div>
+                        )}
                     </main>
                 </div>
             );
@@ -412,114 +330,104 @@
             );
         }
 
-        function Dashboard({ user, setView }) {
+        function Dashboard({ user, setView, setExternalTool }) {
             const [books, setBooks] = useState([]);
             const [editingId, setEditingId] = useState(null);
             const [tempTitle, setTempTitle] = useState("");
 
             useEffect(() => { if(!user || !db) return; const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()})))); }, [user]);
+            
             const createNew = async () => { const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }); localStorage.setItem('currentBookId', ref.id); setView('editor'); };
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             
-            // Delete
-            const deleteBook = async (e, bookId) => {
-                e.stopPropagation();
-                if(confirm("¿Estás seguro de querer borrar este cuento mágico?")) {
-                    await deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId));
-                }
-            }
+            // Acciones para las herramientas
+            const launchTool = (url) => {
+                setExternalTool(url);
+                setView('external');
+            };
 
-            // Start Rename
-            const startRename = (e, book) => {
-                e.stopPropagation();
-                setEditingId(book.id);
-                setTempTitle(book.title);
-            }
+            // Delete & Rename logic (igual que antes)
+            const deleteBook = async (e, bookId) => { e.stopPropagation(); if(confirm("¿Borrar cuento?")) await deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId)); };
+            const startRename = (e, book) => { e.stopPropagation(); setEditingId(book.id); setTempTitle(book.title); };
+            const saveRename = async (e, bookId) => { e.stopPropagation(); if(tempTitle.trim()) await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId), { title: tempTitle }); setEditingId(null); };
 
-            // Save Rename
-            const saveRename = async (e, bookId) => {
-                e.stopPropagation();
-                if(tempTitle.trim()) {
-                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId), {
-                        title: tempTitle
-                    });
-                }
-                setEditingId(null);
-            }
-
-            /* COLORES VIBRANTES PARA TARJETAS */
             const colors = ['var(--hot-orange)', 'var(--lime-punch)', 'var(--hyper-grape)', 'var(--pop-pink)', 'var(--electric-cyan)'];
             const textColors = ['#444', '#fff', '#fff', '#fff', '#fff'];
 
             return (
-                <div className="h-full overflow-y-auto relative">
+                <div className="h-full overflow-y-auto relative bg-slate-50">
                     <header className="header-studio">
-                        <h2 className="text-3xl pop-title logo-text">CREATOR STUDIO</h2>
+                        <h2 className="text-3xl pop-title logo-text text-white kids-title">CREATOR STUDIO</h2>
                         <div className="flex gap-4 items-center">
                             <span className="text-sm font-bold px-3 py-1 rounded-full border-2 border-white text-white">@{user.email.split('@')[0]}</span>
                             <button onClick={() => signOut(auth)} className="btn-gummy btn-pink text-xs py-2 px-4">SALIR</button>
                         </div>
                     </header>
                     
-                    <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-                        <div onClick={createNew} className="h-72 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition duration-300 border-dashed border-4 border-gray-300 rounded-3xl bg-white">
-                            <div className="w-20 h-20 rounded-full bg-cyan-100 flex items-center justify-center mb-4"><i className="fas fa-plus text-4xl text-cyan-500"></i></div>
-                            <span className="font-bold text-xl text-gray-400 font-sans">NUEVO PROYECTO</span>
-                        </div>
-                        {books.map((b, i) => {
-                            const bgColor = colors[i % colors.length];
-                            const textColor = textColors[i % textColors.length];
-                            return (
-                                <div key={b.id} className="project-card group" onClick={()=>openBook(b.id)}>
-                                    <div className="card-img-container h-52 bg-gray-100 relative overflow-hidden">
-                                        {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
-                                        <span className="absolute bottom-3 right-3 text-xs font-bold text-white bg-black/40 px-2 py-1 rounded-lg backdrop-blur-sm font-sans">{b.pages.length} PÁGS</span>
-                                        
-                                        {/* DELETE BUTTON */}
-                                        <button 
-                                            className="absolute top-2 right-2 bg-white text-red-500 w-8 h-8 rounded-full shadow flex items-center justify-center hover:bg-red-50 transition z-20"
-                                            onClick={(e) => deleteBook(e, b.id)}
-                                            title="Borrar"
-                                        >
-                                            <i className="fas fa-trash-alt text-sm"></i>
-                                        </button>
-                                    </div>
-                                    
-                                    {/* FOOTER COLORIDO */}
-                                    <div className="card-footer" style={{backgroundColor: bgColor, color: textColor}}>
-                                        {editingId === b.id ? (
-                                            <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
-                                                <input 
-                                                    className="simple-edit-input"
-                                                    value={tempTitle}
-                                                    onChange={e => setTempTitle(e.target.value)}
-                                                    autoFocus
-                                                />
-                                                <div className="flex justify-center gap-2">
-                                                    <button onClick={(e) => saveRename(e, b.id)} className="text-xs bg-white text-green-600 px-2 py-1 rounded font-bold hover:scale-110 transition"><i className="fas fa-check"></i></button>
-                                                    <button onClick={(e) => {e.stopPropagation(); setEditingId(null);}} className="text-xs bg-white text-red-500 px-2 py-1 rounded font-bold hover:scale-110 transition"><i className="fas fa-times"></i></button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center">
-                                                <h3 className="card-title truncate flex items-center gap-2">
-                                                    {b.title}
-                                                    <button 
-                                                        className="text-sm opacity-60 hover:opacity-100 transition hover:scale-110"
-                                                        onClick={(e) => startRename(e, b)}
-                                                        title="Cambiar Nombre"
-                                                        style={{color: textColor}}
-                                                    >
-                                                        <i className="fas fa-pencil-alt"></i>
-                                                    </button>
-                                                </h3>
-                                                <span className="card-tag">EDITAR</span>
-                                            </div>
-                                        )}
-                                    </div>
+                    <div className="p-8 max-w-7xl mx-auto">
+                        
+                        {/* ZONA DE HERRAMIENTAS (NUEVO) */}
+                        <div className="mb-10">
+                            <h3 className="text-2xl font-bold text-gray-700 mb-6 pop-title pl-2 border-l-4 border-yellow-400">HERRAMIENTAS DE CREACIÓN</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div onClick={() => launchTool('https://libroalbum.github.io/mooboard/')} className="tool-card" style={{borderColor:'var(--hyper-grape)', backgroundColor:'#F3E8FF'}}>
+                                    <i className="fas fa-palette tool-icon" style={{color:'var(--hyper-grape)'}}></i>
+                                    <span className="tool-title" style={{color:'var(--hyper-grape)'}}>MOODBOARD</span>
+                                    <span className="text-xs font-bold text-gray-500 mt-2">INSPÍRATE AQUÍ</span>
                                 </div>
-                            )
-                        })}
+                                <div onClick={() => launchTool('https://libroalbum.github.io/tablero/')} className="tool-card" style={{borderColor:'var(--hot-orange)', backgroundColor:'#FFEDD5'}}>
+                                    <i className="fas fa-film tool-icon" style={{color:'var(--hot-orange)'}}></i>
+                                    <span className="tool-title" style={{color:'var(--hot-orange)'}}>STORYBOARD</span>
+                                    <span className="text-xs font-bold text-gray-500 mt-2">PLANEA TU HISTORIA</span>
+                                </div>
+                                <div onClick={() => launchTool('https://libroalbum.github.io/libro-lbum-pedag-gico/')} className="tool-card" style={{borderColor:'var(--lime-punch)', backgroundColor:'#ECFCCB'}}>
+                                    <i className="fas fa-book-reader tool-icon" style={{color:'var(--lime-punch)'}}></i>
+                                    <span className="tool-title" style={{color:'var(--lime-punch)'}}>REFERENCIA</span>
+                                    <span className="text-xs font-bold text-gray-500 mt-2">EJEMPLO DE LIBRO</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ZONA DE PROYECTOS */}
+                        <div>
+                            <h3 className="text-2xl font-bold text-gray-700 mb-6 pop-title pl-2 border-l-4 border-blue-400">MIS LIBROS</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <div onClick={createNew} className="h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition duration-300 border-dashed border-4 border-gray-300 rounded-3xl bg-white">
+                                    <div className="w-16 h-16 rounded-full bg-cyan-100 flex items-center justify-center mb-4"><i className="fas fa-plus text-3xl text-cyan-500"></i></div>
+                                    <span className="font-bold text-lg text-gray-400 font-sans">CREAR NUEVO</span>
+                                </div>
+                                {books.map((b, i) => {
+                                    const bgColor = colors[i % colors.length];
+                                    const textColor = textColors[i % textColors.length];
+                                    return (
+                                        <div key={b.id} className="project-card group" onClick={()=>openBook(b.id)}>
+                                            <div className="card-img-container h-48 bg-gray-100 relative overflow-hidden">
+                                                {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
+                                                <span className="absolute bottom-2 right-2 text-[10px] font-bold text-white bg-black/40 px-2 py-1 rounded backdrop-blur-sm font-sans">{b.pages.length} PÁGS</span>
+                                                <button className="absolute top-2 right-2 bg-white text-red-500 w-8 h-8 rounded-full shadow flex items-center justify-center hover:bg-red-50 transition z-20" onClick={(e) => deleteBook(e, b.id)} title="Borrar"><i className="fas fa-trash-alt text-sm"></i></button>
+                                            </div>
+                                            <div className="card-footer" style={{backgroundColor: bgColor, color: textColor}}>
+                                                {editingId === b.id ? (
+                                                    <div className="flex flex-col gap-2" onClick={e => e.stopPropagation()}>
+                                                        <input className="simple-edit-input" value={tempTitle} onChange={e => setTempTitle(e.target.value)} autoFocus />
+                                                        <div className="flex justify-center gap-2">
+                                                            <button onClick={(e) => saveRename(e, b.id)} className="text-xs bg-white text-green-600 px-2 py-1 rounded font-bold"><i className="fas fa-check"></i></button>
+                                                            <button onClick={(e) => {e.stopPropagation(); setEditingId(null);}} className="text-xs bg-white text-red-500 px-2 py-1 rounded font-bold"><i className="fas fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center">
+                                                        <h3 className="card-title truncate flex items-center gap-2">{b.title} <button className="text-sm opacity-60 hover:opacity-100" onClick={(e) => startRename(e, b)}><i className="fas fa-pencil-alt"></i></button></h3>
+                                                        <span className="card-tag">EDITAR</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             );
@@ -540,8 +448,6 @@
 
             return (
                 <div className="flex h-full w-full relative overflow-hidden">
-                    
-                    {/* BARRA LATERAL */}
                     <div className="sidebar-studio">
                         <div className="icon-chunk btn-grape" onClick={()=>setView('dashboard')} data-tooltip="Inicio"><i className="fas fa-home"></i></div>
                         <div className="icon-chunk btn-lime" onClick={save} data-tooltip="Guardar"><i className="fas fa-save"></i></div>
@@ -550,8 +456,6 @@
                             <div className="icon-chunk btn-orange" onClick={addPage} data-tooltip="Agregar Página"><i className="fas fa-plus"></i></div>
                         </div>
                     </div>
-
-                    {/* LIENZO EDITOR (GRID) */}
                     <div className="canvas-grid editor-mode">
                         <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
                     </div>
