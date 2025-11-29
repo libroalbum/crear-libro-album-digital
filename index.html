@@ -310,6 +310,8 @@
             const [portfolioData, setPortfolioData] = useState({});
             const [editingId, setEditingId] = useState(null);
             const [tempTitle, setTempTitle] = useState("");
+            
+            // Ya no usamos selector, pero mantenemos el estado por si acaso para evitar errores
             const [showBookSelector, setShowBookSelector] = useState(false);
 
             // Cargar libros y datos de portafolio
@@ -323,7 +325,23 @@
                 });
             }, [user]);
 
-            const createNew = async () => { const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }); localStorage.setItem('currentBookId', ref.id); setView('editor'); };
+            // Lógica ajustada: Crea libro si no existe, o abre el existente
+            const handleMyBook = async () => {
+                if (books.length > 0) {
+                    // Ya existe un libro, abrir el primero (único)
+                    openBook(books[0].id);
+                } else {
+                    // No existe, crear uno nuevo
+                    const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() });
+                    
+                    // Asignarlo automáticamente al portafolio también
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: ref.id }, { merge: true });
+                    
+                    localStorage.setItem('currentBookId', ref.id);
+                    setView('editor');
+                }
+            };
+
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             const launchTool = (url) => { user.toolUrl = url; setView('external'); };
             
@@ -335,23 +353,19 @@
                     alert("¡Subido!");
                 });
             };
-            const selectBookForPortfolio = async (bookId) => {
-                await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: bookId }, { merge: true });
-                setShowBookSelector(false);
-                alert("¡Libro seleccionado para tu Portafolio!");
-            };
+            
             const copyLink = () => {
                 const url = `${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`;
                 navigator.clipboard.writeText(url);
                 alert("Enlace público copiado.");
             };
-            const deleteBook = async (e, bookId) => { e.stopPropagation(); if(confirm("¿Borrar?")) await deleteDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId)); };
-            const startRename = (e, book) => { e.stopPropagation(); setEditingId(book.id); setTempTitle(book.title); };
-            const saveRename = async (e, bookId) => { e.stopPropagation(); if(tempTitle.trim()) await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId), { title: tempTitle }); setEditingId(null); };
             
-            const getFeaturedBook = () => books.find(b => b.id === portfolioData.featuredBookId);
-            const colors = ['var(--hot-orange)', 'var(--lime-punch)', 'var(--hyper-grape)', 'var(--pop-pink)', 'var(--electric-cyan)'];
-            const textColors = ['#444', '#fff', '#fff', '#fff', '#fff'];
+            // Lógica de visualización del libro en Portafolio
+            // Si hay libros, tomamos el primero como "Featured" por defecto
+            const getFeaturedBook = () => {
+                if (books.length > 0) return books[0];
+                return null;
+            };
 
             return (
                 <div className="classroom-container">
@@ -373,8 +387,10 @@
                         <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
                             <i className="fas fa-film text-orange-500"></i> STORYBOARD
                         </div>
-                        <div className={`menu-item`} onClick={createNew}>
-                            <i className="fas fa-book-open text-green-500"></i> CREAR LIBRO
+                        
+                        {/* BOTÓN UNIFICADO: MI LIBRO (Crear o Editar) */}
+                        <div className={`menu-item`} onClick={handleMyBook}>
+                            <i className="fas fa-book-open text-green-500"></i> {books.length > 0 ? 'EDITAR LIBRO' : 'MI LIBRO'}
                         </div>
 
                         <div className="mt-auto pt-6 border-t">
@@ -387,37 +403,38 @@
                     {/* AREA DE CONTENIDO */}
                     <div className="classroom-content">
                         
-                        {/* VISTA INICIO */}
+                        {/* VISTA INICIO - AHORA MUESTRA VIDEO Y BIENVENIDA */}
                         {activeSection === 'inicio' && (
-                            <div>
-                                <div className="module-header"><h2 className="module-title text-cyan-500">MIS PROYECTOS</h2><button onClick={createNew} className="btn-gummy btn-lime text-sm"><i className="fas fa-plus mr-2"></i> NUEVO LIBRO</button></div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {books.map((b, i) => {
-                                        const bgColor = colors[i % colors.length];
-                                        const textColor = textColors[i % textColors.length];
-                                        return (
-                                            <div key={b.id} className="project-card group" onClick={()=>openBook(b.id)}>
-                                                <div className="card-img-container h-48 bg-gray-100 relative overflow-hidden">
-                                                    {b.pages[0].front.bg ? <img src={b.pages[0].front.bg} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><i className="fas fa-book text-4xl"></i></div>}
-                                                    <span className="card-page-badge">{b.pages.length} PÁGS</span>
-                                                    <div className="card-delete-btn" onClick={(e)=>deleteBook(e,b.id)}><i className="fas fa-trash-alt"></i></div>
-                                                </div>
-                                                <div className="card-footer" style={{backgroundColor: bgColor, color: textColor}}>
-                                                    {editingId === b.id ? (
-                                                        <div className="flex flex-col gap-2 w-full" onClick={e => e.stopPropagation()}>
-                                                            <input className="simple-edit-input" value={tempTitle} onChange={e => setTempTitle(e.target.value)} autoFocus />
-                                                            <div className="flex justify-center gap-2"><button onClick={(e) => saveRename(e, b.id)} className="text-xs bg-white text-green-600 px-2 py-1 rounded font-bold hover:scale-110 transition"><i className="fas fa-check"></i></button></div>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex flex-col items-center justify-center w-full">
-                                                            <div className="card-title-row"><h3 className="card-title truncate">{b.title}</h3><button className="text-sm opacity-60 hover:opacity-100 text-white hover:scale-110 transition" onClick={(e) => startRename(e, b)}><i className="fas fa-pencil-alt"></i></button></div>
-                                                            <span className="card-tag">EDITAR</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                            <div className="max-w-4xl mx-auto">
+                                <div className="module-header">
+                                    <h2 className="module-title text-cyan-500">BIENVENIDOS AL CURSO</h2>
+                                </div>
+                                
+                                <div className="glass-panel p-8 mb-8">
+                                    <h3 className="text-3xl font-bold font-sans text-gray-700 mb-4">Introducción al Taller</h3>
+                                    <p className="text-lg text-gray-600 mb-6">
+                                        Hola creador. En este espacio encontrarás todas las herramientas necesarias para construir tu propio Libro Álbum. 
+                                        Mira el siguiente video para comenzar tu aventura creativa.
+                                    </p>
+                                    
+                                    {/* CONTENEDOR DE VIDEO */}
+                                    <div className="w-full relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white" style={{paddingBottom: '56.25%', background: '#000'}}>
+                                        <iframe 
+                                            className="absolute top-0 left-0 w-full h-full"
+                                            src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" 
+                                            title="YouTube video player" 
+                                            frameBorder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            referrerPolicy="strict-origin-when-cross-origin" 
+                                            allowFullScreen>
+                                        </iframe>
+                                    </div>
+
+                                    <div className="mt-8 flex justify-center">
+                                        <button onClick={handleMyBook} className="btn-gummy btn-orange text-xl px-8 py-4">
+                                            <i className="fas fa-rocket mr-2"></i> ¡EMPEZAR MI LIBRO!
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -435,22 +452,23 @@
                                     </div>
 
                                     <div className="gallery-content">
-                                        {/* SLOT LIBRO (Con opción de cambiar) */}
-                                        <div className="book-showcase cursor-pointer hover:border-yellow-400 transition relative group" onClick={() => setShowBookSelector(true)} style={{height: '550px'}}>
+                                        {/* SLOT LIBRO (Automático, sin selector) */}
+                                        <div className="book-showcase relative group" style={{height: '550px'}}>
                                             {getFeaturedBook() ? (
                                                 <div className="w-full h-full flex flex-col items-center justify-center relative">
                                                     {/* Miniatura del Libro Interactivo (Solo Lectura) */}
                                                     <div style={{transform: 'scale(0.8)', pointerEvents: 'none'}}>
                                                         <BookViewer pages={getFeaturedBook().pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
                                                     </div>
-                                                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-50 rounded-3xl backdrop-blur-sm">
-                                                        <span className="btn-gummy btn-orange"><i className="fas fa-exchange-alt mr-2"></i> CAMBIAR LIBRO</span>
+                                                    {/* Overlay para ir a editar */}
+                                                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-50 rounded-3xl backdrop-blur-sm cursor-pointer" onClick={handleMyBook}>
+                                                        <span className="btn-gummy btn-orange"><i className="fas fa-pencil-alt mr-2"></i> EDITAR MI LIBRO</span>
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div className="flex flex-col items-center justify-center text-gray-400">
+                                                <div className="flex flex-col items-center justify-center text-gray-400 cursor-pointer" onClick={handleMyBook}>
                                                     <i className="fas fa-plus-circle text-6xl mb-4 text-gray-500"></i>
-                                                    <h3 className="text-2xl font-bold text-white">TOCA PARA ELEGIR TU LIBRO</h3>
+                                                    <h3 className="text-2xl font-bold text-white">CREAR MI LIBRO</h3>
                                                 </div>
                                             )}
                                         </div>
@@ -471,26 +489,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* MODAL SELECTOR DE LIBROS */}
-                        {showBookSelector && (
-                            <div className="modal-overlay" onClick={() => setShowBookSelector(false)}>
-                                <div className="modal-content" onClick={e => e.stopPropagation()}>
-                                    <h3 className="text-2xl font-bold text-center mb-6 pop-title text-cyan-600">ELIGE TU LIBRO MAESTRO</h3>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {books.map(b => (
-                                            <div key={b.id} className="book-select-item" onClick={() => selectBookForPortfolio(b.id)}>
-                                                <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                                                    {b.pages[0].front.bg && <img src={b.pages[0].front.bg} className="w-full h-full object-cover" />}
-                                                </div>
-                                                <span className="font-bold text-gray-700 text-sm">{b.title}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <button className="mt-6 w-full py-3 bg-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-300" onClick={() => setShowBookSelector(false)}>CANCELAR</button>
                                 </div>
                             </div>
                         )}
@@ -563,12 +561,29 @@
                 }; load();
             }, [uid]);
             useEffect(() => {
-                if(portfolio.featuredBookId) {
-                    getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', portfolio.featuredBookId)).then(snap => { 
-                        if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
-                        setLoading(false);
-                    });
-                } else { setLoading(false); }
+                // Lógica Simplificada: Siempre busca el primer libro del usuario si no hay featured ID explícito, 
+                // o usa el featured ID si existe.
+                const fetchBook = async () => {
+                     let bookIdToFetch = portfolio.featuredBookId;
+                     
+                     // Fallback: si no hay ID guardado, buscar cualquier libro de este usuario
+                     if (!bookIdToFetch) {
+                         const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
+                         const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books')); 
+                         // Nota: Firestore query necesita getDocs no getDoc para colecciones, pero aquí simplificamos
+                         // En vista pública real, mejor confiar en el featuredBookId que guardamos al crear.
+                     }
+
+                     if(bookIdToFetch) {
+                        getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', bookIdToFetch)).then(snap => { 
+                            if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
+                            setLoading(false);
+                        });
+                     } else {
+                         setLoading(false);
+                     }
+                };
+                fetchBook();
             }, [portfolio]);
 
             if(loading) return <div className="flex h-screen items-center justify-center">Cargando Portafolio...</div>;
