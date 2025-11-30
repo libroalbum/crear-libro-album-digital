@@ -91,13 +91,7 @@
         .classroom-container { display: flex; height: 100%; width: 100%; }
         .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; overflow-y: auto; }
         .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-        
-        /* MENÚ ITEMS */
-        .menu-item { 
-            padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; 
-            font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 12px; 
-            transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 1rem; text-transform: none; 
-        }
+        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 1rem; text-transform: none; }
         .menu-text { text-transform: capitalize; }
         .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
         .menu-item.active { background: #E0F2FE; color: var(--electric-cyan); box-shadow: inset 4px 0 0 var(--electric-cyan); }
@@ -376,6 +370,20 @@
         // --- NUEVO COMPONENTE: VISOR PÚBLICO DE ACTIVIDAD ---
         function PublicActivityViewer({ activity }) {
             const [padletZoom, setPadletZoom] = useState(1);
+            // Estado inicial del Zoom para Moodboard y Storyboard ajustado a 0.75 (Zoom-Out)
+            const [moodboardZoom, setMoodboardZoom] = useState(0.75);
+            const [storyboardZoom, setStoryboardZoom] = useState(0.75);
+
+            // Zoom Moodboard
+            const handleMoodboardZoomIn = () => setMoodboardZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleMoodboardZoomOut = () => setMoodboardZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetMoodboardZoom = () => setMoodboardZoom(0.75); // Reset a 0.75
+
+            // Zoom Storyboard
+            const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetStoryboardZoom = () => setStoryboardZoom(0.75); // Reset a 0.75
+
             const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
             const resetZoom = () => setPadletZoom(1);
@@ -413,24 +421,50 @@
                     case 'moodboard':
                         return (
                             <div className="h-full flex flex-col p-8">
-                                 <div className="mb-6 text-center">
-                                    <h2 className="module-title text-purple-500 mb-2 text-3xl">MOODBOARD</h2>
-                                    <p className="text-gray-600">Tablero de inspiración (Acceso Invitado)</p>
+                                 <div className="mb-6 flex justify-between items-center">
+                                    <div>
+                                        <h2 className="module-title text-purple-500 mb-2 text-3xl">MOODBOARD</h2>
+                                        <p className="text-gray-600">Tablero de inspiración (Acceso Invitado)</p>
+                                    </div>
+                                    {/* Controles Zoom Moodboard */}
+                                    <div className="flex gap-2">
+                                        <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
+                                            <button onClick={handleMoodboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                                            <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(moodboardZoom * 100)}%</span>
+                                            <button onClick={handleMoodboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                                            <button onClick={resetMoodboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="flex-1 bg-white rounded-3xl border-4 border-purple-100 overflow-hidden relative shadow-lg">
-                                    <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
+                                    <div style={{width: `${100 / moodboardZoom}%`, height: `${100 / moodboardZoom}%`, transform: `scale(${moodboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                        <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
+                                    </div>
                                 </div>
                             </div>
                         );
                     case 'storyboard':
                          return (
                             <div className="h-full flex flex-col p-8">
-                                 <div className="mb-6 text-center">
-                                    <h2 className="module-title text-orange-500 mb-2 text-3xl">STORYBOARD</h2>
-                                    <p className="text-gray-600">Planificación de historia (Acceso Invitado)</p>
+                                 <div className="mb-6 flex justify-between items-center">
+                                    <div>
+                                        <h2 className="module-title text-orange-500 mb-2 text-3xl">STORYBOARD</h2>
+                                        <p className="text-gray-600">Planificación de historia (Acceso Invitado)</p>
+                                    </div>
+                                    {/* Controles Zoom Storyboard */}
+                                    <div className="flex gap-2">
+                                        <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
+                                            <button onClick={handleStoryboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                                            <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(storyboardZoom * 100)}%</span>
+                                            <button onClick={handleStoryboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                                            <button onClick={resetStoryboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="flex-1 bg-white rounded-3xl border-4 border-orange-100 overflow-hidden relative shadow-lg">
-                                    <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
+                                    <div style={{width: `${100 / storyboardZoom}%`, height: `${100 / storyboardZoom}%`, transform: `scale(${storyboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                        <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -597,7 +631,12 @@
             
             const [userProfile, setUserProfile] = useState({ name: user.email.split('@')[0], photo: '' });
             const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+            
             const [padletZoom, setPadletZoom] = useState(1);
+            // Estado inicial del Zoom para Moodboard y Storyboard ajustado a 0.75
+            const [moodboardZoom, setMoodboardZoom] = useState(0.75);
+            const [storyboardZoom, setStoryboardZoom] = useState(0.75);
+            
             const [showBookSelector, setShowBookSelector] = useState(false);
 
             useEffect(() => { 
@@ -661,6 +700,17 @@
             const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
             const resetZoom = () => setPadletZoom(1);
+
+            // Manejadores de Zoom (Moodboard)
+            const handleMoodboardZoomIn = () => setMoodboardZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleMoodboardZoomOut = () => setMoodboardZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetMoodboardZoom = () => setMoodboardZoom(0.75); // Reset ajustado a 0.75
+
+            // Manejadores de Zoom (Storyboard)
+            const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetStoryboardZoom = () => setStoryboardZoom(0.75); // Reset ajustado a 0.75
+
             const isHome = activeSection === 'inicio';
 
             return (
@@ -857,24 +907,48 @@
 
                             {activeSection === 'moodboard' && (
                                 <div className="h-full flex flex-col">
-                                    <div className="mb-6">
-                                        <h2 className="module-title text-purple-500 mb-2">MOODBOARD</h2>
-                                        <p className="text-gray-600">Crea un tablero de inspiración con imágenes, colores y texturas.</p>
+                                    <div className="mb-6 flex justify-between items-center">
+                                        <div>
+                                            <h2 className="module-title text-purple-500 mb-2">MOODBOARD</h2>
+                                            <p className="text-gray-600">Crea un tablero de inspiración con imágenes, colores y texturas.</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
+                                                <button onClick={handleMoodboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                                                <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(moodboardZoom * 100)}%</span>
+                                                <button onClick={handleMoodboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                                                <button onClick={resetMoodboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="flex-1 bg-white rounded-3xl border-4 border-purple-100 overflow-hidden relative shadow-lg">
-                                        <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
+                                        <div style={{width: `${100 / moodboardZoom}%`, height: `${100 / moodboardZoom}%`, transform: `scale(${moodboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                            <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
+                                        </div>
                                     </div>
                                 </div>
                             )}
 
                             {activeSection === 'storyboard' && (
                                 <div className="h-full flex flex-col">
-                                    <div className="mb-6">
-                                        <h2 className="module-title text-orange-500 mb-2">STORYBOARD</h2>
-                                        <p className="text-gray-600">Planifica tu historia escena por escena.</p>
+                                    <div className="mb-6 flex justify-between items-center">
+                                        <div>
+                                            <h2 className="module-title text-orange-500 mb-2">STORYBOARD</h2>
+                                            <p className="text-gray-600">Planifica tu historia escena por escena.</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
+                                                <button onClick={handleStoryboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                                                <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(storyboardZoom * 100)}%</span>
+                                                <button onClick={handleStoryboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                                                <button onClick={resetStoryboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="flex-1 bg-white rounded-3xl border-4 border-orange-100 overflow-hidden relative shadow-lg">
-                                        <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
+                                        <div style={{width: `${100 / storyboardZoom}%`, height: `${100 / storyboardZoom}%`, transform: `scale(${storyboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                            <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
+                                        </div>
                                     </div>
                                 </div>
                             )}
