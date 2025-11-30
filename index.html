@@ -168,12 +168,13 @@
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
 
         /* =============================================
-           ESTILOS RESPONSIVOS PARA MÓVILES
+           ESTILOS RESPONSIVOS PARA MÓVILES (AJUSTE ESPECÍFICO)
            ============================================= */
         @media (max-width: 900px) {
+            /* AJUSTE DE PRECISIÓN: 35vw para que quepa perfecto al lado de la barra */
             :root { 
-                --book-width: 85vw; 
-                --book-height: calc(85vw * 1.35); 
+                --book-width: 35vw; 
+                --book-height: calc(35vw * 1.35); 
             }
             
             /* Contenedor principal en columna */
@@ -198,26 +199,23 @@
                 z-index: 60;
             }
             
-            /* Ocultar logo del sidebar en móvil para ahorrar espacio */
+            /* Ocultar logo del sidebar en móvil */
             .sidebar-logo { display: none; }
             
-            /* Items del menú compactos e inline */
             .menu-item { 
                 margin-bottom: 0; 
                 white-space: nowrap; 
                 font-size: 0.85rem;
                 padding: 8px 12px;
-                flex-shrink: 0; /* Evitar que se aplasten */
+                flex-shrink: 0; 
             }
             
-            /* Ajuste de contenido */
             .classroom-content { 
                 padding: 15px; 
                 overflow-y: auto; 
                 height: 100%; 
             }
 
-            /* Header global más compacto */
             .w-full.h-20 {
                 height: 60px;
                 padding-left: 15px;
@@ -225,14 +223,13 @@
             }
             .kids-title.text-3xl { font-size: 1.5rem; }
             
-            /* Perfil de usuario compacto */
             .user-chip { padding: 4px 8px; }
-            .user-info { display: none; } /* Ocultar nombre para ahorrar espacio en barra sup */
+            .user-info { display: none; } 
             .user-avatar { width: 35px; height: 35px; }
             
             /* Ajustes específicos de actividades para que no se corten */
             .book-showcase { height: 350px; }
-            .evidence-grid { grid-template-columns: 1fr; } /* Una sola columna */
+            .evidence-grid { grid-template-columns: 1fr; } 
             
             /* Forzar altura mínima en contenedores de iframes */
             #padlet-container, 
@@ -241,14 +238,15 @@
                 height: auto !important;
             }
             
-            /* Ajuste de botones del libro */
-            .nav-btn { 
-                width: 40px; height: 40px; font-size: 1rem; 
+            /* AJUSTE: Escala natural */
+            #stage {
+                transform: scale(1);
             }
-            .prev-btn { left: 10px; } 
-            .next-btn { right: 10px; }
+
+            .nav-btn { width: 35px; height: 35px; font-size: 0.9rem; }
+            .prev-btn { left: 5px; } 
+            .next-btn { right: 5px; }
             
-            /* Ajuste editor */
             .sidebar-editor { width: 50px; }
             .icon-chunk { width: 40px; height: 40px; font-size: 1rem; }
         }
@@ -382,7 +380,7 @@
             // Zoom Storyboard
             const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetStoryboardZoom = () => setStoryboardZoom(0.75); // Reset a 0.75
+            const resetStoryboardZoom = () => setStoryboardZoom(0.75); // Reset ajustado a 0.75
 
             const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
@@ -697,19 +695,17 @@
                 return null;
             };
 
-            const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetZoom = () => setPadletZoom(1);
+            const handlePadletZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handlePadletZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetPadletZoom = () => setPadletZoom(1);
 
-            // Manejadores de Zoom (Moodboard)
             const handleMoodboardZoomIn = () => setMoodboardZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleMoodboardZoomOut = () => setMoodboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetMoodboardZoom = () => setMoodboardZoom(0.75); // Reset ajustado a 0.75
+            const resetMoodboardZoom = () => setMoodboardZoom(0.75);
 
-            // Manejadores de Zoom (Storyboard)
             const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetStoryboardZoom = () => setStoryboardZoom(0.75); // Reset ajustado a 0.75
+            const resetStoryboardZoom = () => setStoryboardZoom(0.75);
 
             const isHome = activeSection === 'inicio';
 
@@ -1009,10 +1005,10 @@
                                         
                                         <div className="flex gap-2">
                                             <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
-                                                <button onClick={handleZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                                                <button onClick={handlePadletZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
                                                 <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(padletZoom * 100)}%</span>
-                                                <button onClick={handleZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                                                <button onClick={resetZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                                                <button onClick={handlePadletZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                                                <button onClick={resetPadletZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
                                             </div>
                                         </div>
                                     </div>
