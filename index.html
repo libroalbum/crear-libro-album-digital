@@ -37,15 +37,11 @@
 
         html, body, #root { height: 100%; margin: 0; padding: 0; overflow: hidden; }
         
-        /* Fondo con Mesh Gradient sutil y moderno */
+        /* Fondo general */
         body { 
             font-family: 'Outfit', sans-serif; 
             color: var(--dark-text); 
             background-color: var(--bg-main);
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, hsla(253,16%,7%,0) 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, hsla(225,39%,30%,0) 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, hsla(339,49%,30%,0) 50%);
         }
         
         /* Tipografía Jerárquica */
@@ -83,118 +79,89 @@
         .bg-gradient-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .bg-gradient-dark { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
 
-        /* --- LOGIN STYLES (LANDING PAGE REDESIGN) --- */
-        .login-wrapper {
+        /* --- LOGIN STYLES (SPLIT LAYOUT REDESIGN) --- */
+        .login-split-wrapper {
             display: flex;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-            position: relative;
+            background: white;
             overflow: hidden;
         }
         
-        /* Elementos decorativos de fondo */
-        .login-blob-1 {
-            position: absolute; width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(99,102,241,0) 70%);
-            top: -10%; left: -10%; border-radius: 50%; pointer-events: none;
+        /* Lado Izquierdo: Imagen Inmersiva */
+        .login-visual-side {
+            flex: 1.2; /* Ocupa un poco más de la mitad en pantallas grandes */
+            background-image: url('https://github.com/libroalbum/crear-libro-album-digital/blob/main/bienvenida.png?raw=true');
+            background-size: cover;
+            background-position: center;
+            position: relative;
         }
-        .login-blob-2 {
-            position: absolute; width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0) 70%);
-            bottom: -10%; right: -10%; border-radius: 50%; pointer-events: none;
+        
+        /* Overlay decorativo sobre la imagen para textos */
+        .visual-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
         }
 
-        /* Sección Izquierda: Información Institucional */
-        .login-info-section {
-            flex: 1;
-            padding: 60px;
+        /* Lado Derecho: Contenido y Formulario */
+        .login-form-side {
+            flex: 0 0 500px; /* Ancho fijo óptimo para formularios */
             display: flex;
             flex-direction: column;
             justify-content: center;
+            padding: 60px;
+            background-color: #ffffff;
             position: relative;
-            z-index: 10;
+            overflow-y: auto;
+        }
+
+        .login-brand-title {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 3rem;
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        .brand-highlight {
-            color: var(--accent-primary);
-            font-family: 'Luckiest Guy', cursive;
-            font-size: 1.5em;
-            letter-spacing: 2px;
-            text-shadow: 3px 3px 0px rgba(99,102,241,0.1);
-        }
-
-        .hero-title {
-            font-family: 'Dosis', sans-serif;
-            font-weight: 800;
-            font-size: 4rem;
-            line-height: 1.1;
-            color: var(--dark-text);
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #1e293b, #475569);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-subtitle {
-            font-size: 1.2rem;
-            color: var(--muted-text);
-            max-width: 500px;
+        .login-description {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 30px;
             line-height: 1.6;
+        }
+
+        .features-mini {
+            display: flex;
+            gap: 15px;
             margin-bottom: 40px;
         }
-
-        .feature-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .feature-pill {
+            background: #f1f5f9;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #475569;
             font-weight: 600;
-            color: #334155;
-            background: rgba(255,255,255,0.5);
-            padding: 15px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.8);
-            width: fit-content;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-            transition: transform 0.2s;
-        }
-        .feature-item:hover { transform: translateX(10px); background: white; }
-        
-        .feature-icon {
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.1rem;
-        }
-
-        /* Sección Derecha: Formulario */
-        .login-form-section {
-            flex: 0 0 450px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 40px;
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
-            border-left: 1px solid rgba(255,255,255,0.5);
-            position: relative;
-            z-index: 20;
+            gap: 8px;
         }
+        .feature-pill i { color: var(--accent-secondary); }
 
-        .login-card-modern {
-            width: 100%;
+        .login-box {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 24px;
-            box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            border: 1px solid #f1f5f9;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
         }
 
         .input-field-clean { 
@@ -216,11 +183,15 @@
 
         /* RESPONSIVE LOGIN */
         @media (max-width: 900px) {
-            .login-wrapper { flex-direction: column; overflow-y: auto; }
-            .login-info-section { padding: 40px 20px 20px 20px; text-align: center; align-items: center; }
-            .hero-title { font-size: 2.5rem; }
-            .login-form-section { flex: none; width: 100%; padding: 20px; background: transparent; border: none; }
-            .feature-list { display: none; } /* Ocultar features en móvil para ahorrar espacio */
+            .login-split-wrapper { flex-direction: column; }
+            .login-visual-side { 
+                flex: 0 0 30vh; /* La imagen ocupa el 30% de la altura en celular */
+                order: -1; /* Asegura que la imagen vaya arriba */
+            }
+            .visual-overlay { padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%); }
+            .login-form-side { flex: 1; padding: 30px 20px; width: 100%; }
+            .login-brand-title { font-size: 2.5rem; }
+            .features-mini { flex-wrap: wrap; }
         }
         
         /* --- LAYOUT SIDEBAR --- */
@@ -689,7 +660,7 @@
             );
         }
 
-        // --- LOGIN ---
+        // --- LOGIN (REDESIGN SPLIT SCREEN) ---
         function LoginScreen({ setUser }) {
             const [email, setEmail] = useState(''); 
             const [password, setPassword] = useState(''); 
@@ -711,78 +682,66 @@
             };
 
             return (
-                <div className="login-wrapper">
-                    <div className="login-blob-1"></div>
-                    <div className="login-blob-2"></div>
-                    
-                    <div className="login-info-section">
-                        <h2 className="brand-highlight"><i className="fas fa-magic mr-2"></i> ALBUM LAB</h2>
-                        <h1 className="hero-title">
-                            Tu Historia <br/>
-                            Comienza Aquí.
-                        </h1>
-                        <p className="hero-subtitle">
-                            Únete a la plataforma creativa donde tus ideas cobran vida. 
-                            Diseña, ilustra y publica tu propio Libro Álbum Digital.
-                        </p>
-                        
-                        <div className="feature-list">
-                            <div className="feature-item">
-                                <div className="feature-icon bg-gradient-primary"><i className="fas fa-book-open"></i></div>
-                                <span>Crea tu Libro Interactivo</span>
-                            </div>
-                            <div className="feature-item">
-                                <div className="feature-icon bg-gradient-accent"><i className="fas fa-palette"></i></div>
-                                <span>Diseña Personajes y Mundos</span>
-                            </div>
-                            <div className="feature-item">
-                                <div className="feature-icon bg-gradient-success"><i className="fas fa-globe"></i></div>
-                                <span>Comparte tu Portafolio</span>
-                            </div>
+                <div className="login-split-wrapper">
+                    {/* Lado Izquierdo: Visual con Imagen */}
+                    <div className="login-visual-side">
+                        <div className="visual-overlay">
+                            <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
+                            <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte tus historias con el mundo.</p>
                         </div>
                     </div>
 
-                    <div className="login-form-section">
-                        <div className="login-card-modern">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Bienvenido Creador</h2>
-                            <p className="text-gray-500 text-sm mb-6">Ingresa tus credenciales para acceder al estudio.</p>
-                            
-                            {isReset ? (
-                                <form onSubmit={handleReset} className="space-y-4 text-left">
-                                    <div className="relative">
-                                        <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
-                                        <input className="input-field-clean" placeholder="Tu correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
-                                    </div>
-                                    <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-4">Recuperar Contraseña</button>
-                                    <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Volver al inicio</div>
-                                </form>
-                            ) : (
-                                <form onSubmit={handleAuth} className="space-y-4 text-left">
-                                    <div className="relative">
-                                        <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
-                                        <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
-                                    </div>
-                                    <div className="relative">
-                                        <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
-                                        <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} required />
-                                    </div>
-                                    
-                                    <div className="text-right">
-                                        <span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
-                                    </div>
+                    {/* Lado Derecho: Formulario y Contenido */}
+                    <div className="login-form-side">
+                        <div className="w-full max-w-md">
+                            <h1 className="login-brand-title">CREATOR STUDIO</h1>
+                            <p className="login-description">
+                                La plataforma definitiva para crear tu Libro Álbum Digital. 
+                                <br/>Empieza tu aventura creativa ahora.
+                            </p>
 
-                                    <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">
-                                        {isRegister ? 'Registrarse Gratis' : 'Ingresar al Estudio'}
-                                    </button>
-                                    
-                                    <div className="mt-6 text-center">
-                                        <p className="text-sm text-gray-500 mb-2">{isRegister ? '¿Ya tienes cuenta?' : '¿Eres nuevo aquí?'}</p>
-                                        <span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>
-                                            {isRegister ? 'Inicia Sesión' : 'Crea una cuenta ahora'}
-                                        </span>
-                                    </div>
-                                </form>
-                            )}
+                            {/* Feature Badges */}
+                            <div className="features-mini">
+                                <div className="feature-pill"><i className="fas fa-magic"></i> Edición Fácil</div>
+                                <div className="feature-pill"><i className="fas fa-palette"></i> Arte & Color</div>
+                                <div className="feature-pill"><i className="fas fa-share-alt"></i> Compartir</div>
+                            </div>
+                            
+                            {/* Login Box */}
+                            <div className="login-box">
+                                {isReset ? (
+                                    <form onSubmit={handleReset} className="space-y-4">
+                                        <input className="input-field-clean" placeholder="Tu correo para recuperar" value={email} onChange={e=>setEmail(e.target.value)} />
+                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Enviar Enlace</button>
+                                        <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Cancelar</div>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={handleAuth} className="space-y-4">
+                                        <div className="relative">
+                                            <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} />
+                                        </div>
+                                        <div className="relative">
+                                            <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
+                                        </div>
+                                        
+                                        <div className="text-right">
+                                            <span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
+                                        </div>
+
+                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">
+                                            {isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}
+                                        </button>
+                                        
+                                        <div className="mt-6 text-center">
+                                            <span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>
+                                                {isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}
+                                            </span>
+                                        </div>
+                                    </form>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
