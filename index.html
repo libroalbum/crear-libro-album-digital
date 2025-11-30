@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Studio Pop - Aula Virtual</title>
+    <title>Creator Studio - Album Lab</title>
     
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- FUENTES -->
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;600;700&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Dosis:wght@400;600;800&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
 
     <!-- REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -18,126 +18,157 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        /* --- 1. PALETA "ELECTRIC PASTELS" --- */
+        /* --- 1. PALETA "NEON GLASS" (GEN Z AESTHETIC) --- */
         :root {
-            --bg-ice: #F8FAFC; 
-            --text-main: #334155;
-            --header-blue: #00C6FF; 
+            /* Fondos con personalidad */
+            --bg-main: #F3F4F6;
+            --sidebar-bg: rgba(255, 255, 255, 0.85);
             
-            /* Acentos */
-            --hyper-grape: #8B5CF6;
-            --lime-punch: #84CC16;
-            --electric-cyan: #06B6D4;
-            --hot-orange: #F97316;
-            --pop-pink: #EC4899;
-            
-            /* Sombras */
-            --shadow-grape: #6D28D9;
-            --shadow-lime: #4D7C0F;
-            --shadow-cyan: #0097bd;
-            --shadow-orange: #C2410C;
-            --shadow-pink: #BE185D;
+            /* Colores de Marca */
+            --accent-primary: #6366f1; /* Indigo moderno */
+            --accent-secondary: #ec4899; /* Pink pop */
+            --accent-tertiary: #06b6d4; /* Cyan electric */
+            --dark-text: #1e293b;
+            --muted-text: #64748b;
 
-            --canvas-dark: #1e293b;
-
-            /* Variables Libro */
+            /* Variables Libro (INTACTAS) */
             --book-width: 460px; --book-height: 600px; --paper-texture: #fdfbf7; --text-color: #2c3e50; --accent-color: #5d4037; --gold-color: #d4af37; --endpaper-bg: #a5d6a7; --endpaper-dot: #ffffff; 
         }
 
         html, body, #root { height: 100%; margin: 0; padding: 0; overflow: hidden; }
-        body { font-family: 'Nunito', sans-serif; color: var(--text-main); background-color: var(--bg-ice); background-image: radial-gradient(#E2E8F0 1px, transparent 1px); background-size: 20px 20px; }
         
-        h1, h2, h3, .pop-title { font-family: 'Dosis', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .kids-title { font-family: 'Luckiest Guy', cursive; letter-spacing: 1px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); font-size: 2rem; }
+        /* Fondo con Mesh Gradient sutil y moderno */
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            color: var(--dark-text); 
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, hsla(253,16%,7%,0) 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, hsla(225,39%,30%,0) 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, hsla(339,49%,30%,0) 50%);
+        }
+        
+        /* Tipografía Jerárquica */
+        h1, h2, .brand-title { font-family: 'Dosis', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
+        .section-label { font-family: 'Outfit', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.75rem; color: #94a3b8; margin-top: 1.5rem; margin-bottom: 0.5rem; padding-left: 1rem; }
 
-        /* --- UI COMPONENTS --- */
-        .glass-panel { background: white; border: 3px solid white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.2s; }
+        /* --- UI COMPONENTS MODERNOS --- */
         
-        /* Botones Gummy */
-        .btn-gummy { border: none; outline: none; cursor: pointer; font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 15px; color: white; text-transform: uppercase; transition: transform 0.1s; position: relative; top: 0; }
-        .btn-gummy:active { top: 4px; box-shadow: none !important; }
-        .btn-gummy:hover { filter: brightness(1.05); }
-        
-        .btn-grape { background: var(--hyper-grape); box-shadow: 0 4px 0 #6D28D9; }
-        .btn-lime { background: var(--lime-punch); box-shadow: 0 4px 0 #4D7C0F; }
-        .btn-cyan { background: var(--electric-cyan); box-shadow: 0 4px 0 #0097bd; }
-        .btn-orange { background: var(--hot-orange); box-shadow: 0 4px 0 #C2410C; }
-        .btn-pink { background: var(--pop-pink); box-shadow: 0 4px 0 #BE185D; }
-        .btn-indigo { background: #6366f1; box-shadow: 0 4px 0 #4338ca; }
+        /* Glassmorphism Panels */
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 24px; 
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05); 
+            transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .glass-panel:hover { box-shadow: 0 12px 40px rgba(31, 38, 135, 0.1); transform: translateY(-2px); }
 
-        /* --- LOGIN STYLES (CLEAN BLUE) --- */
+        /* Botones "Pill" Modernos */
+        .btn-modern { 
+            border: none; outline: none; cursor: pointer; 
+            font-family: 'Outfit', sans-serif; font-weight: 600; 
+            display: flex; align-items: center; justify-content: center; gap: 8px; 
+            padding: 10px 24px; border-radius: 100px; 
+            color: white; transition: all 0.2s ease; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn-modern:hover { transform: scale(1.03); filter: brightness(1.1); }
+        .btn-modern:active { transform: scale(0.97); }
+        
+        .bg-gradient-primary { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+        .bg-gradient-accent { background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%); }
+        .bg-gradient-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .bg-gradient-dark { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+
+        /* --- LOGIN STYLES --- */
         .login-page-bg {
-            background-color: #e0f2fe;
-            background-image: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 20%);
+            background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
             width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
         }
-        .shape-blob-1 { position: absolute; top: -10%; right: -5%; width: 400px; height: 400px; background: rgba(3, 169, 244, 0.05); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: rotate(45deg); }
-        .shape-blob-2 { position: absolute; bottom: -10%; left: -10%; width: 500px; height: 500px; background: rgba(3, 169, 244, 0.05); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-
-        .login-card-clean { background: white; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); padding: 40px; width: 100%; max-width: 400px; text-align: center; position: relative; z-index: 10; }
-        .login-title-clean { font-family: 'Luckiest Guy', cursive; color: #0ea5e9; font-size: 2.8rem; line-height: 1; margin-bottom: 30px; text-transform: uppercase; text-shadow: 2px 2px 0px rgba(0,0,0,0.05); }
-        .input-group-clean { position: relative; margin-bottom: 15px; }
-        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1rem; }
-        .input-field-clean { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.95rem; color: #475569; outline: none; transition: border-color 0.2s; background: white; }
-        .input-field-clean:focus { border-color: #0ea5e9; }
-        .input-field-clean::placeholder { color: #cbd5e1; }
-        .btn-login-clean { background-color: #0284c7; color: white; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem; padding: 12px; width: 100%; border-radius: 50px; border: none; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3); }
-        .btn-login-clean:hover { background-color: #0369a1; }
-        .link-text { display: block; margin-top: 15px; font-size: 0.85rem; color: #64748b; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; }
-        .link-text:hover { color: #0ea5e9; }
-        .register-link { color: #94a3b8; margin-top: 5px; }
-
-        /* --- LAYOUT CLASSROOM --- */
+        .login-card-clean { 
+            background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); 
+            border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); 
+            padding: 50px; width: 100%; max-width: 420px; text-align: center; position: relative; z-index: 10; border: 1px solid white;
+        }
+        .input-field-clean { 
+            width: 100%; padding: 14px 15px 14px 45px; 
+            border: 2px solid #f1f5f9; border-radius: 12px; 
+            font-family: 'Outfit', sans-serif; font-size: 1rem; color: #334155; 
+            background: #f8fafc; transition: all 0.2s; 
+        }
+        .input-field-clean:focus { border-color: var(--accent-primary); background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); outline: none; }
+        
+        /* --- LAYOUT SIDEBAR --- */
         .classroom-container { display: flex; height: 100%; width: 100%; }
-        .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; overflow-y: auto; }
-        .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 1rem; text-transform: none; }
-        .menu-text { text-transform: capitalize; }
-        .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
-        .menu-item.active { background: #E0F2FE; color: var(--electric-cyan); box-shadow: inset 4px 0 0 var(--electric-cyan); }
-        .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; flex-shrink: 0; }
+        .classroom-sidebar { 
+            width: 280px; background: var(--sidebar-bg); 
+            backdrop-filter: blur(10px); border-right: 1px solid rgba(0,0,0,0.05); 
+            display: flex; flex-direction: column; padding: 25px; z-index: 50; flex-shrink: 0; overflow-y: auto; 
+        }
+        .sidebar-logo { 
+            font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.8rem; 
+            background: linear-gradient(to right, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 30px; text-align: left; letter-spacing: -1px;
+        }
+        
+        .menu-item { 
+            padding: 10px 16px; margin-bottom: 4px; border-radius: 12px; 
+            cursor: pointer; font-weight: 500; color: #64748b; 
+            display: flex; align-items: center; gap: 12px; transition: all 0.2s; 
+            font-family: 'Outfit', sans-serif; font-size: 0.95rem; 
+        }
+        .menu-item:hover { background: white; color: var(--accent-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.03); transform: translateX(4px); }
+        .menu-item.active { 
+            background: var(--accent-primary); color: white; 
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); 
+        }
+        .menu-item.active i { color: white; }
+        .menu-item i { width: 24px; text-align: center; font-size: 1.1rem; transition: 0.2s; }
 
-        .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 20px 40px; position: relative; }
-        .module-header { margin-bottom: 30px; border-bottom: 3px solid #E2E8F0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .module-title { font-size: 2rem; color: var(--text-main); font-family: 'Luckiest Guy'; }
-
-        .summary-card { background: white; padding: 20px; border-radius: 20px; border-bottom: 4px solid #E2E8F0; display: flex; align-items: center; gap: 20px; }
-        .summary-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; }
-
-        .input-pop { background: white; border: 3px solid #E2E8F0; border-radius: 15px; padding: 12px 15px; width: 100%; font-family: 'Nunito', font-weight: 700; color: #475569; outline: none; }
-        .input-pop:focus { border-color: var(--electric-cyan); }
+        .classroom-content { flex: 1; background: transparent; overflow-y: auto; padding: 30px 50px; position: relative; }
+        
+        /* Dashboard Grid System */
+        .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+        .activity-card {
+            background: white; border-radius: 20px; padding: 20px;
+            border: 1px solid #f1f5f9; position: relative; overflow: hidden;
+            transition: all 0.3s ease; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; height: 220px;
+        }
+        .activity-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); border-color: var(--accent-primary); }
+        .activity-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--card-color, #cbd5e1); }
+        .ac-icon { width: 50px; height: 50px; border-radius: 14px; background: #f8fafc; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--card-color); margin-bottom: 15px; }
+        .ac-title { font-family: 'Dosis', sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--dark-text); line-height: 1.1; }
+        .ac-desc { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; line-height: 1.4; }
+        .ac-arrow { align-self: flex-end; width: 30px; height: 30px; border-radius: 50%; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: 0.2s; }
+        .activity-card:hover .ac-arrow { background: var(--card-color); border-color: var(--card-color); color: white; }
 
         /* --- TOP BAR PROFILE --- */
-        .top-bar { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; gap: 15px; }
-        .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 6px 8px 6px 15px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid white; cursor: pointer; transition: 0.2s; }
-        .user-chip:hover { transform: translateY(-2px); border-color: var(--electric-cyan); }
-        .user-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: #e2e8f0; border: 2px solid var(--electric-cyan); }
-        .user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
-        .user-name { font-weight: 800; font-size: 0.95rem; color: var(--text-main); font-family: 'Dosis'; text-transform: uppercase; }
-        .user-role { font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .logout-btn-top { background: #fee2e2; color: #ef4444; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: 2px solid #fecaca; box-shadow: 0 4px 0 #f87171; }
-        .logout-btn-top:active { box-shadow: none; transform: translateY(4px); }
-        .logout-btn-top:hover { background: #ef4444; color: white; border-color: #ef4444; }
+        .top-bar-glass { 
+            position: sticky; top: 0; z-index: 40; 
+            margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; 
+            padding-bottom: 10px;
+        }
+        .page-header-title { font-size: 2rem; font-weight: 800; color: var(--dark-text); font-family: 'Dosis'; letter-spacing: -1px; }
+        
+        .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 6px 8px 6px 15px; border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s; }
+        .user-chip:hover { transform: translateY(-2px); border-color: var(--accent-primary); }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #e2e8f0; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; margin-right: 5px; }
+        .user-name { font-weight: 700; font-size: 0.9rem; color: var(--dark-text); font-family: 'Outfit'; }
+        .user-role { font-size: 0.7rem; color: var(--accent-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* MODAL PERFIL */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); text-align: center; }
-        .book-select-item { border: 2px solid #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
-        .book-select-item:hover { border-color: var(--electric-cyan); background: #f0f9ff; }
-        .book-select-thumb { width: 60px; height: 60px; background: #ddd; border-radius: 10px; object-fit: cover; }
-
-        /* --- EDITOR STYLES --- */
-        .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: var(--canvas-dark); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; width: 100%; height: 100%; }
-        .sidebar-editor { width: 80px; height: 100%; background: white; border-right: 3px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 40; gap: 20px; flex-shrink: 0; }
-        .icon-chunk { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; cursor: pointer; transition: 0.1s; position: relative; top: 0; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); }
-        .icon-chunk:active { top: 4px; box-shadow: inset 0 0 0 rgba(0,0,0,0) !important; }
-        .icon-chunk:hover { filter: brightness(1.1); }
-        .icon-chunk::after { content: attr(data-tooltip); position: absolute; left: 65px; background: var(--text-main); color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-family: 'Nunito'; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; z-index: 100; }
-        .icon-chunk:hover::after { opacity: 1; left: 70px; }
-
-        /* Libro Clásico */
+        /* --- EDITOR STYLES (Canvas) --- */
+        .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #2b2d42; background-image: radial-gradient(#3d405b 1px, transparent 1px); background-size: 30px 30px; width: 100%; height: 100%; }
+        .sidebar-editor { width: 70px; height: 100%; background: #1e1e24; border-right: 1px solid #333; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 40; gap: 15px; flex-shrink: 0; }
+        .icon-chunk { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.1); }
+        .icon-chunk:hover { background: var(--accent-primary); transform: scale(1.1); }
+        
+        /* ESTILOS DEL LIBRO */
         #stage { perspective: 2500px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; transform-style: preserve-3d; }
-        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .book { position: relative; width: var(--book-width); height: var(--book-height); transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
         .book::before { content: ''; position: absolute; z-index: -1; width: 96%; height: 96%; left: 5%; top: 5%; background: rgba(0,0,0,0.2); filter: blur(20px); border-radius: 20px; transition: all 0.8s ease-in-out; opacity: 0.5; }
         .book.opened { transform: translateX(50%); } .book.opened::before { width: 196%; left: -95%; opacity: 0.4; background: rgba(0,0,0,0.15); } .book.closed-back { transform: translateX(100%); } .book.closed-back::before { width: 96%; left: -99%; }
         .paper { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transform-origin: left center; transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); transform-style: preserve-3d; }
@@ -154,105 +185,40 @@
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
 
-        /* Overlays */
-        .edit-overlay { position: absolute; inset: 0; background: rgba(248, 250, 252, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px); z-index: 20; }
+        /* Overlays Editor */
+        .edit-overlay { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px); z-index: 20; }
         .editor-mode .front:hover .edit-overlay, .editor-mode .back:hover .edit-overlay { opacity: 1; }
-        .upload-card { background: white; border: 3px solid var(--electric-cyan); padding: 15px; border-radius: 20px; text-align: center; transform: scale(0.9); transition: transform 0.3s; width: 80%; max-width: 240px; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2); }
-        .editor-mode .front:hover .upload-card, .editor-mode .back:hover .upload-card { transform: scale(1); }
-        .upload-btn { background: var(--pop-pink); color: white; padding: 10px; border-radius: 15px; font-family: 'Dosis', sans-serif; font-weight: 800; cursor: pointer; display: block; width: 100%; margin-bottom: 8px; border: none; box-shadow: 0 4px 0 #BE185D; transition: 0.1s; }
-        .upload-btn:hover { transform: translateY(-2px); } .upload-btn:active { transform: translateY(2px); box-shadow: none; }
-        .url-input { width: 100%; padding: 8px; background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 10px; font-size: 0.8rem; text-align: center; outline: none; font-family: 'Nunito'; font-weight: 700; }
-        .remove-btn { margin-top: 5px; color: #EF4444; font-size: 0.8rem; cursor: pointer; background: none; border: none; font-weight: 800; text-transform: uppercase; }
-        .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan); font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #0099cc; }
-        .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; } .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
-        .prev-btn { left: 110px; } .next-btn { right: 40px; }
+        .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; background: white; border: none; color: var(--dark-text); font-size: 1.2rem; cursor: pointer; transition: 0.2s; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .nav-btn:hover { transform: translateY(-55%) scale(1.1); background: var(--accent-primary); color: white; }
+        
+        /* Modal y Overlays Generales */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 24px; width: 90%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; animation: floatUp 0.3s ease-out; }
+        
+        @keyframes floatUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* =============================================
-           ESTILOS RESPONSIVOS PARA MÓVILES (AJUSTE ESPECÍFICO)
-           ============================================= */
+        /* --- ESTILOS RESPONSIVOS MÓVIL --- */
         @media (max-width: 900px) {
-            /* AJUSTE DE PRECISIÓN: 35vw para que quepa perfecto al lado de la barra */
-            :root { 
-                --book-width: 35vw; 
-                --book-height: calc(35vw * 1.35); 
-            }
-            
-            /* Contenedor principal en columna */
-            .classroom-container { 
-                flex-direction: column; 
-            }
-            
-            /* Barra Lateral transformada en barra superior deslizable */
+            :root { --book-width: 35vw; --book-height: calc(35vw * 1.35); }
+            .classroom-container { flex-direction: column; }
             .classroom-sidebar { 
-                width: 100%; 
-                height: auto; 
-                flex-direction: row; 
-                overflow-x: auto; /* Scroll horizontal */
-                overflow-y: hidden;
-                padding: 10px; 
-                border-right: none; 
-                border-bottom: 2px solid #E2E8F0;
-                align-items: center;
-                gap: 10px;
-                background: white;
-                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-                z-index: 60;
+                width: 100%; height: auto; flex-direction: row; overflow-x: auto; 
+                padding: 10px; border-right: none; border-bottom: 1px solid #e2e8f0; 
+                background: white; gap: 10px; align-items: center;
             }
-            
-            /* Ocultar logo del sidebar en móvil */
             .sidebar-logo { display: none; }
-            
-            .menu-item { 
-                margin-bottom: 0; 
-                white-space: nowrap; 
-                font-size: 0.85rem;
-                padding: 8px 12px;
-                flex-shrink: 0; 
-            }
-            
-            .classroom-content { 
-                padding: 15px; 
-                overflow-y: auto; 
-                height: 100%; 
-            }
-
-            .w-full.h-20 {
-                height: 60px;
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-            .kids-title.text-3xl { font-size: 1.5rem; }
-            
-            .user-chip { padding: 4px 8px; }
-            .user-info { display: none; } 
-            .user-avatar { width: 35px; height: 35px; }
-            
-            /* Ajustes específicos de actividades para que no se corten */
-            .book-showcase { height: 350px; }
-            .evidence-grid { grid-template-columns: 1fr; } 
-            
-            /* Forzar altura mínima en contenedores de iframes */
-            #padlet-container, 
-            .flex-1.bg-white.rounded-3xl { 
-                min-height: 500px; 
-                height: auto !important;
-            }
-            
-            /* AJUSTE: Escala natural */
-            #stage {
-                transform: scale(1);
-            }
-
-            .nav-btn { width: 35px; height: 35px; font-size: 0.9rem; }
-            .prev-btn { left: 5px; } 
-            .next-btn { right: 5px; }
-            
-            .sidebar-editor { width: 50px; }
-            .icon-chunk { width: 40px; height: 40px; font-size: 1rem; }
+            .menu-item { margin-bottom: 0; white-space: nowrap; font-size: 0.85rem; padding: 8px 12px; flex-shrink: 0; }
+            .section-label { display: none; } /* Ocultar etiquetas en móvil */
+            .classroom-content { padding: 15px; }
+            .bento-grid { grid-template-columns: 1fr; }
+            .user-info { display: none; }
+            .user-avatar { width: 32px; height: 32px; }
+            #stage { transform: scale(1); }
+            .book-showcase { height: 300px; }
         }
     </style>
 </head>
-<body class="h-screen overflow-hidden">
+<body>
     
     <div id="root"></div>
 
@@ -277,6 +243,7 @@
         let app, auth, db;
         try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch (e) { console.error(e); }
 
+        // --- UTILS ---
         const processImage = (file, callback) => {
             if (!file) return;
             if (file.size > 2000000) { if(!confirm("Imagen grande. ¿Seguir?")) return; }
@@ -306,8 +273,7 @@
             ]
         };
 
-        // --- COMPONENTE: VISOR DEL LIBRO (BOOKVIEWER) ---
-        // DEFINIDO PRIMERO PORQUE ES REQUERIDO POR OTROS COMPONENTES
+        // --- COMPONENTES (BOOKVIEWER INTACTO EN LÓGICA) ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
@@ -333,12 +299,12 @@
                 return (
                     <div className="edit-overlay">
                         <div className="upload-card">
-                            <label className="btn-gummy btn-pink" style={{width:'100%', fontSize:'0.9rem', padding:'8px'}}>
+                            <label className="btn-modern bg-gradient-accent" style={{width:'100%', fontSize:'0.9rem', padding:'8px'}}>
                                 <i className="fas fa-camera mr-2"></i> {currentBg ? 'Cambiar' : 'Subir'}
                                 <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64)); }} />
                             </label>
-                            <input className="input-pop" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px'}} />
-                            {currentBg && <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>BORRAR IMAGEN</button>}
+                            <input className="input-field-clean" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px', padding:'8px'}} />
+                            {currentBg && <button className="remove-btn" style={{marginTop:'10px', color:'#ef4444', fontWeight:'bold'}} onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>ELIMINAR</button>}
                         </div>
                     </div>
                 );
@@ -378,190 +344,226 @@
                             })}
                         </div>
                     </div>
-                    {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
-                    {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
+                    {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-arrow-left"></i></button>}
+                    {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}
                 </div>
             );
         }
 
-        // --- VISTA: VISOR PÚBLICO (MODO INVITADO) ---
+        // --- VISOR PÚBLICO (MODO INVITADO) ---
         function PublicActivityViewer({ activity }) {
-            const [padletZoom, setPadletZoom] = useState(1);
-            const [moodboardZoom, setMoodboardZoom] = useState(0.75);
-            const [storyboardZoom, setStoryboardZoom] = useState(0.75);
+            const [zoom, setZoom] = useState(1);
+            const handleZoomIn = () => setZoom(p => Math.min(p + 0.1, 1.5));
+            const handleZoomOut = () => setZoom(p => Math.max(p - 0.1, 0.5));
+            const resetZoom = () => setZoom(1);
 
-            const handleMoodboardZoomIn = () => setMoodboardZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleMoodboardZoomOut = () => setMoodboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetMoodboardZoom = () => setMoodboardZoom(0.75);
-
-            const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetStoryboardZoom = () => setStoryboardZoom(0.75);
-
-            const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetZoom = () => setPadletZoom(1);
-
-            const getActivityTitle = () => {
-                switch(activity) {
-                    case 'guia': case 'reference_book': return "LIBRO GUÍA";
-                    case 'moodboard': return "MOODBOARD";
-                    case 'storyboard': return "STORYBOARD";
-                    case 'quiz': return "QUIZ TIME";
-                    case 'ficha': case 'ficha_personajes': return "FICHA DE PERSONAJES";
-                    case 'ficha_narrativa': return "FICHA NARRATIVA";
-                    case 'padlet': case 'muro': return "MURO COLABORATIVO";
-                    default: return "";
-                }
+            const getTitle = () => {
+                const map = {
+                    'guia': "Libro Guía", 'reference_book': "Libro Guía",
+                    'moodboard': "Moodboard", 'storyboard': "Storyboard",
+                    'quiz': "Quiz Time", 'ficha': "Ficha Personajes", 
+                    'ficha_personajes': "Ficha Personajes", 'ficha_narrativa': "Ficha Narrativa",
+                    'padlet': "Muro Colaborativo", 'muro': "Muro Colaborativo"
+                };
+                return map[activity] || "Actividad";
             };
 
-            const renderZoomControls = (zoomVal, zoomIn, zoomOut, zoomReset) => (
-                <div className="absolute top-4 right-4 bg-white p-1 rounded-xl shadow-md border border-gray-200 flex gap-1 z-50 transform scale-90">
-                    <button onClick={zoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
-                    <span className="flex items-center justify-center w-10 text-xs font-bold text-gray-500">{Math.round(zoomVal * 100)}%</span>
-                    <button onClick={zoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                    <button onClick={zoomReset} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
-                </div>
-            );
-
             const renderContent = () => {
-                switch(activity) {
-                    case 'guia':
-                    case 'reference_book':
-                        return (
-                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
-                                <button 
-                                    onClick={() => {
-                                        const elem = document.getElementById('guide-book-public-container');
-                                        if (!document.fullscreenElement) {
-                                            elem.requestFullscreen().catch(err => console.log(err));
-                                        } else {
-                                            document.exitFullscreen();
-                                        }
-                                    }} 
-                                    className="absolute top-4 right-4 z-50 btn-gummy btn-indigo bg-indigo-500 text-xs px-3 py-1 shadow-indigo-700"
-                                >
-                                    <i className="fas fa-expand mr-1"></i> PANTALLA COMPLETA
-                                </button>
-                                <div id="guide-book-public-container" className="flex-1 bg-white rounded-xl border-2 border-indigo-100 overflow-hidden relative shadow-sm">
-                                    <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>
-                                </div>
-                            </div>
-                        );
-                    case 'moodboard':
-                        return (
-                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
-                                {renderZoomControls(moodboardZoom, handleMoodboardZoomIn, handleMoodboardZoomOut, resetMoodboardZoom)}
-                                <div className="flex-1 bg-white rounded-xl border-2 border-purple-100 overflow-hidden relative shadow-sm">
-                                    <div style={{width: `${100 / moodboardZoom}%`, height: `${100 / moodboardZoom}%`, transform: `scale(${moodboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                        <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'storyboard':
-                         return (
-                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
-                                {renderZoomControls(storyboardZoom, handleStoryboardZoomIn, handleStoryboardZoomOut, resetStoryboardZoom)}
-                                <div className="flex-1 bg-white rounded-xl border-2 border-orange-100 overflow-hidden relative shadow-sm">
-                                    <div style={{width: `${100 / storyboardZoom}%`, height: `${100 / storyboardZoom}%`, transform: `scale(${storyboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                        <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'quiz':
-                         return (
-                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
-                                <div className="flex-1 bg-white rounded-xl border-2 border-yellow-100 overflow-hidden relative shadow-sm group">
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" alt="Kahoot Quiz" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
-                                            <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'ficha':
-                    case 'ficha_personajes':
-                         return (
-                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
-                                <div className="flex-1 bg-white rounded-xl border-2 border-pink-100 overflow-hidden relative shadow-sm flex flex-col group">
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" alt="Ficha de Personajes" />
-                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
-                                            <i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'ficha_narrativa':
-                         return (
-                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
-                                <div className="flex-1 bg-white rounded-xl border-2 border-rose-100 overflow-hidden relative shadow-sm flex flex-col group">
-                                     <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition" alt="Ficha Narrativa" />
-                                     <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                                         <a 
-                                            href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
-                                            style={{textDecoration: 'none'}}
-                                         >
-                                            <i className="fas fa-pen-nib"></i> RELLENAR LA FICHA
-                                         </a>
-                                     </div>
-                                </div>
-                            </div>
-                        );
-                    case 'padlet':
-                    case 'muro':
-                         return (
-                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
-                                {renderZoomControls(padletZoom, handleZoomIn, handleZoomOut, resetZoom)}
-                                <div className="flex-1 bg-white rounded-xl border-2 border-teal-100 overflow-hidden relative shadow-sm">
-                                     <div style={{width: `${100 / padletZoom}%`, height: `${100 / padletZoom}%`, transform: `scale(${padletZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                        <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" frameBorder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write" style={{width:'100%', height:'100%', display:'block'}} title="Muro Colaborativo Padlet"></iframe>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    default:
-                        return <div className="flex items-center justify-center h-full text-2xl font-bold text-gray-400 font-sans">Actividad no encontrada</div>;
-                }
+                const iframeStyle = { width: `${100/zoom}%`, height: `${100/zoom}%`, transform: `scale(${zoom})`, transformOrigin: '0 0', transition: '0.2s' };
+                const wrapperClass = "flex-1 bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative";
+
+                // Reutilizamos lógica simple para iframes
+                if(activity === 'guia' || activity === 'reference_book') 
+                    return <div className={wrapperClass}><iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe></div>;
+                
+                if(activity === 'moodboard') 
+                    return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe></div></div>;
+                
+                if(activity === 'storyboard') 
+                    return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe></div></div>;
+                
+                if(activity === 'padlet' || activity === 'muro') 
+                    return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div>;
+
+                if(activity === 'quiz') return (
+                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden relative group">
+                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-play mr-2"></i> INICIAR QUIZ</a>
+                        </div>
+                    </div>
+                );
+
+                if(activity === 'ficha' || activity === 'ficha_personajes') return (
+                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden relative group">
+                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
+                        <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-accent text-xl px-10 py-4"><i className="fas fa-pen mr-2"></i> COMPLETAR</a>
+                        </div>
+                    </div>
+                );
+
+                if(activity === 'ficha_narrativa') return (
+                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden relative group">
+                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-accent text-xl px-10 py-4"><i className="fas fa-pen-nib mr-2"></i> RELLENAR FICHA</a>
+                        </div>
+                    </div>
+                );
+
+                return <div>404</div>;
             };
 
             return (
-                <div className="h-screen w-full bg-[var(--bg-ice)] overflow-hidden flex flex-col">
-                     <div className="w-full h-14 bg-white border-b-4 border-cyan-100 flex items-center justify-between px-6 shadow-sm z-50">
+                <div className="h-screen w-full bg-gray-50 flex flex-col font-sans">
+                    <div className="h-16 bg-white border-b flex items-center justify-between px-6 shadow-sm z-50">
                         <div className="flex items-center gap-4">
-                            <div className="kids-title text-xl text-cyan-500">CREATOR STUDIO</div>
-                            <div className="h-6 w-0.5 bg-gray-300 rounded"></div>
-                            <div className="font-bold text-gray-500 uppercase text-lg tracking-wide">{getActivityTitle()}</div>
+                            <div className="font-bold text-xl text-indigo-600 tracking-tight">CREATOR STUDIO</div>
+                            <span className="text-gray-300">/</span>
+                            <div className="font-semibold text-gray-600 uppercase tracking-widest text-sm">{getTitle()}</div>
                         </div>
                         <div className="flex items-center gap-3">
-                             <div className="text-gray-400 font-bold text-xs uppercase tracking-wide flex items-center gap-2 mr-2">
-                                <i className="fas fa-user-secret"></i> MODO INVITADO
-                            </div>
-                            <button 
-                                onClick={() => window.location.href = window.location.pathname} 
-                                className="btn-gummy btn-lime text-xs px-4 py-1 shadow-lime-600"
-                            >
-                                <i className="fas fa-sign-in-alt mr-2"></i> REGISTRARME
-                            </button>
+                            {['moodboard','storyboard','padlet','muro'].includes(activity) && (
+                                <div className="flex bg-gray-100 rounded-lg p-1 mr-4">
+                                    <button onClick={handleZoomOut} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-white rounded-md transition"><i className="fas fa-minus"></i></button>
+                                    <button onClick={resetZoom} className="px-2 text-xs font-bold text-gray-500">{Math.round(zoom*100)}%</button>
+                                    <button onClick={handleZoomIn} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-white rounded-md transition"><i className="fas fa-plus"></i></button>
+                                </div>
+                            )}
+                            <button onClick={() => window.location.href = window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4 py-2">REGISTRARME</button>
                         </div>
-                     </div>
-                     <div className="flex-1 overflow-hidden relative bg-gray-50">
+                    </div>
+                    <div className="flex-1 p-6 overflow-hidden flex flex-col relative">
                         {renderContent()}
-                     </div>
+                    </div>
                 </div>
             );
         }
 
-        // --- VISTA: LOGIN ---
-        function LoginScreen({ setUser, setView }) {
+        // --- EDITOR COMPONENT (Restaurado) ---
+        function Editor({ user, setView }) {
+            const [book, setBook] = useState(null);
+            const [activeIdx, setActiveIdx] = useState(-1); 
+            
+            useEffect(() => { 
+                const bid = localStorage.getItem('currentBookId'); 
+                if(!bid || !db) return; 
+                getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid)).then(snap => { 
+                    if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
+                }); 
+            }, []);
+
+            const save = async () => { 
+                try { 
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
+                    alert("¡GUARDADO!"); 
+                } catch (e) { alert("Error."); } 
+            };
+
+            const handlePageUpdate = (idx, side, field, val) => { 
+                const newPages = [...book.pages]; 
+                newPages[idx][side][field] = val; 
+                setBook({...book, pages: newPages}); 
+            };
+
+            const addPage = () => { 
+                const np = [...book.pages]; 
+                np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: '' }, back: { type: 'image-page', bg: '' } }); 
+                setBook({...book, pages: np}); 
+            };
+
+            if(!book) return <div className="flex h-full items-center justify-center text-white">Cargando Libro...</div>;
+
+            return (
+                <div className="flex h-full w-full relative overflow-hidden">
+                    <div className="sidebar-editor">
+                        <div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div>
+                        <div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div>
+                        <div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div>
+                    </div>
+                    <div className="canvas-grid editor-mode">
+                        <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
+                    </div>
+                </div>
+            );
+        }
+
+        // --- PUBLIC GALLERY COMPONENT (Restaurado) ---
+        function PublicGallery({ uid }) {
+            const [portfolio, setPortfolio] = useState({});
+            const [book, setBook] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [userProfile, setUserProfile] = useState({ name: 'Creador' });
+
+            useEffect(() => {
+                if(!db) return;
+                const load = async () => {
+                    const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
+                    if(docSnap.exists()) setPortfolio(docSnap.data());
+                    
+                    const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
+                    if(profileSnap.exists()) setUserProfile(profileSnap.data());
+                    
+                    // Fetch featured book
+                    if(docSnap.exists() && docSnap.data().featuredBookId) {
+                         const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', docSnap.data().featuredBookId));
+                         if(bookSnap.exists()) setBook({id: bookSnap.id, ...bookSnap.data()});
+                    }
+                    setLoading(false);
+                }; 
+                load();
+            }, [uid]);
+
+            if(loading) return <div className="flex h-screen items-center justify-center text-indigo-500 font-bold">Cargando Portafolio...</div>;
+
+            return (
+                <div className="h-full overflow-y-auto bg-gray-50">
+                    <div className="bg-white border-b shadow-sm sticky top-0 z-50 px-8 py-4 flex justify-between items-center">
+                        <div>
+                            <h1 className="text-2xl font-black text-gray-800 font-dosis">PORTAFOLIO</h1>
+                            <p className="text-gray-500 text-sm">De: {userProfile.name}</p>
+                        </div>
+                        <button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4">CREAR MI CUENTA</button>
+                    </div>
+
+                    <div className="max-w-6xl mx-auto p-8">
+                        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-lg mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-10"></div>
+                            <h3 className="text-2xl font-bold text-gray-800 mb-6 relative z-10 text-center">Libro Destacado</h3>
+                            <div className="w-full h-[500px] relative z-10">
+                                {book ? <div className="transform scale-90 origin-top h-full"><BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div> : <div className="text-center text-gray-400 mt-20">Este creador aún no ha publicado su libro.</div>}
+                            </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-6">Galería de Evidencias</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><i className="fas fa-palette"></i></div>
+                                    <h4 className="font-bold text-gray-700">Moodboard</h4>
+                                </div>
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
+                                    {portfolio.moodboard ? <img src={portfolio.moodboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>}
+                                </div>
+                            </div>
+                            <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><i className="fas fa-film"></i></div>
+                                    <h4 className="font-bold text-gray-700">Storyboard</h4>
+                                </div>
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
+                                    {portfolio.storyboard ? <img src={portfolio.storyboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- LOGIN ---
+        function LoginScreen({ setUser }) {
             const [email, setEmail] = useState(''); 
             const [password, setPassword] = useState(''); 
             const [isRegister, setIsRegister] = useState(false);
@@ -572,62 +574,43 @@
                 try { 
                     if (isRegister) await createUserWithEmailAndPassword(auth, email, password); 
                     else await signInWithEmailAndPassword(auth, email, password); 
-                } catch (err) { 
-                    alert(err.message); 
-                } 
+                } catch (err) { alert(err.message); } 
             };
 
             const handleReset = async (e) => {
                 e.preventDefault();
-                if (!email) return alert("Por favor escribe tu correo para enviarte el enlace.");
-                try {
-                    await sendPasswordResetEmail(auth, email);
-                    alert("¡Enlace enviado! Revisa tu correo (y spam) para crear una nueva contraseña.");
-                    setIsReset(false);
-                } catch (err) {
-                    alert("Error al enviar correo: " + err.message);
-                }
+                if (!email) return alert("Escribe tu correo.");
+                try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); }
             };
 
             return (
                 <div className="login-page-bg">
-                    <div className="shape-blob-1"></div>
-                    <div className="shape-blob-2"></div>
-
                     <div className="login-card-clean">
-                        <div className="login-title-clean text-center mb-6">
-                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">CREATOR</div>
-                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">STUDIO</div>
-                        </div>
+                        <h1 className="text-4xl font-black text-indigo-500 mb-2 font-dosis tracking-tighter">CREATOR STUDIO</h1>
+                        <p className="text-gray-400 mb-8 font-outfit text-sm uppercase tracking-widest">Tu espacio creativo digital</p>
                         
                         {isReset ? (
-                            <form onSubmit={handleReset}>
-                                <p className="mb-4 text-gray-600 text-sm">Ingresa tu correo y te enviaremos un enlace mágico para recuperar tu acceso.</p>
-                                <div className="input-group-clean">
-                                    <i className="fas fa-envelope input-icon"></i>
-                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
-                                </div>
-                                <button className="btn-login-clean">Enviar Enlace de Recuperación</button>
-                                <span className="link-text mt-4" onClick={()=>setIsReset(false)}>
-                                    <i className="fas fa-arrow-left mr-1"></i> Volver a Iniciar Sesión
-                                </span>
+                            <form onSubmit={handleReset} className="space-y-4">
+                                <input className="input-field-clean" placeholder="Tu correo" value={email} onChange={e=>setEmail(e.target.value)} />
+                                <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Recuperar</button>
+                                <div onClick={()=>setIsReset(false)} className="text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4">Volver</div>
                             </form>
                         ) : (
-                            <form onSubmit={handleAuth}>
-                                <div className="input-group-clean">
-                                    <i className="fas fa-envelope input-icon"></i>
-                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
+                            <form onSubmit={handleAuth} className="space-y-4">
+                                <div className="relative">
+                                    <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
+                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} />
                                 </div>
-                                <div className="input-group-clean">
-                                    <i className="fas fa-lock input-icon"></i>
-                                    <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} required />
-                                    <i className="fas fa-eye-slash absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"></i>
+                                <div className="relative">
+                                    <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
+                                    <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
                                 </div>
-                                <button className="btn-login-clean">{isRegister ? 'Registrarse' : 'Iniciar Sesión'}</button>
-                                <div className="mt-4">
-                                    <span className="register-link text-sm cursor-pointer hover:text-blue-500 transition" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
-                                    <span className="link-text mt-2" onClick={()=>setIsRegister(!isRegister)}>
-                                        {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : 'Registrarse'}
+                                <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-xl">{isRegister ? 'Crear Cuenta' : 'Entrar al Estudio'}</button>
+                                
+                                <div className="mt-6 flex flex-col gap-2">
+                                    <span className="text-xs text-gray-400 cursor-pointer hover:text-indigo-500" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
+                                    <span className="text-sm text-gray-600 cursor-pointer hover:text-indigo-600 font-bold" onClick={()=>setIsRegister(!isRegister)}>
+                                        {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
                                     </span>
                                 </div>
                             </form>
@@ -637,42 +620,28 @@
             );
         }
 
-        // --- VISTA: DASHBOARD PRINCIPAL ---
-        function Dashboard({ user, setView, setExternalTool }) {
+        // --- DASHBOARD (ESTRUCTURA REDISEÑADA) ---
+        function Dashboard({ user, setView }) {
             const [activeSection, setActiveSection] = useState('inicio');
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
-            const [editingId, setEditingId] = useState(null);
-            const [tempTitle, setTempTitle] = useState("");
-            
             const [userProfile, setUserProfile] = useState({ name: user.email.split('@')[0], photo: '' });
             const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
             
-            const [padletZoom, setPadletZoom] = useState(1);
-            // Estado inicial del Zoom para Moodboard y Storyboard ajustado a 0.75
-            const [moodboardZoom, setMoodboardZoom] = useState(0.75);
-            const [storyboardZoom, setStoryboardZoom] = useState(0.75);
-            
-            const [showBookSelector, setShowBookSelector] = useState(false);
+            // Zoom states para las actividades embebidas
+            const [zoom, setZoom] = useState(1);
 
             useEffect(() => { 
-                if(!user || !db) return; 
+                if(!user) return; 
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
                 onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()}))));
-                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (doc) => {
-                    if(doc.exists()) setPortfolioData(doc.data());
-                });
-                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => {
-                    if(doc.exists()) {
-                        setUserProfile(doc.data());
-                    }
-                });
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (d) => { if(d.exists()) setPortfolioData(d.data()); });
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (d) => { if(d.exists()) setUserProfile(d.data()); });
             }, [user]);
 
             const saveProfile = async () => {
                 await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), userProfile, { merge: true });
                 setIsProfileModalOpen(false);
-                alert("¡Perfil actualizado!");
             };
 
             const handleProfilePic = (e) => {
@@ -682,7 +651,8 @@
 
             const handleMyBook = async () => {
                 if (books.length > 0) {
-                    openBook(books[0].id);
+                    localStorage.setItem('currentBookId', books[0].id);
+                    setView('editor');
                 } else {
                     const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() });
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: ref.id }, { merge: true });
@@ -691,489 +661,227 @@
                 }
             };
 
-            const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
-            const launchTool = (url) => { user.toolUrl = url; setView('external'); };
-            
             const uploadEvidence = (type, e) => {
                 const file = e.target.files[0]; if(!file) return;
                 processImage(file, async (base64) => {
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { [type]: base64 }, { merge: true });
-                    alert("¡Subido!");
+                    alert("¡Imagen actualizada!");
                 });
             };
-            
-            const copyLink = () => {
-                const url = `${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`;
-                navigator.clipboard.writeText(url);
-                alert("Enlace público copiado.");
+
+            const renderActivityContent = () => {
+                const zoomControls = (
+                    <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-gray-200 shadow-sm ml-auto">
+                        <button onClick={()=>setZoom(z=>Math.max(0.5, z-0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-minus"></i></button>
+                        <span className="text-xs font-bold w-8 text-center">{Math.round(zoom*100)}%</span>
+                        <button onClick={()=>setZoom(z=>Math.min(1.5, z+0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-plus"></i></button>
+                    </div>
+                );
+
+                const frameStyle = { width: `${100/zoom}%`, height: `${100/zoom}%`, transform: `scale(${zoom})`, transformOrigin: '0 0' };
+                const containerClass = "flex-1 bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-200 relative h-full";
+
+                switch(activeSection) {
+                    case 'inicio':
+                        return (
+                            <div className="animate-fade-in">
+                                <div className="glass-panel p-8 mb-8 flex flex-col md:flex-row gap-8 items-center">
+                                    <div className="flex-1">
+                                        <h2 className="text-3xl font-bold mb-4 text-gray-800">Bienvenido al Estudio, {userProfile.name}</h2>
+                                        <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                                            Este es tu espacio creativo profesional. Aquí tienes todas las herramientas para construir, diseñar y publicar tu propio Libro Álbum Digital. 
+                                            <br/><br/>Empieza revisando el video introductorio o salta directo a una misión.
+                                        </p>
+                                        <button onClick={handleMyBook} className="btn-modern bg-gradient-primary text-lg px-8 py-3">
+                                            <i className="fas fa-rocket mr-2"></i> {books.length > 0 ? 'Continuar mi Libro' : 'Crear Nuevo Libro'}
+                                        </button>
+                                    </div>
+                                    <div className="w-full md:w-1/2 aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition duration-500">
+                                        <iframe className="w-full h-full" src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                                    </div>
+                                </div>
+
+                                <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Acceso Rápido a Misiones</h3>
+                                <div className="bento-grid">
+                                    <div className="activity-card" style={{'--card-color': '#8b5cf6'}} onClick={()=>setActiveSection('moodboard')}>
+                                        <div><div className="ac-icon"><i className="fas fa-palette"></i></div><div className="ac-title">Moodboard</div><div className="ac-desc">Define el estilo visual.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
+                                    <div className="activity-card" style={{'--card-color': '#ec4899'}} onClick={()=>setActiveSection('ficha_personajes')}>
+                                        <div><div className="ac-icon"><i className="fas fa-users"></i></div><div className="ac-title">Personajes</div><div className="ac-desc">Crea a tus protagonistas.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
+                                    <div className="activity-card" style={{'--card-color': '#f97316'}} onClick={()=>setActiveSection('storyboard')}>
+                                        <div><div className="ac-icon"><i className="fas fa-film"></i></div><div className="ac-title">Storyboard</div><div className="ac-desc">Planea escena por escena.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
+                                    <div className="activity-card" style={{'--card-color': '#06b6d4'}} onClick={()=>setActiveSection('padlet')}>
+                                        <div><div className="ac-icon"><i className="fas fa-comments"></i></div><div className="ac-title">Muro Social</div><div className="ac-desc">Comparte con la clase.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    
+                    case 'portafolio':
+                        return (
+                            <div className="h-full flex flex-col">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="page-header-title">MI PORTAFOLIO</h2>
+                                    <button onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`); alert("Link copiado")}} className="btn-modern bg-gradient-dark text-xs"><i className="fas fa-share-alt mr-2"></i> COMPARTIR</button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto pr-2">
+                                    <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8 text-center relative overflow-hidden">
+                                        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-10"></div>
+                                        <div className="relative z-10">
+                                            <h3 className="text-4xl font-black text-gray-800 mb-2 font-dosis">LIBRO DESTACADO</h3>
+                                            <div className="w-full max-w-4xl mx-auto h-[500px] mt-8 relative">
+                                                {books.length > 0 ? (
+                                                    <div className="transform scale-90 origin-top h-full"><BookViewer pages={books[0].pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div>
+                                                ) : <div className="h-full flex items-center justify-center text-gray-400">No has creado tu libro aún.</div>}
+                                            </div>
+                                            <button onClick={handleMyBook} className="btn-modern bg-gradient-accent mx-auto mt-[-50px] relative z-20 text-lg px-8"><i className="fas fa-pencil-alt mr-2"></i> EDITAR LIBRO</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Evidencias del Proceso</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10">
+                                        <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-mood').click()}>
+                                            <div className="absolute top-4 left-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold z-10">MOODBOARD</div>
+                                            {portfolioData.moodboard ? <img src={portfolioData.moodboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
+                                            <input type="file" id="upl-mood" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
+                                        </div>
+                                        <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-story').click()}>
+                                            <div className="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">STORYBOARD</div>
+                                            {portfolioData.storyboard ? <img src={portfolioData.storyboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
+                                            <input type="file" id="upl-story" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+
+                    case 'reference_book':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-indigo-500">Libro Guía</h2></div><div className={containerClass}><iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe></div></div>;
+                    
+                    case 'moodboard':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-purple-500">Moodboard</h2>{zoomControls}</div><div className={containerClass}><div style={frameStyle}><iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe></div></div></div>;
+                    
+                    case 'storyboard':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-orange-500">Storyboard</h2>{zoomControls}</div><div className={containerClass}><div style={frameStyle}><iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe></div></div></div>;
+                    
+                    case 'padlet':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-cyan-500">Muro Colaborativo</h2>{zoomControls}</div><div className={containerClass}><div style={frameStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div></div>;
+
+                    case 'quiz':
+                        return (
+                            <div className="h-full flex flex-col items-center justify-center">
+                                <div className="glass-panel p-10 max-w-2xl w-full text-center">
+                                    <h2 className="text-4xl font-bold text-yellow-500 mb-6 font-dosis">QUIZ TIME!</h2>
+                                    <div className="rounded-2xl overflow-hidden mb-8 shadow-lg border-4 border-yellow-100">
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full"/>
+                                    </div>
+                                    <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-accent text-xl py-4 w-full shadow-lg transform hover:translate-y-[-5px]">
+                                        <i className="fas fa-gamepad mr-3"></i> JUGAR AHORA
+                                    </a>
+                                </div>
+                            </div>
+                        );
+
+                    case 'ficha_narrativa':
+                        return (
+                            <div className="h-full flex flex-col items-center justify-center">
+                                <div className="glass-panel p-10 max-w-2xl w-full text-center">
+                                    <h2 className="text-4xl font-bold text-rose-500 mb-6 font-dosis">FICHA NARRATIVA</h2>
+                                    <p className="mb-6 text-gray-500">Estructura tu historia antes de empezar a dibujar.</p>
+                                    <div className="rounded-2xl overflow-hidden mb-8 shadow-lg relative group">
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full opacity-80"/>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-white text-rose-500 font-bold border-2 border-rose-500 hover:bg-rose-500 hover:text-white"><i className="fas fa-external-link-alt mr-2"></i> ABRIR EN CANVA</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+
+                    case 'ficha_personajes':
+                        return (
+                            <div className="h-full flex flex-col items-center justify-center">
+                                <div className="glass-panel p-10 max-w-2xl w-full text-center">
+                                    <h2 className="text-4xl font-bold text-pink-500 mb-6 font-dosis">PERSONAJES</h2>
+                                    <p className="mb-6 text-gray-500">Define la personalidad y rasgos de tus protagonistas.</p>
+                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-accent text-xl py-4 w-full shadow-lg">
+                                        <i className="fas fa-clipboard-list mr-3"></i> COMPLETAR FORMULARIO
+                                    </a>
+                                </div>
+                            </div>
+                        );
+
+                    default: return <div>Selecciona una opción</div>;
+                }
             };
-            
-            const getFeaturedBook = () => {
-                if (books.length > 0) return books[0];
-                return null;
-            };
-
-            // HANDLERS DE ZOOM
-            const handlePadletZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handlePadletZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetPadletZoom = () => setPadletZoom(1);
-
-            const handleMoodboardZoomIn = () => setMoodboardZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleMoodboardZoomOut = () => setMoodboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetMoodboardZoom = () => setMoodboardZoom(0.75);
-
-            const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetStoryboardZoom = () => setStoryboardZoom(0.75);
-
-            const isHome = activeSection === 'inicio';
 
             return (
                 <div className="flex flex-col h-full overflow-hidden bg-white">
-                    {isHome && (
-                        <div className="w-full h-20 flex items-center justify-between px-8 flex-shrink-0 shadow-sm z-50" style={{backgroundColor: 'var(--header-blue)'}}>
-                            <div className="flex items-center gap-3">
-                                <div className="kids-title text-3xl text-white">CREATOR STUDIO</div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
-                                    {userProfile.photo ? (
-                                        <img src={userProfile.photo} className="user-avatar" />
-                                    ) : (
-                                        <div className="user-avatar flex items-center justify-center bg-blue-100 text-blue-500 font-bold text-xl">
-                                            {userProfile.name.charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
-                                    <div className="user-info">
-                                        <span className="user-name">{userProfile.name}</span>
-                                        <span className="user-role">Estudiante</span>
+                    {isProfileModalOpen && (
+                        <div className="modal-overlay">
+                            <div className="modal-content">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-6">EDITAR PERFIL</h3>
+                                <div className="flex flex-col items-center gap-6">
+                                    <div className="relative group cursor-pointer w-32 h-32">
+                                        {userProfile.photo ? <img src={userProfile.photo} className="w-full h-full rounded-full object-cover border-4 border-indigo-100"/> : <div className="w-full h-full rounded-full bg-indigo-50 flex items-center justify-center text-4xl text-indigo-300"><i className="fas fa-user"></i></div>}
+                                        <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-camera text-white"></i></div>
+                                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleProfilePic}/>
                                     </div>
-                                    <i className="fas fa-cog text-gray-400 text-xs ml-2"></i>
-                                </div>
-                                <div className="logout-btn-top" onClick={()=>signOut(auth)} title="Cerrar Sesión">
-                                    <i className="fas fa-sign-out-alt"></i>
+                                    <input className="input-field-clean text-center text-xl" value={userProfile.name} onChange={(e)=>setUserProfile({...userProfile, name: e.target.value})} placeholder="Tu Nombre Artístico"/>
+                                    <div className="flex gap-3 w-full">
+                                        <button className="btn-modern bg-gradient-success flex-1" onClick={saveProfile}>GUARDAR</button>
+                                        <button className="btn-modern bg-gray-400" onClick={()=>setIsProfileModalOpen(false)}>CANCELAR</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    <div className="classroom-container flex-1 overflow-hidden" style={{height: isHome ? 'calc(100% - 80px)' : '100%'}}>
+                    <div className="classroom-container">
                         <div className="classroom-sidebar">
-                            {!isHome && <div className="sidebar-logo kids-title">CREATOR STUDIO</div>}
-                            <div className={`menu-item ${activeSection==='inicio'?'active':''}`} onClick={()=>setActiveSection('inicio')}>
-                                <i className="fas fa-home text-pink-500"></i> <span className="menu-text">Inicio</span>
-                            </div>
-                            <div className={`menu-item ${activeSection==='portafolio'?'active':''}`} onClick={()=>setActiveSection('portafolio')}>
-                                <i className="fas fa-briefcase text-blue-500"></i> <span className="menu-text">Mi Portafolio</span>
-                            </div>
-                            <div className="mt-6 mb-2 text-xs font-bold text-gray-400 uppercase pl-4">ACTIVIDADES</div>
-
-                            {/* --- NUEVA SECCIÓN 1: LIBRO GUÍA --- */}
-                            <div className={`menu-item ${activeSection==='reference_book'?'active':''}`} onClick={()=>setActiveSection('reference_book')}>
-                                <i className="fas fa-book-reader text-indigo-500"></i> <span className="menu-text">1. Libro Guía</span>
-                            </div>
-
-                            {/* --- RE-ENUMERACIÓN --- */}
-                            <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
-                                <i className="fas fa-thumbtack text-teal-500"></i> <span className="menu-text">2. Muro Colaborativo</span>
-                            </div>
-                            <div className={`menu-item ${activeSection==='ficha_narrativa'?'active':''}`} onClick={()=>setActiveSection('ficha_narrativa')}>
-                                <i className="fas fa-pen-fancy text-rose-500"></i> <span className="menu-text">3. Ficha Narrativa</span>
-                            </div>
-                            <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
-                                <i className="fas fa-puzzle-piece text-yellow-500"></i> <span className="menu-text">4. Quiz Interactivo</span>
-                            </div>
-                            <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
-                                <i className="fas fa-address-card text-pink-500"></i> <span className="menu-text">5. Ficha de Personajes</span>
-                            </div>
-                            <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}>
-                                <i className="fas fa-palette text-purple-500"></i> <span className="menu-text">6. Moodboard</span>
-                            </div>
-                            <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
-                                <i className="fas fa-film text-orange-500"></i> <span className="menu-text">7. Storyboard</span>
-                            </div>
+                            <div className="sidebar-logo">CREATOR STUDIO</div>
                             
-                            <div className={`menu-item`} onClick={handleMyBook}>
-                                <i className="fas fa-book-open text-green-500"></i> <span className="menu-text">{books.length > 0 ? 'Editar Libro' : 'Mi Libro'}</span>
-                            </div>
+                            <div className="section-label">MI ESTUDIO</div>
+                            <div className={`menu-item ${activeSection==='inicio'?'active':''}`} onClick={()=>setActiveSection('inicio')}><i className="fas fa-home"></i> Inicio</div>
+                            <div className="menu-item" onClick={handleMyBook}><i className="fas fa-book-open"></i> Mi Libro</div>
+                            <div className={`menu-item ${activeSection==='portafolio'?'active':''}`} onClick={()=>setActiveSection('portafolio')}><i className="fas fa-briefcase"></i> Portafolio</div>
+                            <div className={`menu-item ${activeSection==='reference_book'?'active':''}`} onClick={()=>setActiveSection('reference_book')}><i className="fas fa-book"></i> Libro Guía</div>
+
+                            <div className="section-label">LABORATORIO CREATIVO</div>
+                            <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}><i className="fas fa-palette text-purple-500"></i> Moodboard</div>
+                            <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}><i className="fas fa-user-tag text-pink-500"></i> Personajes</div>
+                            <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}><i className="fas fa-layer-group text-orange-500"></i> Storyboard</div>
+                            <div className={`menu-item ${activeSection==='ficha_narrativa'?'active':''}`} onClick={()=>setActiveSection('ficha_narrativa')}><i className="fas fa-feather-alt text-rose-500"></i> Ficha Narrativa</div>
+                            <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}><i className="fas fa-comments text-cyan-500"></i> Muro Social</div>
+                            <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}><i className="fas fa-puzzle-piece text-yellow-500"></i> Quiz Time</div>
                         </div>
 
                         <div className="classroom-content">
-                            {isProfileModalOpen && (
-                                <div className="modal-overlay">
-                                    <div className="modal-content">
-                                        <h3 className="pop-title text-2xl text-gray-700 mb-6">MI PERFIL DE CREADOR</h3>
-                                        <div className="flex flex-col items-center gap-4">
-                                            <div className="relative group cursor-pointer w-32 h-32">
-                                                {userProfile.photo ? (
-                                                    <img src={userProfile.photo} className="w-full h-full rounded-full object-cover border-4 border-blue-200" />
-                                                ) : (
-                                                    <div className="w-full h-full rounded-full bg-blue-100 flex items-center justify-center text-4xl text-blue-400 border-4 border-blue-200">
-                                                        <i className="fas fa-user"></i>
-                                                    </div>
-                                                )}
-                                                <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                                    <i className="fas fa-camera text-white text-2xl"></i>
-                                                </div>
-                                                <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleProfilePic} />
-                                            </div>
-                                            <input className="input-pop text-center text-xl" value={userProfile.name} onChange={(e)=>setUserProfile({...userProfile, name: e.target.value})} placeholder="Escribe tu nombre aquí" />
-                                            <div className="flex gap-2 w-full mt-4">
-                                                <button className="btn-gummy btn-lime flex-1" onClick={saveProfile}>GUARDAR CAMBIOS</button>
-                                                <button className="btn-gummy bg-gray-400 text-white" onClick={()=>setIsProfileModalOpen(false)}>CANCELAR</button>
-                                            </div>
+                            <div className="top-bar-glass">
+                                <div></div> {/* Spacer */}
+                                <div className="flex items-center gap-4">
+                                    <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
+                                        <div className="user-info">
+                                            <span className="user-name">{userProfile.name}</span>
+                                            <span className="user-role">CREATOR</span>
                                         </div>
+                                        {userProfile.photo ? <img src={userProfile.photo} className="user-avatar"/> : <div className="user-avatar flex items-center justify-center bg-gray-100 text-gray-400 font-bold">{userProfile.name.charAt(0)}</div>}
                                     </div>
-                                </div>
-                            )}
-                            
-                            {activeSection === 'inicio' && (
-                                <div className="max-w-4xl mx-auto mt-4">
-                                    <div className="module-header border-none mb-4">
-                                        <h2 className="module-title text-cyan-500 text-4xl">BIENVENIDOS AL CURSO</h2>
-                                    </div>
-                                    <div className="glass-panel p-8 mb-8">
-                                        <h3 className="text-3xl font-bold font-sans text-gray-700 mb-4">Introducción al Taller</h3>
-                                        <p className="text-lg text-gray-600 mb-6">
-                                            Hola creador. En este espacio encontrarás todas las herramientas necesarias para construir tu propio Libro Álbum. 
-                                            Mira el siguiente video para comenzar tu aventura creativa.
-                                        </p>
-                                        <div className="w-full relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white" style={{paddingBottom: '56.25%', background: '#000'}}>
-                                            <iframe className="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
-                                        </div>
-                                        <div className="mt-8 flex justify-center">
-                                            <button onClick={handleMyBook} className="btn-gummy btn-orange text-xl px-8 py-4">
-                                                <i className="fas fa-rocket mr-2"></i> ¡EMPEZAR MI LIBRO!
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeSection === 'portafolio' && (
-                                <div>
-                                    <div className="module-header"><h2 className="module-title text-blue-600">GESTIÓN DE PORTAFOLIO</h2><button onClick={copyLink} className="btn-gummy btn-cyan text-sm"><i className="fas fa-link mr-2"></i> COPIAR ENLACE PÚBLICO</button></div>
-                                    <div className="portfolio-container" style={{height:'auto', minHeight:'80vh', borderRadius:'20px', boxShadow:'0 0 20px rgba(0,0,0,0.05)'}}>
-                                        <div className="portfolio-header-bg">
-                                            <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
-                                            <p className="text-xl opacity-80 font-sans">De: {userProfile.name}</p> 
-                                        </div>
-                                        <div className="gallery-content">
-                                            <div className="book-showcase relative group" style={{height: '550px'}}>
-                                                {getFeaturedBook() ? (
-                                                    <div className="w-full h-full flex flex-col items-center justify-center relative">
-                                                        <div style={{transform: 'scale(0.8)', pointerEvents: 'none'}}>
-                                                            <BookViewer pages={getFeaturedBook().pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
-                                                        </div>
-                                                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-50 rounded-3xl backdrop-blur-sm cursor-pointer" onClick={handleMyBook}>
-                                                            <span className="btn-gummy btn-orange"><i className="fas fa-pencil-alt mr-2"></i> EDITAR MI LIBRO</span>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex flex-col items-center justify-center text-gray-400 cursor-pointer" onClick={handleMyBook}>
-                                                        <i className="fas fa-plus-circle text-6xl mb-4 text-gray-500"></i>
-                                                        <h3 className="text-2xl font-bold text-white">CREAR MI LIBRO</h3>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="evidence-grid">
-                                                <div className="evidence-item relative group" onClick={() => document.getElementById('mood-up').click()}>
-                                                    <div className="evidence-tag bg-purple-500">MOODBOARD</div>
-                                                    {portfolioData.moodboard ? <img src={portfolioData.moodboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400 h-[300px] flex items-center justify-center">SIN IMAGEN</div>}
-                                                    <div className="overlay-edit-evidence"><span className="btn-gummy btn-grape text-xs">CAMBIAR FOTO</span></div>
-                                                    <input id="mood-up" type="file" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
-                                                </div>
-                                                <div className="evidence-item relative group" onClick={() => document.getElementById('story-up').click()}>
-                                                    <div className="evidence-tag bg-orange-500">STORYBOARD</div>
-                                                    {portfolioData.storyboard ? <img src={portfolioData.storyboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400 h-[300px] flex items-center justify-center">SIN IMAGEN</div>}
-                                                    <div className="overlay-edit-evidence"><span className="btn-gummy btn-orange text-xs">CAMBIAR FOTO</span></div>
-                                                    <input id="story-up" type="file" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* --- NUEVA SECCIÓN 1: LIBRO GUÍA --- */}
-                            {activeSection === 'reference_book' && (
-                                <div className="h-full flex flex-col">
-                                    <div className="mb-6 flex justify-between items-end">
-                                        <div>
-                                            <h2 className="module-title text-indigo-500 mb-2">LIBRO GUÍA</h2>
-                                            <p className="text-gray-600">Explora el libro ilustrado y aprende su estructura.</p>
-                                        </div>
-                                        <button 
-                                            onClick={() => {
-                                                const elem = document.getElementById('guide-book-container');
-                                                if (!document.fullscreenElement) {
-                                                    elem.requestFullscreen().catch(err => console.log(err));
-                                                } else {
-                                                    document.exitFullscreen();
-                                                }
-                                            }} 
-                                            className="btn-gummy btn-indigo bg-indigo-500 text-sm px-4 py-2 shadow-indigo-700"
-                                        >
-                                            <i className="fas fa-expand mr-2"></i> PANTALLA COMPLETA
-                                        </button>
-                                    </div>
-                                    <div id="guide-book-container" className="flex-1 bg-white rounded-3xl border-4 border-indigo-100 overflow-hidden relative shadow-lg">
-                                        <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeSection === 'moodboard' && (
-                                <div className="h-full flex flex-col">
-                                    <div className="mb-6 flex justify-between items-center">
-                                        <div>
-                                            <h2 className="module-title text-purple-500 mb-2">MOODBOARD</h2>
-                                            <p className="text-gray-600">Crea un tablero de inspiración con imágenes, colores y texturas.</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
-                                                <button onClick={handleMoodboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
-                                                <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(moodboardZoom * 100)}%</span>
-                                                <button onClick={handleMoodboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                                                <button onClick={resetMoodboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-purple-100 overflow-hidden relative shadow-lg">
-                                        <div style={{width: `${100 / moodboardZoom}%`, height: `${100 / moodboardZoom}%`, transform: `scale(${moodboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                            <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeSection === 'storyboard' && (
-                                <div className="h-full flex flex-col">
-                                    <div className="mb-6 flex justify-between items-center">
-                                        <div>
-                                            <h2 className="module-title text-orange-500 mb-2">STORYBOARD</h2>
-                                            <p className="text-gray-600">Planifica tu historia escena por escena.</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
-                                                <button onClick={handleStoryboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
-                                                <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(storyboardZoom * 100)}%</span>
-                                                <button onClick={handleStoryboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                                                <button onClick={resetStoryboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-orange-100 overflow-hidden relative shadow-lg">
-                                        <div style={{width: `${100 / storyboardZoom}%`, height: `${100 / storyboardZoom}%`, transform: `scale(${storyboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                            <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeSection === 'quiz' && (
-                                <div className="h-full flex flex-col">
-                                    <div className="mb-6">
-                                        <h2 className="module-title text-yellow-500 mb-2">QUIZ TIME</h2>
-                                        <p className="text-gray-600">¡Demuestra lo que has aprendido!</p>
-                                    </div>
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg group">
-                                        <img 
-                                            src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" 
-                                            alt="Kahoot Quiz" 
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                            <a 
-                                                href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform"
-                                                style={{textDecoration: 'none'}}
-                                            >
-                                                <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeSection === 'ficha_personajes' && (
-                                <div className="h-full flex flex-col">
-                                    <div className="mb-6">
-                                        <h2 className="module-title text-pink-500 mb-2">FICHA DE PERSONAJES</h2>
-                                        <p className="text-gray-600">Completa la ficha técnica para definir a los protagonistas de tu historia.</p>
-                                    </div>
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg flex flex-col group">
-                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" alt="Ficha de Personajes" />
-                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
-                                                <i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* --- NUEVA SECCIÓN: FICHA NARRATIVA (CON BOTÓN) --- */}
-                            {activeSection === 'ficha_narrativa' && (
-                                <div className="h-full flex flex-col">
-                                    <div className="mb-6">
-                                        <h2 className="module-title text-rose-500 mb-2">FICHA NARRATIVA</h2>
-                                        <p className="text-gray-600">Desarrolla la estructura de tu historia paso a paso.</p>
-                                    </div>
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg flex flex-col group">
-                                         <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover" alt="Ficha Narrativa" />
-                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                             <a 
-                                                href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
-                                                style={{textDecoration: 'none'}}
-                                             >
-                                                <i className="fas fa-pen-nib"></i> RELLENAR LA FICHA
-                                             </a>
-                                         </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {activeSection === 'padlet' && (
-                                <div className="h-full flex flex-col">
-                                    <div className="mb-6 flex justify-between items-center">
-                                        <div>
-                                            <h2 className="module-title text-teal-500 mb-2">MURO COLABORATIVO</h2>
-                                            <p className="text-gray-600">Comparte tus ideas, preguntas y avances con el resto de la clase.</p>
-                                        </div>
-                                        
-                                        <div className="flex gap-2">
-                                            <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
-                                                <button onClick={handlePadletZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
-                                                <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(padletZoom * 100)}%</span>
-                                                <button onClick={handlePadletZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                                                <button onClick={resetPadletZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg" id="padlet-container">
-                                        <div style={{
-                                            width: `${100 / padletZoom}%`,
-                                            height: `${100 / padletZoom}%`,
-                                            transform: `scale(${padletZoom})`,
-                                            transformOrigin: '0 0',
-                                            transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'
-                                        }}>
-                                            <iframe 
-                                                src="https://padlet.com/embed/kz78sfkwdm9abosj" 
-                                                frameBorder="0" 
-                                                allow="camera;microphone;geolocation;display-capture;clipboard-write" 
-                                                style={{width:'100%', height:'100%', display:'block'}}
-                                                title="Muro Colaborativo Padlet"
-                                            ></iframe>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // --- EDITOR (Lienzo Completo) ---
-        function Editor({ user, setView }) {
-            const [book, setBook] = useState(null);
-            const [activeIdx, setActiveIdx] = useState(-1); 
-            
-            useEffect(() => { const bid = localStorage.getItem('currentBookId'); if(!bid || !db) return; getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid)).then(snap => { if(snap.exists()) setBook({id: snap.id, ...snap.data()}); }); }, []);
-            const save = async () => { try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); alert("¡GUARDADO!"); } catch (e) { alert("Error."); } };
-            const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
-            const addPage = () => { const np = [...book.pages]; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: '' }, back: { type: 'image-page', bg: '' } }); setBook({...book, pages: np}); };
-            if(!book) return <div>Cargando...</div>;
-
-            return (
-                <div className="flex h-full w-full relative overflow-hidden">
-                    <div className="sidebar-editor">
-                        <div className="icon-chunk btn-cyan" onClick={()=>setView('dashboard')} data-tooltip="Volver al Aula"><i className="fas fa-arrow-left"></i></div>
-                        <div className="icon-chunk btn-lime" onClick={save} data-tooltip="Guardar"><i className="fas fa-save"></i></div>
-                        <div className="mt-auto"><div className="icon-chunk btn-orange" onClick={addPage} data-tooltip="Agregar Pág"><i className="fas fa-plus"></i></div></div>
-                    </div>
-                    <div className="canvas-grid editor-mode">
-                        <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
-                    </div>
-                </div>
-            );
-        }
-
-        // --- VISTA PÚBLICA ---
-        function PublicGallery({ uid }) {
-            const [portfolio, setPortfolio] = useState({});
-            const [book, setBook] = useState(null);
-            const [loading, setLoading] = useState(true);
-            const [userProfile, setUserProfile] = useState({ name: 'Usuario' });
-
-            useEffect(() => {
-                if(!db) return;
-                const load = async () => {
-                    onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid), (d) => { if(d.exists()) setPortfolio(d.data()); });
-                    onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'), (d) => { if(d.exists()) setUserProfile(d.data()); });
-                    const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
-                    onSnapshot(q, (snap) => { /* Just to trigger updates if needed */ });
-                }; load();
-            }, [uid]);
-            useEffect(() => {
-                const fetchBook = async () => {
-                      let bookIdToFetch = portfolio.featuredBookId;
-                      if (!bookIdToFetch) {
-                          const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
-                          const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books')); 
-                      }
-
-                      if(bookIdToFetch) {
-                         getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', bookIdToFetch)).then(snap => { 
-                             if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
-                             setLoading(false);
-                         });
-                      } else {
-                          setLoading(false);
-                      }
-                };
-                fetchBook();
-            }, [portfolio]);
-
-            if(loading) return <div className="flex h-screen items-center justify-center">Cargando Portafolio...</div>;
-
-            return (
-                <div className="h-full overflow-y-auto">
-                    <div className="portfolio-container">
-                        <div className="portfolio-header-bg">
-                            <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
-                            <p className="text-xl opacity-80 font-sans">De: {userProfile.name}</p>
-                        </div>
-                        <div className="gallery-content">
-                            <div className="book-showcase">
-                                {book ? <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /> : <div className="text-white font-bold">Libro no disponible</div>}
-                            </div>
-                            <div className="evidence-grid">
-                                <div className="evidence-item">
-                                    <div className="evidence-tag bg-purple-500">MOODBOARD</div>
-                                    {portfolio.moodboard ? <img src={portfolio.moodboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
-                                </div>
-                                <div className="evidence-item">
-                                    <div className="evidence-tag bg-orange-500">STORYBOARD</div>
-                                    {portfolio.storyboard ? <img src={portfolio.storyboard} className="evidence-img" /> : <div className="p-10 text-center text-gray-400">Sin imagen</div>}
+                                    <button onClick={()=>signOut(auth)} className="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm"><i className="fas fa-power-off"></i></button>
                                 </div>
                             </div>
+                            {renderActivityContent()}
                         </div>
                     </div>
                 </div>
             );
         }
 
-        // --- COMPONENTE PRINCIPAL (DEFINIDO AL FINAL) ---
+        // --- COMPONENTE PRINCIPAL ---
         function App() {
             const [user, setUser] = useState(null);
             const [view, setView] = useState('loading'); 
@@ -1185,46 +893,30 @@
                 const pUid = params.get('portfolio');
                 const activityParam = params.get('activity'); 
 
-                if (pUid) {
-                    setPortfolioUid(pUid);
-                    setView('public-view');
-                } else if (activityParam) {
-                    setPublicActivity(activityParam);
-                    setView('public-activity');
-                } else {
+                if (pUid) { setPortfolioUid(pUid); setView('public-view'); } 
+                else if (activityParam) { setPublicActivity(activityParam); setView('public-activity'); } 
+                else { 
                     if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); }
                 }
             }, []);
 
             if (view === 'public-view') return <PublicGallery uid={portfolioUid} />;
+            if (view === 'public-activity') return <PublicActivityViewer activity={publicActivity} />;
+            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-indigo-500 font-outfit animate-pulse">CARGANDO STUDIO...</div>;
             
-            if (view === 'public-activity') {
-                return <PublicActivityViewer activity={publicActivity} />;
-            }
-
-            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-blue-500">CARGANDO CREATOR STUDIO...</div>;
-
             return (
                 <div className="flex flex-col h-full font-sans">
                     <main className="flex-1 relative overflow-hidden">
                         {view === 'login' && <LoginScreen setUser={setUser} setView={setView} />}
-                        
-                        {view === 'dashboard' && (
-                            <Dashboard 
-                                user={user} 
-                                setView={setView} 
-                            />
-                        )}
-                        
+                        {view === 'dashboard' && <Dashboard user={user} setView={setView} />}
                         {view === 'editor' && <Editor user={user} setView={setView} />}
-                        
                         {view === 'external' && (
                             <div className="w-full h-full bg-white relative flex flex-col">
-                                <div className="h-14 bg-gray-800 flex items-center justify-between px-4 shadow-lg z-50">
-                                    <span className="text-white font-bold">Herramienta Externa</span>
-                                    <button onClick={() => setView('dashboard')} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded font-bold text-sm">CERRAR Y VOLVER</button>
+                                <div className="h-14 bg-gray-900 flex items-center justify-between px-6 shadow-lg z-50">
+                                    <span className="text-white font-bold font-outfit">Herramienta Externa</span>
+                                    <button onClick={() => setView('dashboard')} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full font-bold text-sm transition">CERRAR</button>
                                 </div>
-                                <iframe src={user.toolUrl} style={{width:'100%', height:'100%', border:'none'}} title="Herramienta Externa"></iframe>
+                                <iframe src={user.toolUrl} style={{width:'100%', height:'100%', border:'none'}}></iframe>
                             </div>
                         )}
                     </main>
