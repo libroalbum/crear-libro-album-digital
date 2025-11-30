@@ -10,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- FUENTES -->
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;700&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;600;700&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
 
     <!-- REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -69,7 +69,26 @@
         /* CORRECCIÓN: Se agrega overflow-y: auto para permitir scroll si el menú es muy largo */
         .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; overflow-y: auto; }
         .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 800; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Dosis'; font-size: 1.1rem; }
+        
+        /* CORRECCIÓN TIPOGRÁFICA EN MENÚ: Fuente Nunito, peso normal, mayúscula inicial */
+        .menu-item { 
+            padding: 12px 15px; 
+            margin-bottom: 8px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600; /* Peso semi-bold pero no bold completo */
+            color: #64748b; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            transition: 0.2s; 
+            font-family: 'Nunito', sans-serif; /* Cambio de fuente a Nunito */
+            font-size: 1rem; /* Tamaño ligeramente ajustado */
+            text-transform: none; /* Quita mayúsculas forzadas */
+        }
+        /* Clase auxiliar para capitalizar primera letra */
+        .menu-text { text-transform: capitalize; }
+
         .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
         .menu-item.active { background: #E0F2FE; color: var(--electric-cyan); box-shadow: inset 4px 0 0 var(--electric-cyan); }
         .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; }
@@ -455,39 +474,39 @@
                             {!isHome && <div className="sidebar-logo kids-title">CREATOR STUDIO</div>}
                             
                             <div className={`menu-item ${activeSection==='inicio'?'active':''}`} onClick={()=>setActiveSection('inicio')}>
-                                <i className="fas fa-home text-pink-500"></i> INICIO
+                                <i className="fas fa-home text-pink-500"></i> <span className="menu-text">Inicio</span>
                             </div>
                             <div className={`menu-item ${activeSection==='portafolio'?'active':''}`} onClick={()=>setActiveSection('portafolio')}>
-                                <i className="fas fa-briefcase text-blue-500"></i> MI PORTAFOLIO
+                                <i className="fas fa-briefcase text-blue-500"></i> <span className="menu-text">Mi Portafolio</span>
                             </div>
                             
                             <div className="mt-6 mb-2 text-xs font-bold text-gray-400 uppercase pl-4">ACTIVIDADES</div>
                             
                             <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
-                                <i className="fas fa-thumbtack text-teal-500"></i> 1. MURO COLABORATIVO
+                                <i className="fas fa-thumbtack text-teal-500"></i> <span className="menu-text">1. Muro Colaborativo</span>
                             </div>
                             <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
-                                <i className="fas fa-puzzle-piece text-yellow-500"></i> 2. QUIZ INTERACTIVO
+                                <i className="fas fa-puzzle-piece text-yellow-500"></i> <span className="menu-text">2. Quiz Interactivo</span>
                             </div>
                             <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
-                                <i className="fas fa-address-card text-pink-500"></i> 3. FICHA DE PERSONAJES
+                                <i className="fas fa-address-card text-pink-500"></i> <span className="menu-text">3. Ficha de Personajes</span>
                             </div>
                             <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}>
-                                <i className="fas fa-palette text-purple-500"></i> 4. MOODBOARD
+                                <i className="fas fa-palette text-purple-500"></i> <span className="menu-text">4. Moodboard</span>
                             </div>
                             <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
-                                <i className="fas fa-film text-orange-500"></i> 5. STORYBOARD
+                                <i className="fas fa-film text-orange-500"></i> <span className="menu-text">5. Storyboard</span>
                             </div>
                             
                             <div className={`menu-item`} onClick={handleMyBook}>
-                                <i className="fas fa-book-open text-green-500"></i> {books.length > 0 ? 'EDITAR LIBRO' : 'MI LIBRO'}
+                                <i className="fas fa-book-open text-green-500"></i> <span className="menu-text">{books.length > 0 ? 'Editar Libro' : 'Mi Libro'}</span>
                             </div>
 
                             {/* CERRAR SESIÓN EN SIDEBAR (SOLO SI NO ESTAMOS EN INICIO, COMO FALLBACK) */}
                             {!isHome && (
                                 <div className="mt-auto pt-6 border-t">
                                      <div className="menu-item text-red-400 hover:bg-red-50" onClick={()=>signOut(auth)}>
-                                        <i className="fas fa-sign-out-alt"></i> CERRAR SESIÓN
+                                        <i className="fas fa-sign-out-alt"></i> <span className="menu-text">Cerrar Sesión</span>
                                     </div>
                                 </div>
                             )}
@@ -496,6 +515,30 @@
                         {/* AREA DE CONTENIDO */}
                         <div className="classroom-content">
                             
+                            {/* --- TOP BAR INTERNA (SOLO SI NO ESTAMOS EN INICIO) --- */}
+                            {!isHome && (
+                                <div className="top-bar">
+                                    <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
+                                        {userProfile.photo ? (
+                                            <img src={userProfile.photo} className="user-avatar" />
+                                        ) : (
+                                            <div className="user-avatar flex items-center justify-center bg-blue-100 text-blue-500 font-bold text-xl">
+                                                {userProfile.name.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                        <div className="user-info">
+                                            <span className="user-name">{userProfile.name}</span>
+                                            <span className="user-role">Estudiante</span>
+                                        </div>
+                                        <i className="fas fa-cog text-gray-400 text-xs ml-2"></i>
+                                    </div>
+                                    
+                                    <div className="logout-btn-top" onClick={()=>signOut(auth)} title="Cerrar Sesión">
+                                        <i className="fas fa-sign-out-alt"></i>
+                                    </div>
+                                </div>
+                            )}
+
                             {/* --- MODAL DE PERFIL (COMPARTIDO) --- */}
                             {isProfileModalOpen && (
                                 <div className="modal-overlay">
