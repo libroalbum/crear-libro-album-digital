@@ -63,7 +63,7 @@
         .btn-cyan { background: var(--electric-cyan); box-shadow: 0 4px 0 #0097bd; }
         .btn-orange { background: var(--hot-orange); box-shadow: 0 4px 0 #C2410C; }
         .btn-pink { background: var(--pop-pink); box-shadow: 0 4px 0 #BE185D; }
-        .btn-indigo { background: #6366f1; box-shadow: 0 4px 0 #4338ca; } /* Nuevo botón índigo */
+        .btn-indigo { background: #6366f1; box-shadow: 0 4px 0 #4338ca; }
 
         /* --- LOGIN STYLES (CLEAN BLUE) --- */
         .login-page-bg {
@@ -91,11 +91,17 @@
         .classroom-container { display: flex; height: 100%; width: 100%; }
         .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; overflow-y: auto; }
         .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 1rem; text-transform: none; }
+        
+        /* MENÚ ITEMS */
+        .menu-item { 
+            padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; 
+            font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 12px; 
+            transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 1rem; text-transform: none; 
+        }
         .menu-text { text-transform: capitalize; }
         .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
         .menu-item.active { background: #E0F2FE; color: var(--electric-cyan); box-shadow: inset 4px 0 0 var(--electric-cyan); }
-        .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; }
+        .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; flex-shrink: 0; }
 
         .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 20px 40px; position: relative; }
         .module-header { margin-bottom: 30px; border-bottom: 3px solid #E2E8F0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
@@ -166,6 +172,92 @@
         .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan); font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #0099cc; }
         .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; } .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
+
+        /* =============================================
+           ESTILOS RESPONSIVOS PARA MÓVILES
+           ============================================= */
+        @media (max-width: 900px) {
+            :root { 
+                --book-width: 85vw; 
+                --book-height: calc(85vw * 1.35); 
+            }
+            
+            /* Contenedor principal en columna */
+            .classroom-container { 
+                flex-direction: column; 
+            }
+            
+            /* Barra Lateral transformada en barra superior deslizable */
+            .classroom-sidebar { 
+                width: 100%; 
+                height: auto; 
+                flex-direction: row; 
+                overflow-x: auto; /* Scroll horizontal */
+                overflow-y: hidden;
+                padding: 10px; 
+                border-right: none; 
+                border-bottom: 2px solid #E2E8F0;
+                align-items: center;
+                gap: 10px;
+                background: white;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+                z-index: 60;
+            }
+            
+            /* Ocultar logo del sidebar en móvil para ahorrar espacio */
+            .sidebar-logo { display: none; }
+            
+            /* Items del menú compactos e inline */
+            .menu-item { 
+                margin-bottom: 0; 
+                white-space: nowrap; 
+                font-size: 0.85rem;
+                padding: 8px 12px;
+                flex-shrink: 0; /* Evitar que se aplasten */
+            }
+            
+            /* Ajuste de contenido */
+            .classroom-content { 
+                padding: 15px; 
+                overflow-y: auto; 
+                height: 100%; 
+            }
+
+            /* Header global más compacto */
+            .w-full.h-20 {
+                height: 60px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            .kids-title.text-3xl { font-size: 1.5rem; }
+            
+            /* Perfil de usuario compacto */
+            .user-chip { padding: 4px 8px; }
+            .user-info { display: none; } /* Ocultar nombre para ahorrar espacio en barra sup */
+            .user-avatar { width: 35px; height: 35px; }
+            
+            /* Ajustes específicos de actividades para que no se corten */
+            .book-showcase { height: 350px; }
+            .evidence-grid { grid-template-columns: 1fr; } /* Una sola columna */
+            
+            /* Forzar altura mínima en contenedores de iframes */
+            #padlet-container, 
+            .flex-1.bg-white.rounded-3xl { 
+                min-height: 500px; 
+                height: auto !important;
+            }
+            
+            /* Ajuste de botones del libro */
+            .nav-btn { 
+                width: 40px; height: 40px; font-size: 1rem; 
+            }
+            .prev-btn { left: 10px; } 
+            .next-btn { right: 10px; }
+            
+            /* Ajuste editor */
+            .sidebar-editor { width: 50px; }
+            .icon-chunk { width: 40px; height: 40px; font-size: 1rem; }
+        }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
