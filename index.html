@@ -274,7 +274,8 @@
         .text-page { background-color: #fffefae6; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
         .inline-input-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 1.4rem; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; margin-bottom: 5px; outline: none; padding: 5px; border-bottom: 2px solid var(--gold-color); }
         .inline-input-text { font-family: 'Merriweather', serif; font-size: 0.95rem; line-height: 1.8; color: #555; font-style: italic; background: transparent; border: 1px dashed transparent; text-align: center; width: 100%; outline: none; resize: none; overflow: hidden; padding: 5px; }
-        .endpaper { background-color: var(--endpaper-bg); background-image: radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px), radial-gradient(var(--endpaper-dot) 1.5px, transparent 1.5px); background-size: 20px 20px; }
+        /* CORRECCIÓN DE GUARDAS: Quitamos el patrón repetitivo y usamos background-size: cover */
+        .endpaper { background-color: var(--endpaper-bg); background-size: cover; background-position: center; background-repeat: no-repeat; }
         .page-number { position: absolute; bottom: 20px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-color); font-weight: bold; pointer-events: none; }
         .front .page-number { right: 20px; } .back .page-number { left: 20px; }
 
@@ -358,19 +359,34 @@
             }; reader.readAsDataURL(file);
         };
 
-        // --- MASTER TEMPLATE (IMÁGENES ACTUALIZADAS) ---
+        // --- MASTER TEMPLATE (IMÁGENES ACTUALIZADAS CON GUARDAS CORRECTAS) ---
         const MASTER_TEMPLATE = {
             title: "Nuevo Libro",
             pages: [
-                { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20portada.png?raw=true' }, back: { type: 'endpaper' } },
-                { id: 'c2', type: 'structure', front: { type: 'endpaper' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)' } },
+                { 
+                    id: 'c1', 
+                    type: 'structure', 
+                    front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20portada.png?raw=true' }, 
+                    back: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' } 
+                },
+                { 
+                    id: 'c2', 
+                    type: 'structure', 
+                    front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, 
+                    back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)' } 
+                },
                 { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024' }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...' } },
                 { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' } },
-                { id: 'end', type: 'structure', front: { type: 'endpaper' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20contraportada.png?raw=true' } }
+                { 
+                    id: 'end', 
+                    type: 'structure', 
+                    front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, 
+                    back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20contraportada.png?raw=true' } 
+                }
             ]
         };
 
-        // --- COMPONENTES (BOOKVIEWER INTACTO EN LÓGICA) ---
+        // --- COMPONENTES (BOOKVIEWER) ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
@@ -471,7 +487,6 @@
                 const iframeStyle = { width: `${100/zoom}%`, height: `${100/zoom}%`, transform: `scale(${zoom})`, transformOrigin: '0 0', transition: '0.2s' };
                 const wrapperClass = "flex-1 bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative";
 
-                // Reutilizamos lógica simple para iframes
                 if(activity === 'guia' || activity === 'reference_book') 
                     return <div className={wrapperClass}><iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe></div>;
                 
@@ -580,7 +595,15 @@
 
             const addPage = () => { 
                 const np = [...book.pages]; 
-                np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: '' }, back: { type: 'image-page', bg: '' } }); 
+                // Inserta antes de la contraportada (np.length-1)
+                // Usamos la imagen de 'cuerpo' por defecto
+                const bodyImg = 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true';
+                np.splice(np.length-1, 0, { 
+                    id: Date.now(), 
+                    type: 'content', 
+                    front: { type: 'image-page', bg: bodyImg }, 
+                    back: { type: 'image-page', bg: bodyImg } 
+                }); 
                 setBook({...book, pages: np}); 
             };
 
