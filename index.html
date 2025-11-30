@@ -171,8 +171,8 @@
            ESTILOS RESPONSIVOS PARA MÓVILES (AJUSTE ESPECÍFICO)
            ============================================= */
         @media (max-width: 900px) {
+            /* AJUSTE DE PRECISIÓN: 35vw para que quepa perfecto al lado de la barra */
             :root { 
-                /* AJUSTE DE PRECISIÓN: 35vw para que quepa perfecto al lado de la barra */
                 --book-width: 35vw; 
                 --book-height: calc(35vw * 1.35); 
             }
@@ -306,7 +306,8 @@
             ]
         };
 
-        // --- COMPONENTE: VISOR DEL LIBRO (BOOKVIEWER) - DEFINIDO ANTES ---
+        // --- COMPONENTE: VISOR DEL LIBRO (BOOKVIEWER) ---
+        // DEFINIDO PRIMERO PORQUE ES REQUERIDO POR OTROS COMPONENTES
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
@@ -377,92 +378,13 @@
                             })}
                         </div>
                     </div>
-                    {/* Botón Prev solo aparece si currentIdx >= 0 (libro abierto) */}
                     {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
-                    {/* Botón Next siempre aparece si no es el final */}
                     {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
                 </div>
             );
         }
 
-        // --- VISTA: PANTALLA DE LOGIN ---
-        function LoginScreen({ setUser, setView }) {
-            const [email, setEmail] = useState(''); 
-            const [password, setPassword] = useState(''); 
-            const [isRegister, setIsRegister] = useState(false);
-            const [isReset, setIsReset] = useState(false);
-
-            const handleAuth = async (e) => { 
-                e.preventDefault(); 
-                try { 
-                    if (isRegister) await createUserWithEmailAndPassword(auth, email, password); 
-                    else await signInWithEmailAndPassword(auth, email, password); 
-                } catch (err) { 
-                    alert(err.message); 
-                } 
-            };
-
-            const handleReset = async (e) => {
-                e.preventDefault();
-                if (!email) return alert("Por favor escribe tu correo para enviarte el enlace.");
-                try {
-                    await sendPasswordResetEmail(auth, email);
-                    alert("¡Enlace enviado! Revisa tu correo (y spam) para crear una nueva contraseña.");
-                    setIsReset(false);
-                } catch (err) {
-                    alert("Error al enviar correo: " + err.message);
-                }
-            };
-
-            return (
-                <div className="login-page-bg">
-                    <div className="shape-blob-1"></div>
-                    <div className="shape-blob-2"></div>
-
-                    <div className="login-card-clean">
-                        <div className="login-title-clean text-center mb-6">
-                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">CREATOR</div>
-                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">STUDIO</div>
-                        </div>
-                        
-                        {isReset ? (
-                            <form onSubmit={handleReset}>
-                                <p className="mb-4 text-gray-600 text-sm">Ingresa tu correo y te enviaremos un enlace mágico para recuperar tu acceso.</p>
-                                <div className="input-group-clean">
-                                    <i className="fas fa-envelope input-icon"></i>
-                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
-                                </div>
-                                <button className="btn-login-clean">Enviar Enlace de Recuperación</button>
-                                <span className="link-text mt-4" onClick={()=>setIsReset(false)}>
-                                    <i className="fas fa-arrow-left mr-1"></i> Volver a Iniciar Sesión
-                                </span>
-                            </form>
-                        ) : (
-                            <form onSubmit={handleAuth}>
-                                <div className="input-group-clean">
-                                    <i className="fas fa-envelope input-icon"></i>
-                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
-                                </div>
-                                <div className="input-group-clean">
-                                    <i className="fas fa-lock input-icon"></i>
-                                    <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} required />
-                                    <i className="fas fa-eye-slash absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"></i>
-                                </div>
-                                <button className="btn-login-clean">{isRegister ? 'Registrarse' : 'Iniciar Sesión'}</button>
-                                <div className="mt-4">
-                                    <span className="register-link text-sm cursor-pointer hover:text-blue-500 transition" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
-                                    <span className="link-text mt-2" onClick={()=>setIsRegister(!isRegister)}>
-                                        {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : 'Registrarse'}
-                                    </span>
-                                </div>
-                            </form>
-                        )}
-                    </div>
-                </div>
-            );
-        }
-
-        // --- VISTA: VISOR PÚBLICO ---
+        // --- VISTA: VISOR PÚBLICO (MODO INVITADO) ---
         function PublicActivityViewer({ activity }) {
             const [padletZoom, setPadletZoom] = useState(1);
             const [moodboardZoom, setMoodboardZoom] = useState(0.75);
@@ -619,13 +541,98 @@
                             <div className="h-6 w-0.5 bg-gray-300 rounded"></div>
                             <div className="font-bold text-gray-500 uppercase text-lg tracking-wide">{getActivityTitle()}</div>
                         </div>
-                        <div className="text-gray-400 font-bold text-xs uppercase tracking-wide flex items-center gap-2">
-                            <i className="fas fa-user-secret"></i> MODO INVITADO
+                        <div className="flex items-center gap-3">
+                             <div className="text-gray-400 font-bold text-xs uppercase tracking-wide flex items-center gap-2 mr-2">
+                                <i className="fas fa-user-secret"></i> MODO INVITADO
+                            </div>
+                            <button 
+                                onClick={() => window.location.href = window.location.pathname} 
+                                className="btn-gummy btn-lime text-xs px-4 py-1 shadow-lime-600"
+                            >
+                                <i className="fas fa-sign-in-alt mr-2"></i> REGISTRARME
+                            </button>
                         </div>
                      </div>
                      <div className="flex-1 overflow-hidden relative bg-gray-50">
                         {renderContent()}
                      </div>
+                </div>
+            );
+        }
+
+        // --- VISTA: LOGIN ---
+        function LoginScreen({ setUser, setView }) {
+            const [email, setEmail] = useState(''); 
+            const [password, setPassword] = useState(''); 
+            const [isRegister, setIsRegister] = useState(false);
+            const [isReset, setIsReset] = useState(false);
+
+            const handleAuth = async (e) => { 
+                e.preventDefault(); 
+                try { 
+                    if (isRegister) await createUserWithEmailAndPassword(auth, email, password); 
+                    else await signInWithEmailAndPassword(auth, email, password); 
+                } catch (err) { 
+                    alert(err.message); 
+                } 
+            };
+
+            const handleReset = async (e) => {
+                e.preventDefault();
+                if (!email) return alert("Por favor escribe tu correo para enviarte el enlace.");
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    alert("¡Enlace enviado! Revisa tu correo (y spam) para crear una nueva contraseña.");
+                    setIsReset(false);
+                } catch (err) {
+                    alert("Error al enviar correo: " + err.message);
+                }
+            };
+
+            return (
+                <div className="login-page-bg">
+                    <div className="shape-blob-1"></div>
+                    <div className="shape-blob-2"></div>
+
+                    <div className="login-card-clean">
+                        <div className="login-title-clean text-center mb-6">
+                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">CREATOR</div>
+                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">STUDIO</div>
+                        </div>
+                        
+                        {isReset ? (
+                            <form onSubmit={handleReset}>
+                                <p className="mb-4 text-gray-600 text-sm">Ingresa tu correo y te enviaremos un enlace mágico para recuperar tu acceso.</p>
+                                <div className="input-group-clean">
+                                    <i className="fas fa-envelope input-icon"></i>
+                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
+                                </div>
+                                <button className="btn-login-clean">Enviar Enlace de Recuperación</button>
+                                <span className="link-text mt-4" onClick={()=>setIsReset(false)}>
+                                    <i className="fas fa-arrow-left mr-1"></i> Volver a Iniciar Sesión
+                                </span>
+                            </form>
+                        ) : (
+                            <form onSubmit={handleAuth}>
+                                <div className="input-group-clean">
+                                    <i className="fas fa-envelope input-icon"></i>
+                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
+                                </div>
+                                <div className="input-group-clean">
+                                    <i className="fas fa-lock input-icon"></i>
+                                    <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} required />
+                                    <i className="fas fa-eye-slash absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"></i>
+                                </div>
+                                <button className="btn-login-clean">{isRegister ? 'Registrarse' : 'Iniciar Sesión'}</button>
+                                <div className="mt-4">
+                                    <span className="register-link text-sm cursor-pointer hover:text-blue-500 transition" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
+                                    <span className="link-text mt-2" onClick={()=>setIsRegister(!isRegister)}>
+                                        {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : 'Registrarse'}
+                                    </span>
+                                </div>
+                            </form>
+                        )}
+                    </div>
                 </div>
             );
         }
