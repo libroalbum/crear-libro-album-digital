@@ -305,7 +305,7 @@
         }
 
         function Dashboard({ user, setView, setExternalTool }) {
-            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard | quiz | ficha_personajes
+            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard | quiz | ficha_personajes | padlet
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
             const [editingId, setEditingId] = useState(null);
@@ -392,9 +392,14 @@
                             <i className="fas fa-puzzle-piece text-yellow-500"></i> QUIZ INTERACTIVO
                         </div>
 
-                         {/* --- NUEVA SECCIÓN: FICHA DE PERSONAJES --- */}
+                         {/* --- SECCIÓN FICHA PERSONAJES --- */}
                          <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
                             <i className="fas fa-address-card text-pink-500"></i> FICHA DE PERSONAJES
+                        </div>
+
+                         {/* --- NUEVA SECCIÓN: PADLET MURO --- */}
+                         <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
+                            <i className="fas fa-thumbtack text-teal-500"></i> MURO COLABORATIVO
                         </div>
                         
                         {/* BOTÓN UNIFICADO: MI LIBRO (Crear o Editar) */}
@@ -558,7 +563,7 @@
                             </div>
                         )}
 
-                        {/* --- NUEVA SECCIÓN: FICHA DE PERSONAJES (CORREGIDO) --- */}
+                        {/* --- SECCIÓN FICHA DE PERSONAJES (CORREGIDO) --- */}
                         {activeSection === 'ficha_personajes' && (
                             <div className="h-full flex flex-col">
                                 <div className="mb-6">
@@ -575,6 +580,25 @@
                                         className="w-full h-full border-none"
                                         title="Ficha de Personajes Google Form"
                                     >Cargando…</iframe>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- NUEVA SECCIÓN: MURO COLABORATIVO (PADLET) --- */}
+                        {activeSection === 'padlet' && (
+                            <div className="h-full flex flex-col">
+                                <div className="mb-6">
+                                    <h2 className="module-title text-teal-500 mb-2">MURO COLABORATIVO</h2>
+                                    <p className="text-gray-600">Comparte tus ideas, preguntas y avances con el resto de la clase.</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg">
+                                    <iframe 
+                                        src="https://padlet.com/embed/kz78sfkwdm9abosj" 
+                                        frameBorder="0" 
+                                        allow="camera;microphone;geolocation;display-capture;clipboard-write" 
+                                        style={{width:'100%', height:'100%', display:'block'}}
+                                        title="Muro Colaborativo Padlet"
+                                    ></iframe>
                                 </div>
                             </div>
                         )}
