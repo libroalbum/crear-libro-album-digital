@@ -358,14 +358,15 @@
             }; reader.readAsDataURL(file);
         };
 
+        // --- MASTER TEMPLATE (IMÁGENES ACTUALIZADAS) ---
         const MASTER_TEMPLATE = {
             title: "Nuevo Libro",
             pages: [
-                { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/portada%20forntal.PNG?raw=true' }, back: { type: 'endpaper' } },
+                { id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20portada.png?raw=true' }, back: { type: 'endpaper' } },
                 { id: 'c2', type: 'structure', front: { type: 'endpaper' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título de la Obra)' } },
                 { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024' }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...' } },
-                { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/1x.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/pg2.jpg?raw=true' } },
-                { id: 'end', type: 'structure', front: { type: 'endpaper' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true' } }
+                { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' } },
+                { id: 'end', type: 'structure', front: { type: 'endpaper' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20contraportada.png?raw=true' } }
             ]
         };
 
@@ -539,7 +540,7 @@
             );
         }
 
-        // --- EDITOR COMPONENT (Restaurado) ---
+        // --- EDITOR COMPONENT (CON BOTÓN REINICIAR) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1); 
@@ -557,6 +558,18 @@
                     await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
                     alert("¡GUARDADO!"); 
                 } catch (e) { alert("Error."); } 
+            };
+
+            const resetBook = async () => {
+                if(!confirm("¿Estás seguro de reiniciar el libro? Se perderán todos los cambios actuales.")) return;
+                const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; 
+                setBook({ id: book.id, ...resetState }); 
+                try {
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState);
+                    alert("¡Libro reiniciado a la plantilla original!");
+                } catch(e) {
+                    alert("Error al reiniciar: " + e.message);
+                }
             };
 
             const handlePageUpdate = (idx, side, field, val) => { 
@@ -578,6 +591,7 @@
                     <div className="sidebar-editor">
                         <div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div>
                         <div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div>
+                        <div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div>
                         <div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div>
                     </div>
                     <div className="canvas-grid editor-mode">
