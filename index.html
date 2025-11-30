@@ -590,11 +590,17 @@
                 }); 
             }, []);
 
+            // --- AJUSTE REALIZADO AQUÍ PARA ARREGLAR PREVISUALIZACIÓN PÚBLICA ---
             const save = async () => { 
                 try { 
+                    // 1. Guardar el contenido del libro
                     await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
-                    alert("¡GUARDADO!"); 
-                } catch (e) { alert("Error."); } 
+                    
+                    // 2. ACTUALIZAR EL PORTAFOLIO PÚBLICO: Esto fuerza a que el enlace público apunte a ESTE libro que estás editando.
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: book.id }, { merge: true });
+
+                    alert("¡GUARDADO Y PUBLICADO!"); 
+                } catch (e) { alert("Error: " + e.message); } 
             };
 
             const resetBook = async () => {
