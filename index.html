@@ -242,7 +242,7 @@
         /* --- AJUSTE SOLICITADO: FONDO DEL TABLERO --- */
         .classroom-content { 
             flex: 1; 
-            background-color: #E6E6FA; /* Color Lavanda solicitado */
+            background-color: #F0F4F8; /* Nuevo color solicitado */
             overflow-y: auto; 
             padding: 30px 50px; 
             position: relative; 
@@ -741,21 +741,31 @@
 
             return (
                 <div className="login-split-wrapper">
+                    {/* Lado Izquierdo: Visual con Imagen */}
                     <div className="login-visual-side">
                         <div className="visual-overlay">
                             <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
                             <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte tus historias con el mundo.</p>
                         </div>
                     </div>
+
+                    {/* Lado Derecho: Formulario y Contenido */}
                     <div className="login-form-side">
                         <div className="w-full max-w-md">
                             <h1 className="login-brand-title">CREATOR STUDIO</h1>
-                            <p className="login-description">La plataforma definitiva para crear tu Libro Álbum Digital. <br/>Empieza tu aventura creativa ahora.</p>
+                            <p className="login-description">
+                                La plataforma definitiva para crear tu Libro Álbum Digital. 
+                                <br/>Empieza tu aventura creativa ahora.
+                            </p>
+
+                            {/* Feature Badges */}
                             <div className="features-mini">
                                 <div className="feature-pill"><i className="fas fa-magic"></i> Edición Fácil</div>
                                 <div className="feature-pill"><i className="fas fa-palette"></i> Arte & Color</div>
                                 <div className="feature-pill"><i className="fas fa-share-alt"></i> Compartir</div>
                             </div>
+                            
+                            {/* Login Box */}
                             <div className="login-box">
                                 {isReset ? (
                                     <form onSubmit={handleReset} className="space-y-4">
@@ -765,11 +775,28 @@
                                     </form>
                                 ) : (
                                     <form onSubmit={handleAuth} className="space-y-4">
-                                        <div className="relative"><i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i><input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} /></div>
-                                        <div className="relative"><i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i><input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} /></div>
-                                        <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
-                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
-                                        <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
+                                        <div className="relative">
+                                            <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} />
+                                        </div>
+                                        <div className="relative">
+                                            <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
+                                        </div>
+                                        
+                                        <div className="text-right">
+                                            <span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
+                                        </div>
+
+                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">
+                                            {isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}
+                                        </button>
+                                        
+                                        <div className="mt-6 text-center">
+                                            <span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>
+                                                {isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}
+                                            </span>
+                                        </div>
                                     </form>
                                 )}
                             </div>
@@ -786,6 +813,8 @@
             const [portfolioData, setPortfolioData] = useState({});
             const [userProfile, setUserProfile] = useState({ name: user.email.split('@')[0], photo: '' });
             const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+            
+            // Zoom states para las actividades embebidas
             const [zoom, setZoom] = useState(1);
 
             useEffect(() => { 
@@ -796,75 +825,182 @@
                 onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => { if(doc.exists()) setUserProfile(doc.data()); });
             }, [user]);
 
-            const saveProfile = async () => { await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), userProfile, { merge: true }); setIsProfileModalOpen(false); };
-            const handleProfilePic = (e) => { const file = e.target.files[0]; if(file) processImage(file, (base64) => setUserProfile({...userProfile, photo: base64})); };
-            const handleMyBook = async () => {
-                if (books.length > 0) { localStorage.setItem('currentBookId', books[0].id); setView('editor'); } 
-                else { const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }); await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: ref.id }, { merge: true }); localStorage.setItem('currentBookId', ref.id); setView('editor'); }
+            const saveProfile = async () => {
+                await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), userProfile, { merge: true });
+                setIsProfileModalOpen(false);
             };
-            const uploadEvidence = (type, e) => { const file = e.target.files[0]; if(!file) return; processImage(file, async (base64) => { await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { [type]: base64 }, { merge: true }); alert("¡Imagen actualizada!"); }); };
+
+            const handleProfilePic = (e) => {
+                const file = e.target.files[0];
+                if(file) processImage(file, (base64) => setUserProfile({...userProfile, photo: base64}));
+            };
+
+            const handleMyBook = async () => {
+                if (books.length > 0) {
+                    localStorage.setItem('currentBookId', books[0].id);
+                    setView('editor');
+                } else {
+                    const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() });
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: ref.id }, { merge: true });
+                    localStorage.setItem('currentBookId', ref.id);
+                    setView('editor');
+                }
+            };
+
+            const uploadEvidence = (type, e) => {
+                const file = e.target.files[0]; if(!file) return;
+                processImage(file, async (base64) => {
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { [type]: base64 }, { merge: true });
+                    alert("¡Imagen actualizada!");
+                });
+            };
 
             const renderActivityContent = () => {
-                const zoomControls = ( <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-gray-200 shadow-sm ml-auto"><button onClick={()=>setZoom(z=>Math.max(0.5, z-0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-minus"></i></button><span className="text-xs font-bold w-8 text-center">{Math.round(zoom*100)}%</span><button onClick={()=>setZoom(z=>Math.min(1.5, z+0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-plus"></i></button></div> );
+                const zoomControls = (
+                    <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-gray-200 shadow-sm ml-auto">
+                        <button onClick={()=>setZoom(z=>Math.max(0.5, z-0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-minus"></i></button>
+                        <span className="text-xs font-bold w-8 text-center">{Math.round(zoom*100)}%</span>
+                        <button onClick={()=>setZoom(z=>Math.min(1.5, z+0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-plus"></i></button>
+                    </div>
+                );
+
                 const frameStyle = { width: `${100/zoom}%`, height: `${100/zoom}%`, transform: `scale(${zoom})`, transformOrigin: '0 0' };
                 const containerClass = "flex-1 bg-white rounded-3xl overflow-hidden shadow-sm border-4 relative h-full"; 
 
                 switch(activeSection) {
-                    case 'inicio': return (
-                        <div className="animate-fade-in">
-                            <div className="glass-panel p-8 mb-8 flex flex-col md:flex-row gap-8 items-center">
-                                <div className="flex-1"><h2 className="text-3xl font-bold mb-4 text-gray-800">Bienvenido al Estudio, {userProfile.name}</h2><p className="text-gray-600 mb-6 text-lg leading-relaxed">Este es tu espacio creativo profesional...</p><button onClick={handleMyBook} className="btn-modern bg-gradient-primary text-lg px-8 py-3"><i className="fas fa-rocket mr-2"></i> {books.length > 0 ? 'Continuar mi Libro' : 'Crear Nuevo Libro'}</button></div>
-                                <div className="w-full md:w-1/2 aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition duration-500"><iframe className="w-full h-full" src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div>
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Acceso Rápido a Misiones</h3>
-                            <div className="bento-grid">
-                                <div className="activity-card" style={{'--card-color': '#8b5cf6'}} onClick={()=>setActiveSection('moodboard')}><div><div className="ac-icon"><i className="fas fa-palette"></i></div><div className="ac-title">Moodboard</div><div className="ac-desc">Define el estilo visual.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div></div>
-                                <div className="activity-card" style={{'--card-color': '#ec4899'}} onClick={()=>setActiveSection('ficha_personajes')}><div><div className="ac-icon"><i className="fas fa-users"></i></div><div className="ac-title">Personajes</div><div className="ac-desc">Crea a tus protagonistas.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div></div>
-                                <div className="activity-card" style={{'--card-color': '#f97316'}} onClick={()=>setActiveSection('storyboard')}><div><div className="ac-icon"><i className="fas fa-film"></i></div><div className="ac-title">Storyboard</div><div className="ac-desc">Planea escena por escena.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div></div>
-                                <div className="activity-card" style={{'--card-color': '#06b6d4'}} onClick={()=>setActiveSection('padlet')}><div><div className="ac-icon"><i className="fas fa-comments"></i></div><div className="ac-title">Muro Social</div><div className="ac-desc">Comparte con la clase.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div></div>
-                            </div>
-                        </div>
-                    );
-                    case 'portafolio': return (<div className="h-full flex flex-col"><div className="flex justify-between items-center mb-6"><h2 className="page-header-title">MI PORTAFOLIO</h2><div className="flex gap-2"><button onClick={() => window.open(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`, '_blank')} className="btn-modern bg-white text-indigo-600 border border-indigo-100 text-xs shadow-sm hover:bg-indigo-50"><i className="fas fa-eye mr-2"></i> PREVISUALIZAR</button><button onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`); alert("Link copiado")}} className="btn-modern bg-gradient-dark text-xs"><i className="fas fa-share-alt mr-2"></i> COMPARTIR</button></div></div><div className="flex-1 overflow-y-auto pr-2"><div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8 text-center relative overflow-hidden"><div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-10"></div><div className="relative z-10"><div className="w-full max-w-4xl mx-auto h-[500px] mt-8 relative">{books.length > 0 ? (<div className="transform scale-90 origin-top h-full"><BookViewer pages={books[0].pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div>) : <div className="h-full flex items-center justify-center text-gray-400">No has creado tu libro aún.</div>}</div></div></div><h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Evidencias del Proceso</h3><div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10"><div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-mood').click()}><div className="absolute top-4 left-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold z-10">MOODBOARD</div>{portfolioData.moodboard ? <img src={portfolioData.moodboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}<div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div><input type="file" id="upl-mood" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/></div><div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-story').click()}><div className="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">STORYBOARD</div>{portfolioData.storyboard ? <img src={portfolioData.storyboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}<div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div><input type="file" id="upl-story" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/></div></div></div></div>);
-                    
-                    case 'reference_book': return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-indigo-500">Libro Guía</h2></div><div className={`${containerClass} border-indigo-100`}><iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe></div></div>;
-                    case 'moodboard': return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-purple-500">Moodboard</h2>{zoomControls}</div><div className={`${containerClass} border-purple-100`}><div style={frameStyle}><iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe></div></div></div>;
-                    case 'storyboard': return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-orange-500">Storyboard</h2>{zoomControls}</div><div className={`${containerClass} border-orange-100`}><div style={frameStyle}><iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe></div></div></div>;
-                    case 'padlet': return <div className="h-full flex flex-col"><div className="flex justify-between mb-4"><h2 className="page-header-title text-cyan-500">Muro Colaborativo</h2>{zoomControls}</div><div className={`${containerClass} border-teal-100`}><div style={frameStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div></div>;
+                    case 'inicio':
+                        return (
+                            <div className="animate-fade-in">
+                                <div className="glass-panel p-8 mb-8 flex flex-col md:flex-row gap-8 items-center">
+                                    <div className="flex-1">
+                                        <h2 className="text-3xl font-bold mb-4 text-gray-800">Bienvenido al Estudio, {userProfile.name}</h2>
+                                        <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                                            Este es tu espacio creativo profesional. Aquí tienes todas las herramientas para construir, diseñar y publicar tu propio Libro Álbum Digital. 
+                                            <br/><br/>Empieza revisando el video introductorio o salta directo a una misión.
+                                        </p>
+                                        <button onClick={handleMyBook} className="btn-modern bg-gradient-primary text-lg px-8 py-3">
+                                            <i className="fas fa-rocket mr-2"></i> {books.length > 0 ? 'Continuar mi Libro' : 'Crear Nuevo Libro'}
+                                        </button>
+                                    </div>
+                                    <div className="w-full md:w-1/2 aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition duration-500">
+                                        <iframe className="w-full h-full" src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                                    </div>
+                                </div>
 
-                    case 'quiz': return (
-                        <div className="h-full flex flex-col">
-                            <div className="mb-6"><h2 className="module-title text-yellow-500 mb-2 text-3xl">QUIZ TIME</h2><p className="text-gray-600">¡Demuestra lo que has aprendido!</p></div>
-                            <div className={`${containerClass} border-yellow-100 group`}>
-                                <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                    <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-play-circle mr-3"></i> HACER QUIZ</a>
+                                <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Acceso Rápido a Misiones</h3>
+                                <div className="bento-grid">
+                                    <div className="activity-card" style={{'--card-color': '#8b5cf6'}} onClick={()=>setActiveSection('moodboard')}>
+                                        <div><div className="ac-icon"><i className="fas fa-palette"></i></div><div className="ac-title">Moodboard</div><div className="ac-desc">Define el estilo visual.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
+                                    <div className="activity-card" style={{'--card-color': '#ec4899'}} onClick={()=>setActiveSection('ficha_personajes')}>
+                                        <div><div className="ac-icon"><i className="fas fa-users"></i></div><div className="ac-title">Personajes</div><div className="ac-desc">Crea a tus protagonistas.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
+                                    <div className="activity-card" style={{'--card-color': '#f97316'}} onClick={()=>setActiveSection('storyboard')}>
+                                        <div><div className="ac-icon"><i className="fas fa-film"></i></div><div className="ac-title">Storyboard</div><div className="ac-desc">Planea escena por escena.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
+                                    <div className="activity-card" style={{'--card-color': '#06b6d4'}} onClick={()=>setActiveSection('padlet')}>
+                                        <div><div className="ac-icon"><i className="fas fa-comments"></i></div><div className="ac-title">Muro Social</div><div className="ac-desc">Comparte con la clase.</div></div><div className="ac-arrow"><i className="fas fa-arrow-right"></i></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                    case 'ficha_narrativa': return (
-                        <div className="h-full flex flex-col">
-                            <div className="mb-6"><h2 className="module-title text-rose-500 mb-2 text-3xl">FICHA NARRATIVA</h2><p className="text-gray-600">Desarrolla la estructura de tu historia paso a paso.</p></div>
-                            <div className={`${containerClass} border-rose-100 group`}>
-                                <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                        );
+                    
+                    case 'portafolio':
+                        return (
+                            <div className="h-full flex flex-col">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="page-header-title">MI PORTAFOLIO</h2>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => window.open(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`, '_blank')} className="btn-modern bg-white text-indigo-600 border border-indigo-100 text-xs shadow-sm hover:bg-indigo-50">
+                                            <i className="fas fa-eye mr-2"></i> PREVISUALIZAR
+                                        </button>
+                                        <button onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`); alert("Link copiado")}} className="btn-modern bg-gradient-dark text-xs">
+                                            <i className="fas fa-share-alt mr-2"></i> COMPARTIR
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="flex-1 overflow-y-auto pr-2">
+                                    <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8 text-center relative overflow-hidden">
+                                        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-10"></div>
+                                        <div className="relative z-10">
+                                            <div className="w-full max-w-4xl mx-auto h-[500px] mt-8 relative">
+                                                {books.length > 0 ? (
+                                                    <div className="transform scale-90 origin-top h-full"><BookViewer pages={books[0].pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div>
+                                                ) : <div className="h-full flex items-center justify-center text-gray-400">No has creado tu libro aún.</div>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Evidencias del Proceso</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10">
+                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-mood').click()}>
+                                                <div className="absolute top-4 left-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold z-10">MOODBOARD</div>
+                                                {portfolioData.moodboard ? <img src={portfolioData.moodboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
+                                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
+                                                <input type="file" id="upl-mood" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
+                                            </div>
+                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-story').click()}>
+                                                <div className="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">STORYBOARD</div>
+                                                {portfolioData.storyboard ? <img src={portfolioData.storyboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
+                                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
+                                                <input type="file" id="upl-story" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
+                                            </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                    case 'ficha_personajes': return (
-                        <div className="h-full flex flex-col">
-                            <div className="mb-6"><h2 className="module-title text-pink-500 mb-2 text-3xl">FICHA DE PERSONAJES</h2><p className="text-gray-600">Completa la ficha técnica para definir a los protagonistas de tu historia.</p></div>
-                            <div className={`${containerClass} border-pink-100 group`}>
-                                <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO</a>
+                        );
+
+                    case 'reference_book':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-2"><h2 className="page-header-title text-indigo-500">Libro Guía</h2></div><div className={containerClass}><iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe></div></div>;
+                    
+                    case 'moodboard':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-2"><h2 className="page-header-title text-purple-500">Moodboard</h2>{zoomControls}</div><div className={containerClass}><div style={frameStyle}><iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe></div></div></div>;
+                    
+                    case 'storyboard':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-2"><h2 className="page-header-title text-orange-500">Storyboard</h2>{zoomControls}</div><div className={containerClass}><div style={frameStyle}><iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe></div></div></div>;
+                    
+                    case 'padlet':
+                        return <div className="h-full flex flex-col"><div className="flex justify-between mb-2"><h2 className="page-header-title text-cyan-500">Muro Colaborativo</h2>{zoomControls}</div><div className={containerClass}><div style={frameStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div></div>;
+
+                    case 'quiz':
+                        return (
+                            <div className="h-full flex flex-col">
+                                <div className="mb-2"><h2 className="module-title text-yellow-500 mb-2 text-3xl">QUIZ TIME</h2></div>
+                                <div className={`${containerClass} border-yellow-100 group`}>
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-play-circle mr-3"></i> HACER QUIZ</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
+                        );
+
+                    case 'ficha_narrativa':
+                        return (
+                            <div className="h-full flex flex-col">
+                                <div className="mb-2"><h2 className="module-title text-rose-500 mb-2 text-3xl">FICHA NARRATIVA</h2></div>
+                                <div className={`${containerClass} border-rose-100 group`}>
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+
+                    case 'ficha_personajes':
+                        return (
+                            <div className="h-full flex flex-col">
+                                <div className="mb-2"><h2 className="module-title text-pink-500 mb-2 text-3xl">FICHA DE PERSONAJES</h2></div>
+                                <div className={`${containerClass} border-pink-100 group`}>
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO</a>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+
                     default: return <div>Selecciona una opción</div>;
                 }
             };
