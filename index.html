@@ -171,7 +171,6 @@
            ESTILOS RESPONSIVOS PARA MÓVILES (AJUSTE ESPECÍFICO)
            ============================================= */
         @media (max-width: 900px) {
-            /* AJUSTE DE PRECISIÓN: 35vw para que quepa perfecto al lado de la barra */
             :root { 
                 --book-width: 35vw; 
                 --book-height: calc(35vw * 1.35); 
@@ -305,6 +304,85 @@
                 { id: 'end', type: 'structure', front: { type: 'endpaper' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/contraportada.jpg?raw=true' } }
             ]
         };
+
+        // --- COMPONENTE: VISOR DEL LIBRO (BOOKVIEWER) - DEFINIDO ANTES PARA EVITAR ERRORES ---
+        function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
+            const audioRef = useRef(null);
+            const [localIdx, setLocalIdx] = useState(activeIdx); 
+            const currentIdx = isEditor ? activeIdx : localIdx;
+            const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
+            const isClosedBack = currentIdx === pages.length - 1;
+            const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx); };
+            
+            useEffect(() => {
+                const handleKeyDown = (e) => { 
+                    if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); 
+                    if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); 
+                };
+                window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown);
+            }, [currentIdx, pages]);
+
+            const isEditableImage = (idx, side) => { if (idx === 1 && side === 'back') return false; if (idx === 2) return false; return true; };
+            const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
+            const isEditableText = (idx, side) => { if (idx === 1 && side === 'back') return false; return true; };
+
+            const renderEditOverlay = (pageIdx, side, currentBg) => {
+                if (!isEditor || !isEditableImage(pageIdx, side)) return null;
+                return (
+                    <div className="edit-overlay">
+                        <div className="upload-card">
+                            <label className="btn-gummy btn-pink" style={{width:'100%', fontSize:'0.9rem', padding:'8px'}}>
+                                <i className="fas fa-camera mr-2"></i> {currentBg ? 'Cambiar' : 'Subir'}
+                                <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64)); }} />
+                            </label>
+                            <input className="input-pop" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px'}} />
+                            {currentBg && <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>BORRAR IMAGEN</button>}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}>
+                    <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
+                    <div id="stage">
+                        <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
+                            {pages.map((p, i) => {
+                                const zIndex = currentIdx >= i ? i + 1 : pages.length - i;
+                                return (
+                                    <div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}>
+                                        <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
+                                            {renderEditOverlay(i, 'front', p.front.bg)}
+                                            {p.front.type==='text-page' && (
+                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
+                                                    <input disabled={!isEditor || !isEditableTitle(i, 'front')} value={p.front.title} onChange={(e)=>onUpdatePage(i, 'front', 'title', e.target.value)} className="inline-input-title" />
+                                                    <textarea disabled={!isEditor || !isEditableText(i, 'front')} value={p.front.text} onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)} className="inline-input-text" rows="6" />
+                                                </div>
+                                            )}
+                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}
+                                        </div>
+                                        <div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>
+                                            {renderEditOverlay(i, 'back', p.back.bg)}
+                                            {p.back.type==='text-page' && (
+                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
+                                                    <input disabled={!isEditor || !isEditableTitle(i, 'back')} value={p.back.title} onChange={(e)=>onUpdatePage(i, 'back', 'title', e.target.value)} className="inline-input-title" />
+                                                    <textarea disabled={!isEditor || !isEditableText(i, 'back')} value={p.back.text} onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)} className="inline-input-text" rows="6" />
+                                                </div>
+                                            )}
+                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    {/* Botón Prev solo aparece si currentIdx >= 0 (libro abierto) */}
+                    {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
+                    {/* Botón Next siempre aparece si no es el final */}
+                    {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
+                </div>
+            );
+        }
 
         // --- COMPONENTE PRINCIPAL ---
         function App() {
@@ -491,11 +569,13 @@
                                     <h2 className="module-title text-pink-500 mb-2 text-3xl">FICHA DE PERSONAJES</h2>
                                     <p className="text-gray-600">Completa la ficha técnica (Acceso Invitado)</p>
                                 </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg flex flex-col">
-                                     <div className="bg-pink-50 p-2 text-center text-xs text-pink-600 border-b border-pink-100">
-                                        ¿No carga el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="font-bold underline">Haz clic aquí para abrirlo</a>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg flex flex-col group">
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" alt="Ficha de Personajes" />
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
+                                            <i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO
+                                        </a>
                                     </div>
-                                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" className="w-full h-full border-none" title="Ficha de Personajes Google Form">Cargando…</iframe>
                                 </div>
                             </div>
                         );
@@ -506,19 +586,19 @@
                                     <h2 className="module-title text-rose-500 mb-2 text-3xl">FICHA NARRATIVA</h2>
                                     <p className="text-gray-600">Desarrolla la estructura de tu historia paso a paso (Acceso Invitado)</p>
                                 </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg flex flex-col items-center justify-center p-10 text-center">
-                                     <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg" alt="Canva Logo" className="w-24 h-24 mb-6 opacity-80" />
-                                     <h3 className="text-2xl font-bold text-gray-700 mb-4">Plantilla de Diseño en Canva</h3>
-                                     <p className="text-gray-500 mb-8 max-w-md">Esta actividad se realiza en Canva. Haz clic en el botón para abrir la plantilla, editarla con tu historia y guardarla.</p>
-                                     <a 
-                                        href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
-                                        style={{textDecoration: 'none'}}
-                                     >
-                                        <i className="fas fa-pen-nib"></i> ABRIR FICHA EN CANVA
-                                     </a>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg flex flex-col items-center justify-center p-10 text-center group">
+                                     <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition" alt="Ficha Narrativa" />
+                                     <div className="relative z-10 flex flex-col items-center">
+                                         <a 
+                                            href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
+                                            style={{textDecoration: 'none'}}
+                                         >
+                                            <i className="fas fa-pen-nib"></i> RELLENAR LA FICHA
+                                         </a>
+                                     </div>
                                 </div>
                             </div>
                         );
@@ -718,6 +798,7 @@
                 return null;
             };
 
+            // Agregar las funciones de zoom que faltaban para el Dashboard
             const handlePadletZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
             const handlePadletZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
             const resetPadletZoom = () => setPadletZoom(1);
@@ -1008,15 +1089,13 @@
                                         <h2 className="module-title text-pink-500 mb-2">FICHA DE PERSONAJES</h2>
                                         <p className="text-gray-600">Completa la ficha técnica para definir a los protagonistas de tu historia.</p>
                                     </div>
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg flex flex-col">
-                                        <div className="bg-pink-50 p-2 text-center text-xs text-pink-600 border-b border-pink-100">
-                                            ¿No carga el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="font-bold underline">Haz clic aquí para abrirlo</a>
+                                    <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg flex flex-col group">
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" alt="Ficha de Personajes" />
+                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
+                                                <i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO
+                                            </a>
                                         </div>
-                                        <iframe 
-                                            src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" 
-                                            className="w-full h-full border-none"
-                                            title="Ficha de Personajes Google Form"
-                                        >Cargando…</iframe>
                                     </div>
                                 </div>
                             )}
@@ -1028,19 +1107,19 @@
                                         <h2 className="module-title text-rose-500 mb-2">FICHA NARRATIVA</h2>
                                         <p className="text-gray-600">Desarrolla la estructura de tu historia paso a paso.</p>
                                     </div>
-                                    <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg flex flex-col items-center justify-center p-10 text-center">
-                                         <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg" alt="Canva Logo" className="w-24 h-24 mb-6 opacity-80" />
-                                         <h3 className="text-2xl font-bold text-gray-700 mb-4">Plantilla de Diseño en Canva</h3>
-                                         <p className="text-gray-500 mb-8 max-w-md">Esta actividad se realiza en Canva. Haz clic en el botón para abrir la plantilla, editarla con tu historia y guardarla.</p>
-                                         <a 
-                                            href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
-                                            style={{textDecoration: 'none'}}
-                                         >
-                                            <i className="fas fa-pen-nib"></i> ABRIR FICHA EN CANVA
-                                         </a>
+                                    <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg flex flex-col group">
+                                         <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover" alt="Ficha Narrativa" />
+                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                             <a 
+                                                href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
+                                                style={{textDecoration: 'none'}}
+                                             >
+                                                <i className="fas fa-pen-nib"></i> RELLENAR LA FICHA
+                                             </a>
+                                         </div>
                                     </div>
                                 </div>
                             )}
@@ -1175,85 +1254,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            );
-        }
-
-        // --- COMPONENTE DEL LIBRO ---
-        function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
-            const audioRef = useRef(null);
-            const [localIdx, setLocalIdx] = useState(activeIdx); 
-            const currentIdx = isEditor ? activeIdx : localIdx;
-            const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
-            const isClosedBack = currentIdx === pages.length - 1;
-            const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx); };
-            
-            useEffect(() => {
-                const handleKeyDown = (e) => { 
-                    if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); 
-                    if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); 
-                };
-                window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [currentIdx, pages]);
-
-            const isEditableImage = (idx, side) => { if (idx === 1 && side === 'back') return false; if (idx === 2) return false; return true; };
-            const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
-            const isEditableText = (idx, side) => { if (idx === 1 && side === 'back') return false; return true; };
-
-            const renderEditOverlay = (pageIdx, side, currentBg) => {
-                if (!isEditor || !isEditableImage(pageIdx, side)) return null;
-                return (
-                    <div className="edit-overlay">
-                        <div className="upload-card">
-                            <label className="btn-gummy btn-pink" style={{width:'100%', fontSize:'0.9rem', padding:'8px'}}>
-                                <i className="fas fa-camera mr-2"></i> {currentBg ? 'Cambiar' : 'Subir'}
-                                <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64)); }} />
-                            </label>
-                            <input className="input-pop" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px'}} />
-                            {currentBg && <button className="remove-btn" onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>BORRAR IMAGEN</button>}
-                        </div>
-                    </div>
-                );
-            };
-
-            return (
-                <div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}>
-                    <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
-                    <div id="stage">
-                        <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
-                            {pages.map((p, i) => {
-                                const zIndex = currentIdx >= i ? i + 1 : pages.length - i;
-                                return (
-                                    <div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}>
-                                        <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
-                                            {renderEditOverlay(i, 'front', p.front.bg)}
-                                            {p.front.type==='text-page' && (
-                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
-                                                    <input disabled={!isEditor || !isEditableTitle(i, 'front')} value={p.front.title} onChange={(e)=>onUpdatePage(i, 'front', 'title', e.target.value)} className="inline-input-title" />
-                                                    <textarea disabled={!isEditor || !isEditableText(i, 'front')} value={p.front.text} onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)} className="inline-input-text" rows="6" />
-                                                </div>
-                                            )}
-                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}
-                                        </div>
-                                        <div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>
-                                            {renderEditOverlay(i, 'back', p.back.bg)}
-                                            {p.back.type==='text-page' && (
-                                                <div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10">
-                                                    <input disabled={!isEditor || !isEditableTitle(i, 'back')} value={p.back.title} onChange={(e)=>onUpdatePage(i, 'back', 'title', e.target.value)} className="inline-input-title" />
-                                                    <textarea disabled={!isEditor || !isEditableText(i, 'back')} value={p.back.text} onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)} className="inline-input-text" rows="6" />
-                                                </div>
-                                            )}
-                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                    {/* Botón Prev solo aparece si currentIdx >= 0 (libro abierto) */}
-                    {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
-                    {/* Botón Next siempre aparece si no es el final */}
-                    {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
                 </div>
             );
         }
