@@ -305,7 +305,7 @@
         }
 
         function Dashboard({ user, setView, setExternalTool }) {
-            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard | quiz
+            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard | quiz | ficha_personajes
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
             const [editingId, setEditingId] = useState(null);
@@ -387,9 +387,14 @@
                         <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
                             <i className="fas fa-film text-orange-500"></i> STORYBOARD
                         </div>
-                         {/* --- NUEVA SECCIÓN: QUIZ --- */}
+                         {/* --- SECCIÓN QUIZ --- */}
                          <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
                             <i className="fas fa-puzzle-piece text-yellow-500"></i> QUIZ INTERACTIVO
+                        </div>
+
+                         {/* --- NUEVA SECCIÓN: FICHA DE PERSONAJES --- */}
+                         <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
+                            <i className="fas fa-address-card text-pink-500"></i> FICHA DE PERSONAJES
                         </div>
                         
                         {/* BOTÓN UNIFICADO: MI LIBRO (Crear o Editar) */}
@@ -522,7 +527,7 @@
                             </div>
                         )}
 
-                        {/* --- SECCIÓN ACTUALIZADA: QUIZ CON IMAGEN Y BOTÓN --- */}
+                        {/* SECCIÓN ACTUALIZADA: QUIZ CON IMAGEN Y BOTÓN */}
                         {activeSection === 'quiz' && (
                             <div className="h-full flex flex-col">
                                 <div className="mb-6">
@@ -549,6 +554,23 @@
                                             <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
                                         </a>
                                     </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- NUEVA SECCIÓN: FICHA DE PERSONAJES (GOOGLE FORM EMBED) --- */}
+                        {activeSection === 'ficha_personajes' && (
+                            <div className="h-full flex flex-col">
+                                <div className="mb-6">
+                                    <h2 className="module-title text-pink-500 mb-2">FICHA DE PERSONAJES</h2>
+                                    <p className="text-gray-600">Completa la ficha técnica para definir a los protagonistas de tu historia.</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg">
+                                    <iframe 
+                                        src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" 
+                                        className="w-full h-full border-none"
+                                        title="Ficha de Personajes Google Form"
+                                    >Cargando…</iframe>
                                 </div>
                             </div>
                         )}
@@ -599,20 +621,20 @@
             }, [uid]);
             useEffect(() => {
                 const fetchBook = async () => {
-                     let bookIdToFetch = portfolio.featuredBookId;
-                     if (!bookIdToFetch) {
-                         const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
-                         const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books')); 
-                     }
+                      let bookIdToFetch = portfolio.featuredBookId;
+                      if (!bookIdToFetch) {
+                          const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
+                          const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books')); 
+                      }
 
-                     if(bookIdToFetch) {
-                        getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', bookIdToFetch)).then(snap => { 
-                            if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
-                            setLoading(false);
-                        });
-                     } else {
-                         setLoading(false);
-                     }
+                      if(bookIdToFetch) {
+                         getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', bookIdToFetch)).then(snap => { 
+                             if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
+                             setLoading(false);
+                         });
+                      } else {
+                          setLoading(false);
+                      }
                 };
                 fetchBook();
             }, [portfolio]);
