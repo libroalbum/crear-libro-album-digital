@@ -64,6 +64,138 @@
         .btn-orange { background: var(--hot-orange); box-shadow: 0 4px 0 #C2410C; }
         .btn-pink { background: var(--pop-pink); box-shadow: 0 4px 0 #BE185D; }
 
+        /* --- LOGIN STYLES (REPLICANDO LA REFERENCIA) --- */
+        .login-page-bg {
+            background-color: #e0f2fe; /* Azul muy suave base */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 20%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Formas abstractas decorativas del fondo */
+        .shape-blob-1 {
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 400px;
+            height: 400px;
+            background: rgba(3, 169, 244, 0.05);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            transform: rotate(45deg);
+        }
+        .shape-blob-2 {
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(3, 169, 244, 0.05);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        }
+
+        .login-card-clean {
+            background: white;
+            border-radius: 24px; /* Bordes muy redondeados como la imagen */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); /* Sombra suave y difusa */
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .login-title-clean {
+            font-family: 'Luckiest Guy', cursive;
+            color: #0ea5e9; /* Azul cian brillante */
+            font-size: 2.8rem;
+            line-height: 1;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+        }
+
+        .input-group-clean {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8; /* Gris suave para icono */
+            font-size: 1rem;
+        }
+
+        .input-field-clean {
+            width: 100%;
+            padding: 12px 15px 12px 40px; /* Padding izquierdo para el icono */
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            color: #475569;
+            outline: none;
+            transition: border-color 0.2s;
+            background: white;
+        }
+        
+        .input-field-clean:focus {
+            border-color: #0ea5e9;
+        }
+        
+        .input-field-clean::placeholder {
+            color: #cbd5e1;
+        }
+
+        .btn-login-clean {
+            background-color: #0284c7; /* Azul sólido */
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 12px;
+            width: 100%;
+            border-radius: 50px; /* Píldora completa */
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);
+        }
+        
+        .btn-login-clean:hover {
+            background-color: #0369a1;
+        }
+
+        .link-text {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #64748b;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+        }
+        
+        .link-text:hover {
+            color: #0ea5e9;
+        }
+        
+        .register-link {
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+
         /* --- LAYOUT CLASSROOM --- */
         .classroom-container { display: flex; height: 100%; width: 100%; }
         /* CORRECCIÓN: Se agrega overflow-y: auto para permitir scroll si el menú es muy largo */
@@ -326,16 +458,53 @@
             const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [isRegister, setIsRegister] = useState(false);
             const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
             return (
-                <div className="flex items-center justify-center h-full">
-                    {/* CORRECCIÓN: Se cambió sticker-panel (no definido) por glass-panel para asegurar visibilidad */}
-                    <div className="glass-panel p-10 max-w-md w-full text-center border-t-8" style={{borderColor:'var(--hyper-grape)'}}>
-                        <h2 className="text-4xl mb-6 pop-title" style={{color:'var(--hyper-grape)'}}>{isRegister ? '¡CREAR CUENTA!' : '¡HOLA DE NUEVO!'}</h2>
-                        <form onSubmit={handleAuth} className="space-y-4">
-                            <input className="input-pop" placeholder="Tu Correo" value={email} onChange={e=>setEmail(e.target.value)} required />
-                            <input className="input-pop" type="password" placeholder="Contraseña Secreta" value={password} onChange={e=>setPassword(e.target.value)} required />
-                            <button className="btn-gummy btn-lime w-full mt-6">{isRegister ? 'REGISTRARME' : 'ENTRAR'}</button>
+                <div className="login-page-bg">
+                    {/* Shapes decorativos */}
+                    <div className="shape-blob-1"></div>
+                    <div className="shape-blob-2"></div>
+
+                    <div className="login-card-clean">
+                        <div className="login-title-clean text-center mb-6">
+                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">CREATOR</div>
+                            <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">STUDIO</div>
+                        </div>
+                        
+                        <form onSubmit={handleAuth}>
+                            <div className="input-group-clean">
+                                <i className="fas fa-envelope input-icon"></i>
+                                <input 
+                                    className="input-field-clean" 
+                                    placeholder="Correo electrónico" 
+                                    value={email} 
+                                    onChange={e=>setEmail(e.target.value)} 
+                                    required 
+                                />
+                            </div>
+                            
+                            <div className="input-group-clean">
+                                <i className="fas fa-lock input-icon"></i>
+                                <input 
+                                    className="input-field-clean" 
+                                    type="password" 
+                                    placeholder="Contraseña" 
+                                    value={password} 
+                                    onChange={e=>setPassword(e.target.value)} 
+                                    required 
+                                />
+                                <i className="fas fa-eye-slash absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"></i>
+                            </div>
+                            
+                            <button className="btn-login-clean">
+                                {isRegister ? 'Registrarse' : 'Iniciar Sesión'}
+                            </button>
                         </form>
-                        <p className="mt-6 text-sm font-bold cursor-pointer hover:text-purple-500" style={{color:'var(--text-main)'}} onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Entra aquí' : '¿No tienes cuenta? Regístrate'}</p>
+                        
+                        <div className="mt-4">
+                            <span className="register-link text-sm cursor-pointer hover:text-blue-500 transition" onClick={()=>alert("Función de recuperación no implementada en demo.")}>¿Olvidaste tu contraseña?</span>
+                            <span className="link-text mt-2" onClick={()=>setIsRegister(!isRegister)}>
+                                {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : 'Registrarse'}
+                            </span>
+                        </div>
                     </div>
                 </div>
             );
