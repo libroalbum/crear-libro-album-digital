@@ -66,7 +66,8 @@
 
         /* --- LAYOUT CLASSROOM --- */
         .classroom-container { display: flex; height: 100%; width: 100%; }
-        .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; }
+        /* CORRECCIÓN: Se agrega overflow-y: auto para permitir scroll si el menú es muy largo */
+        .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; overflow-y: auto; }
         .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
         .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 800; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Dosis'; font-size: 1.1rem; }
         .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
@@ -291,7 +292,8 @@
             const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
             return (
                 <div className="flex items-center justify-center h-full">
-                    <div className="sticker-panel p-10 max-w-md w-full text-center border-t-8" style={{borderColor:'var(--hyper-grape)'}}>
+                    {/* CORRECCIÓN: Se cambió sticker-panel (no definido) por glass-panel para asegurar visibilidad */}
+                    <div className="glass-panel p-10 max-w-md w-full text-center border-t-8" style={{borderColor:'var(--hyper-grape)'}}>
                         <h2 className="text-4xl mb-6 pop-title" style={{color:'var(--hyper-grape)'}}>{isRegister ? '¡CREAR CUENTA!' : '¡HOLA DE NUEVO!'}</h2>
                         <form onSubmit={handleAuth} className="space-y-4">
                             <input className="input-pop" placeholder="Tu Correo" value={email} onChange={e=>setEmail(e.target.value)} required />
