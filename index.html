@@ -8,6 +8,8 @@
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- LIBRERÍA PARA CAPTURA DE PANTALLA -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <!-- FUENTES -->
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;700&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
@@ -311,6 +313,9 @@
             const [editingId, setEditingId] = useState(null);
             const [tempTitle, setTempTitle] = useState("");
             
+            // Estado para el Zoom del Padlet
+            const [padletZoom, setPadletZoom] = useState(1);
+
             // Ya no usamos selector, pero mantenemos el estado por si acaso para evitar errores
             const [showBookSelector, setShowBookSelector] = useState(false);
 
@@ -365,6 +370,32 @@
             const getFeaturedBook = () => {
                 if (books.length > 0) return books[0];
                 return null;
+            };
+
+            // Lógica de Zoom
+            const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetZoom = () => setPadletZoom(1);
+
+            // Lógica de Captura (Screenshot)
+            const handleScreenshot = () => {
+                const element = document.getElementById('padlet-container');
+                if(!element) return;
+                
+                // Usamos html2canvas
+                html2canvas(element, { 
+                    useCORS: true, 
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `evidencia-padlet-${new Date().getTime()}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }).catch(err => {
+                    alert("No se pudo capturar automáticamente debido a restricciones del navegador. Por favor usa la herramienta de recortes de tu PC.");
+                    console.error(err);
+                });
             };
 
             return (
@@ -584,21 +615,47 @@
                             </div>
                         )}
 
-                        {/* --- NUEVA SECCIÓN: MURO COLABORATIVO (PADLET) --- */}
+                        {/* --- NUEVA SECCIÓN: MURO COLABORATIVO CON ZOOM Y CAPTURA --- */}
                         {activeSection === 'padlet' && (
                             <div className="h-full flex flex-col">
-                                <div className="mb-6">
-                                    <h2 className="module-title text-teal-500 mb-2">MURO COLABORATIVO</h2>
-                                    <p className="text-gray-600">Comparte tus ideas, preguntas y avances con el resto de la clase.</p>
+                                <div className="mb-6 flex justify-between items-center">
+                                    <div>
+                                        <h2 className="module-title text-teal-500 mb-2">MURO COLABORATIVO</h2>
+                                        <p className="text-gray-600">Comparte tus ideas, preguntas y avances con el resto de la clase.</p>
+                                    </div>
+                                    
+                                    {/* CONTROLES DE ZOOM Y CAPTURA */}
+                                    <div className="flex gap-2">
+                                        <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
+                                            <button onClick={handleZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                                            <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(padletZoom * 100)}%</span>
+                                            <button onClick={handleZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                                            <button onClick={resetZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                                        </div>
+                                        
+                                        <button onClick={handleScreenshot} className="btn-gummy btn-teal bg-teal-500 shadow-teal-700 text-sm px-4">
+                                            <i className="fas fa-camera mr-2"></i> CAPTURAR EVIDENCIA
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg">
-                                    <iframe 
-                                        src="https://padlet.com/embed/kz78sfkwdm9abosj" 
-                                        frameBorder="0" 
-                                        allow="camera;microphone;geolocation;display-capture;clipboard-write" 
-                                        style={{width:'100%', height:'100%', display:'block'}}
-                                        title="Muro Colaborativo Padlet"
-                                    ></iframe>
+                                
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg" id="padlet-container">
+                                    {/* WRAPPER PARA EL ZOOM */}
+                                    <div style={{
+                                        width: `${100 / padletZoom}%`,
+                                        height: `${100 / padletZoom}%`,
+                                        transform: `scale(${padletZoom})`,
+                                        transformOrigin: '0 0',
+                                        transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'
+                                    }}>
+                                        <iframe 
+                                            src="https://padlet.com/embed/kz78sfkwdm9abosj" 
+                                            frameBorder="0" 
+                                            allow="camera;microphone;geolocation;display-capture;clipboard-write" 
+                                            style={{width:'100%', height:'100%', display:'block'}}
+                                            title="Muro Colaborativo Padlet"
+                                        ></iframe>
+                                    </div>
                                 </div>
                             </div>
                         )}
