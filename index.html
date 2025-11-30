@@ -64,168 +64,39 @@
         .btn-orange { background: var(--hot-orange); box-shadow: 0 4px 0 #C2410C; }
         .btn-pink { background: var(--pop-pink); box-shadow: 0 4px 0 #BE185D; }
 
-        /* --- LOGIN STYLES (REPLICANDO LA REFERENCIA) --- */
+        /* --- LOGIN STYLES (CLEAN BLUE) --- */
         .login-page-bg {
-            background-color: #e0f2fe; /* Azul muy suave base */
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 20%);
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
+            background-color: #e0f2fe;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 20%);
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
         }
-        /* Formas abstractas decorativas del fondo */
-        .shape-blob-1 {
-            position: absolute;
-            top: -10%;
-            right: -5%;
-            width: 400px;
-            height: 400px;
-            background: rgba(3, 169, 244, 0.05);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            transform: rotate(45deg);
-        }
-        .shape-blob-2 {
-            position: absolute;
-            bottom: -10%;
-            left: -10%;
-            width: 500px;
-            height: 500px;
-            background: rgba(3, 169, 244, 0.05);
-            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-        }
+        .shape-blob-1 { position: absolute; top: -10%; right: -5%; width: 400px; height: 400px; background: rgba(3, 169, 244, 0.05); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: rotate(45deg); }
+        .shape-blob-2 { position: absolute; bottom: -10%; left: -10%; width: 500px; height: 500px; background: rgba(3, 169, 244, 0.05); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 
-        .login-card-clean {
-            background: white;
-            border-radius: 24px; /* Bordes muy redondeados como la imagen */
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); /* Sombra suave y difusa */
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .login-title-clean {
-            font-family: 'Luckiest Guy', cursive;
-            color: #0ea5e9; /* Azul cian brillante */
-            font-size: 2.8rem;
-            line-height: 1;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
-        }
-
-        .input-group-clean {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8; /* Gris suave para icono */
-            font-size: 1rem;
-        }
-
-        .input-field-clean {
-            width: 100%;
-            padding: 12px 15px 12px 40px; /* Padding izquierdo para el icono */
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-family: 'Nunito', sans-serif;
-            font-size: 0.95rem;
-            color: #475569;
-            outline: none;
-            transition: border-color 0.2s;
-            background: white;
-        }
-        
-        .input-field-clean:focus {
-            border-color: #0ea5e9;
-        }
-        
-        .input-field-clean::placeholder {
-            color: #cbd5e1;
-        }
-
-        .btn-login-clean {
-            background-color: #0284c7; /* Azul sólido */
-            color: white;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            padding: 12px;
-            width: 100%;
-            border-radius: 50px; /* Píldora completa */
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);
-        }
-        
-        .btn-login-clean:hover {
-            background-color: #0369a1;
-        }
-
-        .link-text {
-            display: block;
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: #64748b;
-            cursor: pointer;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 600;
-        }
-        
-        .link-text:hover {
-            color: #0ea5e9;
-        }
-        
-        .register-link {
-            color: #94a3b8;
-            margin-top: 5px;
-        }
-
+        .login-card-clean { background: white; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); padding: 40px; width: 100%; max-width: 400px; text-align: center; position: relative; z-index: 10; }
+        .login-title-clean { font-family: 'Luckiest Guy', cursive; color: #0ea5e9; font-size: 2.8rem; line-height: 1; margin-bottom: 30px; text-transform: uppercase; text-shadow: 2px 2px 0px rgba(0,0,0,0.05); }
+        .input-group-clean { position: relative; margin-bottom: 15px; }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1rem; }
+        .input-field-clean { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.95rem; color: #475569; outline: none; transition: border-color 0.2s; background: white; }
+        .input-field-clean:focus { border-color: #0ea5e9; }
+        .input-field-clean::placeholder { color: #cbd5e1; }
+        .btn-login-clean { background-color: #0284c7; color: white; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem; padding: 12px; width: 100%; border-radius: 50px; border: none; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3); }
+        .btn-login-clean:hover { background-color: #0369a1; }
+        .link-text { display: block; margin-top: 15px; font-size: 0.85rem; color: #64748b; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; }
+        .link-text:hover { color: #0ea5e9; }
+        .register-link { color: #94a3b8; margin-top: 5px; }
 
         /* --- LAYOUT CLASSROOM --- */
         .classroom-container { display: flex; height: 100%; width: 100%; }
-        /* CORRECCIÓN: Se agrega overflow-y: auto para permitir scroll si el menú es muy largo */
         .classroom-sidebar { width: 260px; background: white; border-right: 2px solid #E2E8F0; display: flex; flex-direction: column; padding: 20px; z-index: 50; flex-shrink: 0; overflow-y: auto; }
         .sidebar-logo { font-family: 'Luckiest Guy'; font-size: 1.5rem; color: var(--electric-cyan); margin-bottom: 30px; text-align: center; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-        
-        /* CORRECCIÓN TIPOGRÁFICA EN MENÚ: Fuente Nunito, peso normal, mayúscula inicial */
-        .menu-item { 
-            padding: 12px 15px; 
-            margin-bottom: 8px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-weight: 600; /* Peso semi-bold pero no bold completo */
-            color: #64748b; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            transition: 0.2s; 
-            font-family: 'Nunito', sans-serif; /* Cambio de fuente a Nunito */
-            font-size: 1rem; /* Tamaño ligeramente ajustado */
-            text-transform: none; /* Quita mayúsculas forzadas */
-        }
-        /* Clase auxiliar para capitalizar primera letra */
+        .menu-item { padding: 12px 15px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 12px; transition: 0.2s; font-family: 'Nunito', sans-serif; font-size: 1rem; text-transform: none; }
         .menu-text { text-transform: capitalize; }
-
         .menu-item:hover { background: #F1F5F9; color: var(--electric-cyan); }
         .menu-item.active { background: #E0F2FE; color: var(--electric-cyan); box-shadow: inset 4px 0 0 var(--electric-cyan); }
         .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; }
 
-        .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 20px 40px; position: relative; } /* Adjusted padding */
+        .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 20px 40px; position: relative; }
         .module-header { margin-bottom: 30px; border-bottom: 3px solid #E2E8F0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .module-title { font-size: 2rem; color: var(--text-main); font-family: 'Luckiest Guy'; }
 
@@ -235,7 +106,7 @@
         .input-pop { background: white; border: 3px solid #E2E8F0; border-radius: 15px; padding: 12px 15px; width: 100%; font-family: 'Nunito', font-weight: 700; color: #475569; outline: none; }
         .input-pop:focus { border-color: var(--electric-cyan); }
 
-        /* --- NUEVO: TOP BAR PROFILE --- */
+        /* --- TOP BAR PROFILE --- */
         .top-bar { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; gap: 15px; }
         .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 6px 8px 6px 15px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid white; cursor: pointer; transition: 0.2s; }
         .user-chip:hover { transform: translateY(-2px); border-color: var(--electric-cyan); }
@@ -251,7 +122,7 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); text-align: center; }
 
-        /* --- EDITOR STYLES --- */
+        /* --- EDITOR STYLES (MANTENIDOS) --- */
         .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: var(--canvas-dark); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; width: 100%; height: 100%; }
         .sidebar-editor { width: 80px; height: 100%; background: white; border-right: 3px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 40; gap: 20px; flex-shrink: 0; }
         .icon-chunk { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; cursor: pointer; transition: 0.1s; position: relative; top: 0; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); }
@@ -408,19 +279,30 @@
             const [user, setUser] = useState(null);
             const [view, setView] = useState('loading'); 
             const [portfolioUid, setPortfolioUid] = useState(null);
+            const [publicActivity, setPublicActivity] = useState(null);
 
             useEffect(() => {
                 const params = new URLSearchParams(window.location.search);
                 const pUid = params.get('portfolio');
+                const activityParam = params.get('activity'); 
+
                 if (pUid) {
                     setPortfolioUid(pUid);
                     setView('public-view');
+                } else if (activityParam) {
+                    setPublicActivity(activityParam);
+                    setView('public-activity');
                 } else {
                     if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); }
                 }
             }, []);
 
             if (view === 'public-view') return <PublicGallery uid={portfolioUid} />;
+            
+            if (view === 'public-activity') {
+                return <PublicActivityViewer activity={publicActivity} />;
+            }
+
             if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-blue-500">CARGANDO CREATOR STUDIO...</div>;
 
             return (
@@ -428,7 +310,6 @@
                     <main className="flex-1 relative overflow-hidden">
                         {view === 'login' && <LoginScreen setUser={setUser} setView={setView} />}
                         
-                        {/* DASHBOARD HUB */}
                         {view === 'dashboard' && (
                             <Dashboard 
                                 user={user} 
@@ -436,10 +317,8 @@
                             />
                         )}
                         
-                        {/* EDITOR */}
                         {view === 'editor' && <Editor user={user} setView={setView} />}
                         
-                        {/* VISOR HERRAMIENTA EXTERNA */}
                         {view === 'external' && (
                             <div className="w-full h-full bg-white relative flex flex-col">
                                 <div className="h-14 bg-gray-800 flex items-center justify-between px-4 shadow-lg z-50">
@@ -454,13 +333,123 @@
             );
         }
 
+        // --- NUEVO COMPONENTE: VISOR PÚBLICO DE ACTIVIDAD ---
+        function PublicActivityViewer({ activity }) {
+            const [padletZoom, setPadletZoom] = useState(1);
+            const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetZoom = () => setPadletZoom(1);
+
+            const renderContent = () => {
+                switch(activity) {
+                    case 'moodboard':
+                        return (
+                            <div className="h-full flex flex-col p-8">
+                                 <div className="mb-6 text-center">
+                                    <h2 className="module-title text-purple-500 mb-2 text-3xl">MOODBOARD</h2>
+                                    <p className="text-gray-600">Tablero de inspiración (Acceso Invitado)</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-purple-100 overflow-hidden relative shadow-lg">
+                                    <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
+                                </div>
+                            </div>
+                        );
+                    case 'storyboard':
+                         return (
+                            <div className="h-full flex flex-col p-8">
+                                 <div className="mb-6 text-center">
+                                    <h2 className="module-title text-orange-500 mb-2 text-3xl">STORYBOARD</h2>
+                                    <p className="text-gray-600">Planificación de historia (Acceso Invitado)</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-orange-100 overflow-hidden relative shadow-lg">
+                                    <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
+                                </div>
+                            </div>
+                        );
+                    case 'quiz':
+                         return (
+                            <div className="h-full flex flex-col p-8">
+                                <div className="mb-6 text-center">
+                                    <h2 className="module-title text-yellow-500 mb-2 text-3xl">QUIZ TIME</h2>
+                                    <p className="text-gray-600">¡Demuestra lo que has aprendido! (Acceso Invitado)</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg group">
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" alt="Kahoot Quiz" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
+                                            <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    case 'ficha':
+                    case 'ficha_personajes':
+                         return (
+                            <div className="h-full flex flex-col p-8">
+                                <div className="mb-6 text-center">
+                                    <h2 className="module-title text-pink-500 mb-2 text-3xl">FICHA DE PERSONAJES</h2>
+                                    <p className="text-gray-600">Completa la ficha técnica (Acceso Invitado)</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg flex flex-col">
+                                     <div className="bg-pink-50 p-2 text-center text-xs text-pink-600 border-b border-pink-100">
+                                        ¿No carga el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="font-bold underline">Haz clic aquí para abrirlo</a>
+                                    </div>
+                                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" className="w-full h-full border-none" title="Ficha de Personajes Google Form">Cargando…</iframe>
+                                </div>
+                            </div>
+                        );
+                    case 'padlet':
+                    case 'muro':
+                         return (
+                            <div className="h-full flex flex-col p-8">
+                                <div className="mb-6 flex justify-between items-center">
+                                    <div>
+                                        <h2 className="module-title text-teal-500 mb-2 text-3xl">MURO COLABORATIVO</h2>
+                                        <p className="text-gray-600">Comparte tus ideas (Acceso Invitado)</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
+                                            <button onClick={handleZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                                            <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(padletZoom * 100)}%</span>
+                                            <button onClick={handleZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                                            <button onClick={resetZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg">
+                                     <div style={{width: `${100 / padletZoom}%`, height: `${100 / padletZoom}%`, transform: `scale(${padletZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                        <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" frameBorder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write" style={{width:'100%', height:'100%', display:'block'}} title="Muro Colaborativo Padlet"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    default:
+                        return <div className="flex items-center justify-center h-full text-2xl font-bold text-gray-400 font-sans">Actividad no encontrada</div>;
+                }
+            };
+
+            return (
+                <div className="h-screen w-full bg-[var(--bg-ice)] overflow-hidden flex flex-col">
+                     <div className="w-full h-16 bg-white border-b-4 border-cyan-100 flex items-center justify-between px-8 shadow-sm">
+                        <div className="kids-title text-2xl text-cyan-500">CREATOR STUDIO</div>
+                        <div className="text-gray-400 font-bold text-sm uppercase tracking-wide flex items-center gap-2">
+                            <i className="fas fa-user-secret"></i> MODO INVITADO
+                        </div>
+                     </div>
+                     <div className="flex-1 overflow-hidden relative">
+                        {renderContent()}
+                     </div>
+                </div>
+            );
+        }
+
         function LoginScreen({ setUser, setView }) {
             const [email, setEmail] = useState(''); 
             const [password, setPassword] = useState(''); 
             const [isRegister, setIsRegister] = useState(false);
-            const [isReset, setIsReset] = useState(false); // Nuevo estado para modo recuperación
+            const [isReset, setIsReset] = useState(false);
 
-            // Manejar Login o Registro
             const handleAuth = async (e) => { 
                 e.preventDefault(); 
                 try { 
@@ -471,14 +460,13 @@
                 } 
             };
 
-            // Manejar Recuperación de Contraseña
             const handleReset = async (e) => {
                 e.preventDefault();
                 if (!email) return alert("Por favor escribe tu correo para enviarte el enlace.");
                 try {
                     await sendPasswordResetEmail(auth, email);
                     alert("¡Enlace enviado! Revisa tu correo (y spam) para crear una nueva contraseña.");
-                    setIsReset(false); // Volver al login después de enviar
+                    setIsReset(false);
                 } catch (err) {
                     alert("Error al enviar correo: " + err.message);
                 }
@@ -486,7 +474,6 @@
 
             return (
                 <div className="login-page-bg">
-                    {/* Shapes decorativos */}
                     <div className="shape-blob-1"></div>
                     <div className="shape-blob-2"></div>
 
@@ -496,63 +483,32 @@
                             <div className="text-4xl text-blue-500 font-black tracking-wider leading-none">STUDIO</div>
                         </div>
                         
-                        {/* --- MODO RECUPERACIÓN --- */}
                         {isReset ? (
                             <form onSubmit={handleReset}>
                                 <p className="mb-4 text-gray-600 text-sm">Ingresa tu correo y te enviaremos un enlace mágico para recuperar tu acceso.</p>
                                 <div className="input-group-clean">
                                     <i className="fas fa-envelope input-icon"></i>
-                                    <input 
-                                        className="input-field-clean" 
-                                        placeholder="Correo electrónico" 
-                                        value={email} 
-                                        onChange={e=>setEmail(e.target.value)} 
-                                        required 
-                                    />
+                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
                                 </div>
-                                <button className="btn-login-clean">
-                                    Enviar Enlace de Recuperación
-                                </button>
+                                <button className="btn-login-clean">Enviar Enlace de Recuperación</button>
                                 <span className="link-text mt-4" onClick={()=>setIsReset(false)}>
                                     <i className="fas fa-arrow-left mr-1"></i> Volver a Iniciar Sesión
                                 </span>
                             </form>
                         ) : (
-                            /* --- MODO LOGIN / REGISTRO --- */
                             <form onSubmit={handleAuth}>
                                 <div className="input-group-clean">
                                     <i className="fas fa-envelope input-icon"></i>
-                                    <input 
-                                        className="input-field-clean" 
-                                        placeholder="Correo electrónico" 
-                                        value={email} 
-                                        onChange={e=>setEmail(e.target.value)} 
-                                        required 
-                                    />
+                                    <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} required />
                                 </div>
-                                
                                 <div className="input-group-clean">
                                     <i className="fas fa-lock input-icon"></i>
-                                    <input 
-                                        className="input-field-clean" 
-                                        type="password" 
-                                        placeholder="Contraseña" 
-                                        value={password} 
-                                        onChange={e=>setPassword(e.target.value)} 
-                                        required 
-                                    />
+                                    <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} required />
                                     <i className="fas fa-eye-slash absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"></i>
                                 </div>
-                                
-                                <button className="btn-login-clean">
-                                    {isRegister ? 'Registrarse' : 'Iniciar Sesión'}
-                                </button>
-                                
+                                <button className="btn-login-clean">{isRegister ? 'Registrarse' : 'Iniciar Sesión'}</button>
                                 <div className="mt-4">
-                                    {/* Al hacer clic aquí activamos el modo Reset */}
-                                    <span className="register-link text-sm cursor-pointer hover:text-blue-500 transition" onClick={()=>setIsReset(true)}>
-                                        ¿Olvidaste tu contraseña?
-                                    </span>
+                                    <span className="register-link text-sm cursor-pointer hover:text-blue-500 transition" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span>
                                     <span className="link-text mt-2" onClick={()=>setIsRegister(!isRegister)}>
                                         {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : 'Registrarse'}
                                     </span>
@@ -565,36 +521,24 @@
         }
 
         function Dashboard({ user, setView, setExternalTool }) {
-            const [activeSection, setActiveSection] = useState('inicio'); // inicio | portafolio | moodboard | storyboard | quiz | ficha_personajes | padlet
+            const [activeSection, setActiveSection] = useState('inicio');
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
             const [editingId, setEditingId] = useState(null);
             const [tempTitle, setTempTitle] = useState("");
             
-            // Estado para el perfil del usuario (nombre y foto)
             const [userProfile, setUserProfile] = useState({ name: user.email.split('@')[0], photo: '' });
             const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-
-            // Estado para el Zoom del Padlet
             const [padletZoom, setPadletZoom] = useState(1);
-
-            // Ya no usamos selector, pero mantenemos el estado por si acaso para evitar errores
             const [showBookSelector, setShowBookSelector] = useState(false);
 
-            // Cargar datos (libros, portafolio y perfil)
             useEffect(() => { 
                 if(!user || !db) return; 
-                
-                // 1. Libros
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
                 onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()}))));
-                
-                // 2. Portafolio
                 onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (doc) => {
                     if(doc.exists()) setPortfolioData(doc.data());
                 });
-
-                // 3. Perfil de Usuario - CORREGIDO: Ruta con número par de segmentos (colección/doc)
                 onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => {
                     if(doc.exists()) {
                         setUserProfile(doc.data());
@@ -602,21 +546,17 @@
                 });
             }, [user]);
 
-            // Guardar perfil - CORREGIDO
             const saveProfile = async () => {
-                // Ruta corregida: .../profile/user_info
                 await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), userProfile, { merge: true });
                 setIsProfileModalOpen(false);
                 alert("¡Perfil actualizado!");
             };
 
-            // Subir foto de perfil
             const handleProfilePic = (e) => {
                 const file = e.target.files[0];
                 if(file) processImage(file, (base64) => setUserProfile({...userProfile, photo: base64}));
             };
 
-            // Lógica ajustada: Crea libro si no existe, o abre el existente
             const handleMyBook = async () => {
                 if (books.length > 0) {
                     openBook(books[0].id);
@@ -631,7 +571,6 @@
             const openBook = (bookId) => { localStorage.setItem('currentBookId', bookId); setView('editor'); };
             const launchTool = (url) => { user.toolUrl = url; setView('external'); };
             
-            // Manejo de Evidencias Portafolio
             const uploadEvidence = (type, e) => {
                 const file = e.target.files[0]; if(!file) return;
                 processImage(file, async (base64) => {
@@ -654,19 +593,15 @@
             const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
             const resetZoom = () => setPadletZoom(1);
-
-            // Variable para controlar la visibilidad del Header vs Contenido
             const isHome = activeSection === 'inicio';
 
             return (
                 <div className="flex flex-col h-full overflow-hidden bg-white">
-                    {/* --- GLOBAL HEADER (SOLO EN INICIO) --- */}
                     {isHome && (
                         <div className="w-full h-20 flex items-center justify-between px-8 flex-shrink-0 shadow-sm z-50" style={{backgroundColor: 'var(--header-blue)'}}>
                             <div className="flex items-center gap-3">
                                 <div className="kids-title text-3xl text-white">CREATOR STUDIO</div>
                             </div>
-                            
                             <div className="flex items-center gap-4">
                                 <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
                                     {userProfile.photo ? (
@@ -689,22 +624,16 @@
                         </div>
                     )}
 
-                    {/* --- LAYOUT PRINCIPAL --- */}
                     <div className="classroom-container flex-1 overflow-hidden" style={{height: isHome ? 'calc(100% - 80px)' : '100%'}}>
-                        {/* SIDEBAR IZQUIERDA */}
                         <div className="classroom-sidebar">
-                            {/* LOGO EN SIDEBAR (SOLO SI NO ESTAMOS EN INICIO) */}
                             {!isHome && <div className="sidebar-logo kids-title">CREATOR STUDIO</div>}
-                            
                             <div className={`menu-item ${activeSection==='inicio'?'active':''}`} onClick={()=>setActiveSection('inicio')}>
                                 <i className="fas fa-home text-pink-500"></i> <span className="menu-text">Inicio</span>
                             </div>
                             <div className={`menu-item ${activeSection==='portafolio'?'active':''}`} onClick={()=>setActiveSection('portafolio')}>
                                 <i className="fas fa-briefcase text-blue-500"></i> <span className="menu-text">Mi Portafolio</span>
                             </div>
-                            
                             <div className="mt-6 mb-2 text-xs font-bold text-gray-400 uppercase pl-4">ACTIVIDADES</div>
-                            
                             <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
                                 <i className="fas fa-thumbtack text-teal-500"></i> <span className="menu-text">1. Muro Colaborativo</span>
                             </div>
@@ -720,16 +649,12 @@
                             <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
                                 <i className="fas fa-film text-orange-500"></i> <span className="menu-text">5. Storyboard</span>
                             </div>
-                            
                             <div className={`menu-item`} onClick={handleMyBook}>
                                 <i className="fas fa-book-open text-green-500"></i> <span className="menu-text">{books.length > 0 ? 'Editar Libro' : 'Mi Libro'}</span>
                             </div>
                         </div>
 
-                        {/* AREA DE CONTENIDO */}
                         <div className="classroom-content">
-                            
-                            {/* --- MODAL DE PERFIL (COMPARTIDO) --- */}
                             {isProfileModalOpen && (
                                 <div className="modal-overlay">
                                     <div className="modal-content">
@@ -748,14 +673,7 @@
                                                 </div>
                                                 <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleProfilePic} />
                                             </div>
-                                            
-                                            <input 
-                                                className="input-pop text-center text-xl" 
-                                                value={userProfile.name} 
-                                                onChange={(e)=>setUserProfile({...userProfile, name: e.target.value})}
-                                                placeholder="Escribe tu nombre aquí"
-                                            />
-                                            
+                                            <input className="input-pop text-center text-xl" value={userProfile.name} onChange={(e)=>setUserProfile({...userProfile, name: e.target.value})} placeholder="Escribe tu nombre aquí" />
                                             <div className="flex gap-2 w-full mt-4">
                                                 <button className="btn-gummy btn-lime flex-1" onClick={saveProfile}>GUARDAR CAMBIOS</button>
                                                 <button className="btn-gummy bg-gray-400 text-white" onClick={()=>setIsProfileModalOpen(false)}>CANCELAR</button>
@@ -765,33 +683,20 @@
                                 </div>
                             )}
                             
-                            {/* VISTA INICIO */}
                             {activeSection === 'inicio' && (
                                 <div className="max-w-4xl mx-auto mt-4">
                                     <div className="module-header border-none mb-4">
                                         <h2 className="module-title text-cyan-500 text-4xl">BIENVENIDOS AL CURSO</h2>
                                     </div>
-                                    
                                     <div className="glass-panel p-8 mb-8">
                                         <h3 className="text-3xl font-bold font-sans text-gray-700 mb-4">Introducción al Taller</h3>
                                         <p className="text-lg text-gray-600 mb-6">
                                             Hola creador. En este espacio encontrarás todas las herramientas necesarias para construir tu propio Libro Álbum. 
                                             Mira el siguiente video para comenzar tu aventura creativa.
                                         </p>
-                                        
-                                        {/* CONTENEDOR DE VIDEO */}
                                         <div className="w-full relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white" style={{paddingBottom: '56.25%', background: '#000'}}>
-                                            <iframe 
-                                                className="absolute top-0 left-0 w-full h-full"
-                                                src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" 
-                                                title="YouTube video player" 
-                                                frameBorder="0" 
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                                referrerPolicy="strict-origin-when-cross-origin" 
-                                                allowFullScreen>
-                                            </iframe>
+                                            <iframe className="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/Ex037JX3-BI?si=rZx7OSizIczac_-8" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
                                         </div>
-
                                         <div className="mt-8 flex justify-center">
                                             <button onClick={handleMyBook} className="btn-gummy btn-orange text-xl px-8 py-4">
                                                 <i className="fas fa-rocket mr-2"></i> ¡EMPEZAR MI LIBRO!
@@ -801,17 +706,14 @@
                                 </div>
                             )}
 
-                            {/* VISTA PORTAFOLIO */}
                             {activeSection === 'portafolio' && (
                                 <div>
                                     <div className="module-header"><h2 className="module-title text-blue-600">GESTIÓN DE PORTAFOLIO</h2><button onClick={copyLink} className="btn-gummy btn-cyan text-sm"><i className="fas fa-link mr-2"></i> COPIAR ENLACE PÚBLICO</button></div>
-                                    
                                     <div className="portfolio-container" style={{height:'auto', minHeight:'80vh', borderRadius:'20px', boxShadow:'0 0 20px rgba(0,0,0,0.05)'}}>
                                         <div className="portfolio-header-bg">
                                             <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
                                             <p className="text-xl opacity-80 font-sans">De: {userProfile.name}</p> 
                                         </div>
-
                                         <div className="gallery-content">
                                             <div className="book-showcase relative group" style={{height: '550px'}}>
                                                 {getFeaturedBook() ? (
@@ -830,7 +732,6 @@
                                                     </div>
                                                 )}
                                             </div>
-
                                             <div className="evidence-grid">
                                                 <div className="evidence-item relative group" onClick={() => document.getElementById('mood-up').click()}>
                                                     <div className="evidence-tag bg-purple-500">MOODBOARD</div>
@@ -850,7 +751,6 @@
                                 </div>
                             )}
 
-                            {/* VISTAS ACTIVIDADES */}
                             {activeSection === 'moodboard' && (
                                 <div className="h-full flex flex-col">
                                     <div className="mb-6">
@@ -882,19 +782,9 @@
                                         <p className="text-gray-600">¡Demuestra lo que has aprendido!</p>
                                     </div>
                                     <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg group">
-                                        <img 
-                                            src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" 
-                                            alt="Kahoot Quiz" 
-                                            className="w-full h-full object-cover"
-                                        />
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" alt="Kahoot Quiz" className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                            <a 
-                                                href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform"
-                                                style={{textDecoration: 'none'}}
-                                            >
+                                            <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
                                                 <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
                                             </a>
                                         </div>
@@ -912,11 +802,7 @@
                                         <div className="bg-pink-50 p-2 text-center text-xs text-pink-600 border-b border-pink-100">
                                             ¿No carga el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="font-bold underline">Haz clic aquí para abrirlo</a>
                                         </div>
-                                        <iframe 
-                                            src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" 
-                                            className="w-full h-full border-none"
-                                            title="Ficha de Personajes Google Form"
-                                        >Cargando…</iframe>
+                                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" className="w-full h-full border-none" title="Ficha de Personajes Google Form">Cargando…</iframe>
                                     </div>
                                 </div>
                             )}
@@ -928,7 +814,6 @@
                                             <h2 className="module-title text-teal-500 mb-2">MURO COLABORATIVO</h2>
                                             <p className="text-gray-600">Comparte tus ideas, preguntas y avances con el resto de la clase.</p>
                                         </div>
-                                        
                                         <div className="flex gap-2">
                                             <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
                                                 <button onClick={handleZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
@@ -938,22 +823,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
                                     <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg" id="padlet-container">
-                                        <div style={{
-                                            width: `${100 / padletZoom}%`,
-                                            height: `${100 / padletZoom}%`,
-                                            transform: `scale(${padletZoom})`,
-                                            transformOrigin: '0 0',
-                                            transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'
-                                        }}>
-                                            <iframe 
-                                                src="https://padlet.com/embed/kz78sfkwdm9abosj" 
-                                                frameBorder="0" 
-                                                allow="camera;microphone;geolocation;display-capture;clipboard-write" 
-                                                style={{width:'100%', height:'100%', display:'block'}}
-                                                title="Muro Colaborativo Padlet"
-                                            ></iframe>
+                                        <div style={{width: `${100 / padletZoom}%`, height: `${100 / padletZoom}%`, transform: `scale(${padletZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                            <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" frameBorder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write" style={{width:'100%', height:'100%', display:'block'}} title="Muro Colaborativo Padlet"></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -965,7 +837,6 @@
             );
         }
 
-        // --- EDITOR (Lienzo Completo) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1); 
@@ -990,7 +861,6 @@
             );
         }
 
-        // --- VISTA PÚBLICA ---
         function PublicGallery({ uid }) {
             const [portfolio, setPortfolio] = useState({});
             const [book, setBook] = useState(null);
@@ -1003,7 +873,7 @@
                     onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid), (d) => { if(d.exists()) setPortfolio(d.data()); });
                     onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'), (d) => { if(d.exists()) setUserProfile(d.data()); });
                     const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
-                    onSnapshot(q, (snap) => { /* Just to trigger updates if needed */ });
+                    onSnapshot(q, (snap) => { });
                 }; load();
             }, [uid]);
             useEffect(() => {
@@ -1013,7 +883,6 @@
                           const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
                           const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books')); 
                       }
-
                       if(bookIdToFetch) {
                          getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', bookIdToFetch)).then(snap => { 
                              if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
@@ -1055,7 +924,6 @@
             );
         }
 
-        // --- COMPONENTE DEL LIBRO ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
@@ -1126,9 +994,7 @@
                             })}
                         </div>
                     </div>
-                    {/* Botón Prev solo aparece si currentIdx >= 0 (libro abierto) */}
                     {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
-                    {/* Botón Next siempre aparece si no es el final */}
                     {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
                 </div>
             );
