@@ -593,13 +593,21 @@
             // --- AJUSTE REALIZADO AQUÍ PARA ARREGLAR PREVISUALIZACIÓN PÚBLICA ---
             const save = async () => { 
                 try { 
-                    // 1. Guardar el contenido del libro
+                    // 1. Guardar copia de edición (Privada)
                     await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
                     
-                    // 2. ACTUALIZAR EL PORTAFOLIO PÚBLICO: Esto fuerza a que el enlace público apunte a ESTE libro que estás editando.
-                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: book.id }, { merge: true });
+                    // 2. PUBLICAR COPIA (Pública)
+                    // En lugar de guardar solo el ID, guardamos el contenido completo en el portafolio público
+                    // para evitar errores de permisos de lectura.
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { 
+                        featuredBookId: book.id,
+                        publishedBook: {  // <-- Aquí está la magia: guardamos los datos completos
+                            title: book.title,
+                            pages: book.pages
+                        }
+                    }, { merge: true });
 
-                    alert("¡GUARDADO Y PUBLICADO!"); 
+                    alert("¡GUARDADO Y PUBLICADO CORRECTAMENTE!"); 
                 } catch (e) { alert("Error: " + e.message); } 
             };
 
@@ -661,16 +669,26 @@
                 if(!db) return;
                 const load = async () => {
                     const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
-                    if(docSnap.exists()) setPortfolio(docSnap.data());
+                    if(docSnap.exists()) {
+                        const data = docSnap.data();
+                        setPortfolio(data);
+                        
+                        // PRIORIDAD 1: Cargar libro publicado directamente desde el portafolio (evita errores de permisos)
+                        if (data.publishedBook) {
+                            setBook(data.publishedBook);
+                        } 
+                        // PRIORIDAD 2: Intentar cargar por referencia (puede fallar por permisos privados)
+                        else if (data.featuredBookId) {
+                            try {
+                                const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', data.featuredBookId));
+                                if(bookSnap.exists()) setBook({id: bookSnap.id, ...bookSnap.data()});
+                            } catch(err) { console.log("No se pudo cargar libro privado", err); }
+                        }
+                    }
                     
                     const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
                     if(profileSnap.exists()) setUserProfile(profileSnap.data());
                     
-                    // Fetch featured book
-                    if(docSnap.exists() && docSnap.data().featuredBookId) {
-                         const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', docSnap.data().featuredBookId));
-                         if(bookSnap.exists()) setBook({id: bookSnap.id, ...bookSnap.data()});
-                    }
                     setLoading(false);
                 }; 
                 load();
