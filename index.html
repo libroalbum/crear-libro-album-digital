@@ -172,6 +172,7 @@
            ============================================= */
         @media (max-width: 900px) {
             :root { 
+                /* AJUSTE DE PRECISIÓN: 35vw para que quepa perfecto al lado de la barra */
                 --book-width: 35vw; 
                 --book-height: calc(35vw * 1.35); 
             }
@@ -305,7 +306,7 @@
             ]
         };
 
-        // --- COMPONENTE: VISOR DEL LIBRO (BOOKVIEWER) - DEFINIDO ANTES PARA EVITAR ERRORES ---
+        // --- COMPONENTE: VISOR DEL LIBRO (BOOKVIEWER) - DEFINIDO ANTES ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
@@ -384,269 +385,7 @@
             );
         }
 
-        // --- COMPONENTE PRINCIPAL ---
-        function App() {
-            const [user, setUser] = useState(null);
-            const [view, setView] = useState('loading'); 
-            const [portfolioUid, setPortfolioUid] = useState(null);
-            const [publicActivity, setPublicActivity] = useState(null);
-
-            useEffect(() => {
-                const params = new URLSearchParams(window.location.search);
-                const pUid = params.get('portfolio');
-                const activityParam = params.get('activity'); 
-
-                if (pUid) {
-                    setPortfolioUid(pUid);
-                    setView('public-view');
-                } else if (activityParam) {
-                    setPublicActivity(activityParam);
-                    setView('public-activity');
-                } else {
-                    if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); }
-                }
-            }, []);
-
-            if (view === 'public-view') return <PublicGallery uid={portfolioUid} />;
-            
-            if (view === 'public-activity') {
-                return <PublicActivityViewer activity={publicActivity} />;
-            }
-
-            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-blue-500">CARGANDO CREATOR STUDIO...</div>;
-
-            return (
-                <div className="flex flex-col h-full font-sans">
-                    <main className="flex-1 relative overflow-hidden">
-                        {view === 'login' && <LoginScreen setUser={setUser} setView={setView} />}
-                        
-                        {view === 'dashboard' && (
-                            <Dashboard 
-                                user={user} 
-                                setView={setView} 
-                            />
-                        )}
-                        
-                        {view === 'editor' && <Editor user={user} setView={setView} />}
-                        
-                        {view === 'external' && (
-                            <div className="w-full h-full bg-white relative flex flex-col">
-                                <div className="h-14 bg-gray-800 flex items-center justify-between px-4 shadow-lg z-50">
-                                    <span className="text-white font-bold">Herramienta Externa</span>
-                                    <button onClick={() => setView('dashboard')} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded font-bold text-sm">CERRAR Y VOLVER</button>
-                                </div>
-                                <iframe src={user.toolUrl} style={{width:'100%', height:'100%', border:'none'}} title="Herramienta Externa"></iframe>
-                            </div>
-                        )}
-                    </main>
-                </div>
-            );
-        }
-
-        // --- NUEVO COMPONENTE: VISOR PÚBLICO DE ACTIVIDAD ---
-        function PublicActivityViewer({ activity }) {
-            const [padletZoom, setPadletZoom] = useState(1);
-            // Estado inicial del Zoom para Moodboard y Storyboard ajustado a 0.75 (Zoom-Out)
-            const [moodboardZoom, setMoodboardZoom] = useState(0.75);
-            const [storyboardZoom, setStoryboardZoom] = useState(0.75);
-
-            // Zoom Moodboard
-            const handleMoodboardZoomIn = () => setMoodboardZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleMoodboardZoomOut = () => setMoodboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetMoodboardZoom = () => setMoodboardZoom(0.75); // Reset a 0.75
-
-            // Zoom Storyboard
-            const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetStoryboardZoom = () => setStoryboardZoom(0.75); // Reset ajustado a 0.75
-
-            const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
-            const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
-            const resetZoom = () => setPadletZoom(1);
-
-            const renderContent = () => {
-                switch(activity) {
-                    case 'guia':
-                    case 'reference_book':
-                        return (
-                            <div className="h-full flex flex-col p-8">
-                                <div className="mb-6 flex justify-between items-end">
-                                    <div className="text-center w-full">
-                                        <h2 className="module-title text-indigo-500 mb-2 text-3xl">LIBRO GUÍA</h2>
-                                        <p className="text-gray-600">Explora el libro ilustrado y aprende su estructura (Acceso Invitado)</p>
-                                    </div>
-                                    <button 
-                                        onClick={() => {
-                                            const elem = document.getElementById('guide-book-public-container');
-                                            if (!document.fullscreenElement) {
-                                                elem.requestFullscreen().catch(err => console.log(err));
-                                            } else {
-                                                document.exitFullscreen();
-                                            }
-                                        }} 
-                                        className="btn-gummy btn-indigo bg-indigo-500 text-sm px-4 py-2 shadow-indigo-700 flex-shrink-0 ml-4"
-                                    >
-                                        <i className="fas fa-expand mr-2"></i> PANTALLA COMPLETA
-                                    </button>
-                                </div>
-                                <div id="guide-book-public-container" className="flex-1 bg-white rounded-3xl border-4 border-indigo-100 overflow-hidden relative shadow-lg">
-                                    <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>
-                                </div>
-                            </div>
-                        );
-                    case 'moodboard':
-                        return (
-                            <div className="h-full flex flex-col p-8">
-                                 <div className="mb-6 flex justify-between items-center">
-                                    <div>
-                                        <h2 className="module-title text-purple-500 mb-2 text-3xl">MOODBOARD</h2>
-                                        <p className="text-gray-600">Tablero de inspiración (Acceso Invitado)</p>
-                                    </div>
-                                    {/* Controles Zoom Moodboard */}
-                                    <div className="flex gap-2">
-                                        <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
-                                            <button onClick={handleMoodboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
-                                            <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(moodboardZoom * 100)}%</span>
-                                            <button onClick={handleMoodboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                                            <button onClick={resetMoodboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-purple-100 overflow-hidden relative shadow-lg">
-                                    <div style={{width: `${100 / moodboardZoom}%`, height: `${100 / moodboardZoom}%`, transform: `scale(${moodboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                        <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'storyboard':
-                         return (
-                            <div className="h-full flex flex-col p-8">
-                                 <div className="mb-6 flex justify-between items-center">
-                                    <div>
-                                        <h2 className="module-title text-orange-500 mb-2 text-3xl">STORYBOARD</h2>
-                                        <p className="text-gray-600">Planificación de historia (Acceso Invitado)</p>
-                                    </div>
-                                    {/* Controles Zoom Storyboard */}
-                                    <div className="flex gap-2">
-                                        <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
-                                            <button onClick={handleStoryboardZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
-                                            <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(storyboardZoom * 100)}%</span>
-                                            <button onClick={handleStoryboardZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                                            <button onClick={resetStoryboardZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-orange-100 overflow-hidden relative shadow-lg">
-                                    <div style={{width: `${100 / storyboardZoom}%`, height: `${100 / storyboardZoom}%`, transform: `scale(${storyboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                        <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'quiz':
-                         return (
-                            <div className="h-full flex flex-col p-8">
-                                <div className="mb-6 text-center">
-                                    <h2 className="module-title text-yellow-500 mb-2 text-3xl">QUIZ TIME</h2>
-                                    <p className="text-gray-600">¡Demuestra lo que has aprendido! (Acceso Invitado)</p>
-                                </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg group">
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" alt="Kahoot Quiz" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
-                                            <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'ficha':
-                    case 'ficha_personajes':
-                         return (
-                            <div className="h-full flex flex-col p-8">
-                                <div className="mb-6 text-center">
-                                    <h2 className="module-title text-pink-500 mb-2 text-3xl">FICHA DE PERSONAJES</h2>
-                                    <p className="text-gray-600">Completa la ficha técnica (Acceso Invitado)</p>
-                                </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-pink-100 overflow-hidden relative shadow-lg flex flex-col group">
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" alt="Ficha de Personajes" />
-                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
-                                            <i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    case 'ficha_narrativa':
-                         return (
-                            <div className="h-full flex flex-col p-8">
-                                <div className="mb-6 text-center">
-                                    <h2 className="module-title text-rose-500 mb-2 text-3xl">FICHA NARRATIVA</h2>
-                                    <p className="text-gray-600">Desarrolla la estructura de tu historia paso a paso (Acceso Invitado)</p>
-                                </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg flex flex-col items-center justify-center p-10 text-center group">
-                                     <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition" alt="Ficha Narrativa" />
-                                     <div className="relative z-10 flex flex-col items-center">
-                                         <a 
-                                            href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
-                                            style={{textDecoration: 'none'}}
-                                         >
-                                            <i className="fas fa-pen-nib"></i> RELLENAR LA FICHA
-                                         </a>
-                                     </div>
-                                </div>
-                            </div>
-                        );
-                    case 'padlet':
-                    case 'muro':
-                         return (
-                            <div className="h-full flex flex-col p-8">
-                                <div className="mb-6 flex justify-between items-center">
-                                    <div>
-                                        <h2 className="module-title text-teal-500 mb-2 text-3xl">MURO COLABORATIVO</h2>
-                                        <p className="text-gray-600">Comparte tus ideas (Acceso Invitado)</p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
-                                            <button onClick={handleZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
-                                            <span className="flex items-center justify-center w-12 text-xs font-bold text-gray-500">{Math.round(padletZoom * 100)}%</span>
-                                            <button onClick={handleZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
-                                            <button onClick={resetZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg">
-                                     <div style={{width: `${100 / padletZoom}%`, height: `${100 / padletZoom}%`, transform: `scale(${padletZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                        <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" frameBorder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write" style={{width:'100%', height:'100%', display:'block'}} title="Muro Colaborativo Padlet"></iframe>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    default:
-                        return <div className="flex items-center justify-center h-full text-2xl font-bold text-gray-400 font-sans">Actividad no encontrada</div>;
-                }
-            };
-
-            return (
-                <div className="h-screen w-full bg-[var(--bg-ice)] overflow-hidden flex flex-col">
-                     <div className="w-full h-16 bg-white border-b-4 border-cyan-100 flex items-center justify-between px-8 shadow-sm">
-                        <div className="kids-title text-2xl text-cyan-500">CREATOR STUDIO</div>
-                        <div className="text-gray-400 font-bold text-sm uppercase tracking-wide flex items-center gap-2">
-                            <i className="fas fa-user-secret"></i> MODO INVITADO
-                        </div>
-                     </div>
-                     <div className="flex-1 overflow-hidden relative">
-                        {renderContent()}
-                     </div>
-                </div>
-            );
-        }
-
+        // --- VISTA: PANTALLA DE LOGIN ---
         function LoginScreen({ setUser, setView }) {
             const [email, setEmail] = useState(''); 
             const [password, setPassword] = useState(''); 
@@ -723,6 +462,175 @@
             );
         }
 
+        // --- VISTA: VISOR PÚBLICO ---
+        function PublicActivityViewer({ activity }) {
+            const [padletZoom, setPadletZoom] = useState(1);
+            const [moodboardZoom, setMoodboardZoom] = useState(0.75);
+            const [storyboardZoom, setStoryboardZoom] = useState(0.75);
+
+            const handleMoodboardZoomIn = () => setMoodboardZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleMoodboardZoomOut = () => setMoodboardZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetMoodboardZoom = () => setMoodboardZoom(0.75);
+
+            const handleStoryboardZoomIn = () => setStoryboardZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleStoryboardZoomOut = () => setStoryboardZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetStoryboardZoom = () => setStoryboardZoom(0.75);
+
+            const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
+            const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
+            const resetZoom = () => setPadletZoom(1);
+
+            const getActivityTitle = () => {
+                switch(activity) {
+                    case 'guia': case 'reference_book': return "LIBRO GUÍA";
+                    case 'moodboard': return "MOODBOARD";
+                    case 'storyboard': return "STORYBOARD";
+                    case 'quiz': return "QUIZ TIME";
+                    case 'ficha': case 'ficha_personajes': return "FICHA DE PERSONAJES";
+                    case 'ficha_narrativa': return "FICHA NARRATIVA";
+                    case 'padlet': case 'muro': return "MURO COLABORATIVO";
+                    default: return "";
+                }
+            };
+
+            const renderZoomControls = (zoomVal, zoomIn, zoomOut, zoomReset) => (
+                <div className="absolute top-4 right-4 bg-white p-1 rounded-xl shadow-md border border-gray-200 flex gap-1 z-50 transform scale-90">
+                    <button onClick={zoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
+                    <span className="flex items-center justify-center w-10 text-xs font-bold text-gray-500">{Math.round(zoomVal * 100)}%</span>
+                    <button onClick={zoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
+                    <button onClick={zoomReset} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
+                </div>
+            );
+
+            const renderContent = () => {
+                switch(activity) {
+                    case 'guia':
+                    case 'reference_book':
+                        return (
+                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
+                                <button 
+                                    onClick={() => {
+                                        const elem = document.getElementById('guide-book-public-container');
+                                        if (!document.fullscreenElement) {
+                                            elem.requestFullscreen().catch(err => console.log(err));
+                                        } else {
+                                            document.exitFullscreen();
+                                        }
+                                    }} 
+                                    className="absolute top-4 right-4 z-50 btn-gummy btn-indigo bg-indigo-500 text-xs px-3 py-1 shadow-indigo-700"
+                                >
+                                    <i className="fas fa-expand mr-1"></i> PANTALLA COMPLETA
+                                </button>
+                                <div id="guide-book-public-container" className="flex-1 bg-white rounded-xl border-2 border-indigo-100 overflow-hidden relative shadow-sm">
+                                    <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>
+                                </div>
+                            </div>
+                        );
+                    case 'moodboard':
+                        return (
+                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
+                                {renderZoomControls(moodboardZoom, handleMoodboardZoomIn, handleMoodboardZoomOut, resetMoodboardZoom)}
+                                <div className="flex-1 bg-white rounded-xl border-2 border-purple-100 overflow-hidden relative shadow-sm">
+                                    <div style={{width: `${100 / moodboardZoom}%`, height: `${100 / moodboardZoom}%`, transform: `scale(${moodboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                        <iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    case 'storyboard':
+                         return (
+                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
+                                {renderZoomControls(storyboardZoom, handleStoryboardZoomIn, handleStoryboardZoomOut, resetStoryboardZoom)}
+                                <div className="flex-1 bg-white rounded-xl border-2 border-orange-100 overflow-hidden relative shadow-sm">
+                                    <div style={{width: `${100 / storyboardZoom}%`, height: `${100 / storyboardZoom}%`, transform: `scale(${storyboardZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                        <iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    case 'quiz':
+                         return (
+                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
+                                <div className="flex-1 bg-white rounded-xl border-2 border-yellow-100 overflow-hidden relative shadow-sm group">
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" alt="Kahoot Quiz" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
+                                            <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    case 'ficha':
+                    case 'ficha_personajes':
+                         return (
+                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
+                                <div className="flex-1 bg-white rounded-xl border-2 border-pink-100 overflow-hidden relative shadow-sm flex flex-col group">
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" alt="Ficha de Personajes" />
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
+                                            <i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    case 'ficha_narrativa':
+                         return (
+                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
+                                <div className="flex-1 bg-white rounded-xl border-2 border-rose-100 overflow-hidden relative shadow-sm flex flex-col group">
+                                     <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition" alt="Ficha Narrativa" />
+                                     <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                                         <a 
+                                            href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?utm_content=DAG4JQ_26mk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15dc12dd5e" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3"
+                                            style={{textDecoration: 'none'}}
+                                         >
+                                            <i className="fas fa-pen-nib"></i> RELLENAR LA FICHA
+                                         </a>
+                                     </div>
+                                </div>
+                            </div>
+                        );
+                    case 'padlet':
+                    case 'muro':
+                         return (
+                            <div className="relative h-full w-full bg-gray-50 flex flex-col p-2">
+                                {renderZoomControls(padletZoom, handleZoomIn, handleZoomOut, resetZoom)}
+                                <div className="flex-1 bg-white rounded-xl border-2 border-teal-100 overflow-hidden relative shadow-sm">
+                                     <div style={{width: `${100 / padletZoom}%`, height: `${100 / padletZoom}%`, transform: `scale(${padletZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
+                                        <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" frameBorder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write" style={{width:'100%', height:'100%', display:'block'}} title="Muro Colaborativo Padlet"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    default:
+                        return <div className="flex items-center justify-center h-full text-2xl font-bold text-gray-400 font-sans">Actividad no encontrada</div>;
+                }
+            };
+
+            return (
+                <div className="h-screen w-full bg-[var(--bg-ice)] overflow-hidden flex flex-col">
+                     <div className="w-full h-14 bg-white border-b-4 border-cyan-100 flex items-center justify-between px-6 shadow-sm z-50">
+                        <div className="flex items-center gap-4">
+                            <div className="kids-title text-xl text-cyan-500">CREATOR STUDIO</div>
+                            <div className="h-6 w-0.5 bg-gray-300 rounded"></div>
+                            <div className="font-bold text-gray-500 uppercase text-lg tracking-wide">{getActivityTitle()}</div>
+                        </div>
+                        <div className="text-gray-400 font-bold text-xs uppercase tracking-wide flex items-center gap-2">
+                            <i className="fas fa-user-secret"></i> MODO INVITADO
+                        </div>
+                     </div>
+                     <div className="flex-1 overflow-hidden relative bg-gray-50">
+                        {renderContent()}
+                     </div>
+                </div>
+            );
+        }
+
+        // --- VISTA: DASHBOARD PRINCIPAL ---
         function Dashboard({ user, setView, setExternalTool }) {
             const [activeSection, setActiveSection] = useState('inicio');
             const [books, setBooks] = useState([]);
@@ -798,7 +706,7 @@
                 return null;
             };
 
-            // Agregar las funciones de zoom que faltaban para el Dashboard
+            // HANDLERS DE ZOOM
             const handlePadletZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
             const handlePadletZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
             const resetPadletZoom = () => setPadletZoom(1);
@@ -1254,6 +1162,65 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            );
+        }
+
+        // --- COMPONENTE PRINCIPAL (DEFINIDO AL FINAL) ---
+        function App() {
+            const [user, setUser] = useState(null);
+            const [view, setView] = useState('loading'); 
+            const [portfolioUid, setPortfolioUid] = useState(null);
+            const [publicActivity, setPublicActivity] = useState(null);
+
+            useEffect(() => {
+                const params = new URLSearchParams(window.location.search);
+                const pUid = params.get('portfolio');
+                const activityParam = params.get('activity'); 
+
+                if (pUid) {
+                    setPortfolioUid(pUid);
+                    setView('public-view');
+                } else if (activityParam) {
+                    setPublicActivity(activityParam);
+                    setView('public-activity');
+                } else {
+                    if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); }
+                }
+            }, []);
+
+            if (view === 'public-view') return <PublicGallery uid={portfolioUid} />;
+            
+            if (view === 'public-activity') {
+                return <PublicActivityViewer activity={publicActivity} />;
+            }
+
+            if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-blue-500">CARGANDO CREATOR STUDIO...</div>;
+
+            return (
+                <div className="flex flex-col h-full font-sans">
+                    <main className="flex-1 relative overflow-hidden">
+                        {view === 'login' && <LoginScreen setUser={setUser} setView={setView} />}
+                        
+                        {view === 'dashboard' && (
+                            <Dashboard 
+                                user={user} 
+                                setView={setView} 
+                            />
+                        )}
+                        
+                        {view === 'editor' && <Editor user={user} setView={setView} />}
+                        
+                        {view === 'external' && (
+                            <div className="w-full h-full bg-white relative flex flex-col">
+                                <div className="h-14 bg-gray-800 flex items-center justify-between px-4 shadow-lg z-50">
+                                    <span className="text-white font-bold">Herramienta Externa</span>
+                                    <button onClick={() => setView('dashboard')} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded font-bold text-sm">CERRAR Y VOLVER</button>
+                                </div>
+                                <iframe src={user.toolUrl} style={{width:'100%', height:'100%', border:'none'}} title="Herramienta Externa"></iframe>
+                            </div>
+                        )}
+                    </main>
                 </div>
             );
         }
