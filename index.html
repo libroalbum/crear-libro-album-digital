@@ -8,8 +8,6 @@
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- LIBRERÍA PARA CAPTURA DE PANTALLA -->
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <!-- FUENTES -->
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Nunito:wght@400;700&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
@@ -377,27 +375,6 @@
             const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
             const resetZoom = () => setPadletZoom(1);
 
-            // Lógica de Captura (Screenshot)
-            const handleScreenshot = () => {
-                const element = document.getElementById('padlet-container');
-                if(!element) return;
-                
-                // Usamos html2canvas
-                html2canvas(element, { 
-                    useCORS: true, 
-                    allowTaint: true,
-                    backgroundColor: '#ffffff'
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `evidencia-padlet-${new Date().getTime()}.png`;
-                    link.href = canvas.toDataURL();
-                    link.click();
-                }).catch(err => {
-                    alert("No se pudo capturar automáticamente debido a restricciones del navegador. Por favor usa la herramienta de recortes de tu PC.");
-                    console.error(err);
-                });
-            };
-
             return (
                 <div className="classroom-container">
                     {/* SIDEBAR IZQUIERDA */}
@@ -412,28 +389,33 @@
                         </div>
                         
                         <div className="mt-6 mb-2 text-xs font-bold text-gray-400 uppercase pl-4">ACTIVIDADES</div>
+                        
+                        {/* 1. Muro (Ahora es el primero) */}
+                        <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
+                            <i className="fas fa-thumbtack text-teal-500"></i> 1. MURO COLABORATIVO
+                        </div>
+
+                        {/* 2. Quiz */}
+                        <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
+                            <i className="fas fa-puzzle-piece text-yellow-500"></i> 2. QUIZ INTERACTIVO
+                        </div>
+
+                        {/* 3. Ficha */}
+                        <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
+                            <i className="fas fa-address-card text-pink-500"></i> 3. FICHA DE PERSONAJES
+                        </div>
+
+                        {/* 4. Moodboard */}
                         <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}>
-                            <i className="fas fa-palette text-purple-500"></i> MOODBOARD
+                            <i className="fas fa-palette text-purple-500"></i> 4. MOODBOARD
                         </div>
+
+                        {/* 5. Storyboard */}
                         <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
-                            <i className="fas fa-film text-orange-500"></i> STORYBOARD
-                        </div>
-                         {/* --- SECCIÓN QUIZ --- */}
-                         <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
-                            <i className="fas fa-puzzle-piece text-yellow-500"></i> QUIZ INTERACTIVO
-                        </div>
-
-                         {/* --- SECCIÓN FICHA PERSONAJES --- */}
-                         <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
-                            <i className="fas fa-address-card text-pink-500"></i> FICHA DE PERSONAJES
-                        </div>
-
-                         {/* --- NUEVA SECCIÓN: PADLET MURO --- */}
-                         <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
-                            <i className="fas fa-thumbtack text-teal-500"></i> MURO COLABORATIVO
+                            <i className="fas fa-film text-orange-500"></i> 5. STORYBOARD
                         </div>
                         
-                        {/* BOTÓN UNIFICADO: MI LIBRO (Crear o Editar) */}
+                        {/* BOTÓN UNIFICADO: MI LIBRO (Crear o Editar) - Ahora al final */}
                         <div className={`menu-item`} onClick={handleMyBook}>
                             <i className="fas fa-book-open text-green-500"></i> {books.length > 0 ? 'EDITAR LIBRO' : 'MI LIBRO'}
                         </div>
@@ -624,7 +606,7 @@
                                         <p className="text-gray-600">Comparte tus ideas, preguntas y avances con el resto de la clase.</p>
                                     </div>
                                     
-                                    {/* CONTROLES DE ZOOM Y CAPTURA */}
+                                    {/* CONTROLES DE ZOOM */}
                                     <div className="flex gap-2">
                                         <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
                                             <button onClick={handleZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
@@ -632,10 +614,6 @@
                                             <button onClick={handleZoomIn} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Acercar"><i className="fas fa-plus"></i></button>
                                             <button onClick={resetZoom} className="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-600 font-bold flex items-center justify-center transition ml-1" title="Restaurar"><i className="fas fa-compress"></i></button>
                                         </div>
-                                        
-                                        <button onClick={handleScreenshot} className="btn-gummy btn-teal bg-teal-500 shadow-teal-700 text-sm px-4">
-                                            <i className="fas fa-camera mr-2"></i> CAPTURAR EVIDENCIA
-                                        </button>
                                     </div>
                                 </div>
                                 
