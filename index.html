@@ -190,7 +190,7 @@
 
         /* MODAL SELECTOR DE LIBRO */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); text-align: center; }
         .book-select-item { border: 2px solid #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
         .book-select-item:hover { border-color: var(--electric-cyan); background: #f0f9ff; }
         .book-select-thumb { width: 60px; height: 60px; background: #ddd; border-radius: 10px; object-fit: cover; }
@@ -420,9 +420,9 @@
                 <div className="flex flex-col h-full overflow-hidden bg-white">
                     {/* --- GLOBAL HEADER (SOLO EN INICIO) --- */}
                     {isHome && (
-                        <div className="w-full h-20 bg-white border-b-4 border-cyan-100 flex items-center justify-between px-8 flex-shrink-0 shadow-sm z-50">
+                        <div className="w-full h-20 flex items-center justify-between px-8 flex-shrink-0 shadow-sm z-50" style={{backgroundColor: 'var(--header-blue)'}}>
                             <div className="flex items-center gap-3">
-                                <div className="kids-title text-3xl text-cyan-500">CREATOR STUDIO</div>
+                                <div className="kids-title text-3xl text-white">CREATOR STUDIO</div>
                             </div>
                             
                             <div className="flex items-center gap-4">
@@ -496,30 +496,6 @@
                         {/* AREA DE CONTENIDO */}
                         <div className="classroom-content">
                             
-                            {/* --- TOP BAR INTERNA (SOLO SI NO ESTAMOS EN INICIO) --- */}
-                            {!isHome && (
-                                <div className="top-bar">
-                                    <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
-                                        {userProfile.photo ? (
-                                            <img src={userProfile.photo} className="user-avatar" />
-                                        ) : (
-                                            <div className="user-avatar flex items-center justify-center bg-blue-100 text-blue-500 font-bold text-xl">
-                                                {userProfile.name.charAt(0).toUpperCase()}
-                                            </div>
-                                        )}
-                                        <div className="user-info">
-                                            <span className="user-name">{userProfile.name}</span>
-                                            <span className="user-role">Estudiante</span>
-                                        </div>
-                                        <i className="fas fa-cog text-gray-400 text-xs ml-2"></i>
-                                    </div>
-                                    
-                                    <div className="logout-btn-top" onClick={()=>signOut(auth)} title="Cerrar Sesión">
-                                        <i className="fas fa-sign-out-alt"></i>
-                                    </div>
-                                </div>
-                            )}
-
                             {/* --- MODAL DE PERFIL (COMPARTIDO) --- */}
                             {isProfileModalOpen && (
                                 <div className="modal-overlay">
