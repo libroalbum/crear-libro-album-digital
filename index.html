@@ -499,6 +499,20 @@
                                 </div>
                             </div>
                         );
+                    case 'ficha_narrativa':
+                         return (
+                            <div className="h-full flex flex-col p-8">
+                                <div className="mb-6 text-center">
+                                    <h2 className="module-title text-rose-500 mb-2 text-3xl">FICHA NARRATIVA</h2>
+                                    <p className="text-gray-600">Desarrolla la estructura de tu historia paso a paso (Acceso Invitado)</p>
+                                </div>
+                                <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg overflow-y-auto">
+                                    <div style={{ position: 'relative', width: '100%', height: 0, paddingTop: '141.4286%', paddingBottom: 0, boxShadow: '0 2px 8px 0 rgba(63,69,81,0.16)', marginTop: '1.6em', marginBottom: '0.9em', overflow: 'hidden', borderRadius: '8px', willChange: 'transform' }}>
+                                        <iframe loading="lazy" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, border: 'none', padding: 0, margin: 0 }} src="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?embed" allowFullScreen="allowfullscreen" allow="fullscreen"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        );
                     case 'padlet':
                     case 'muro':
                          return (
@@ -758,17 +772,20 @@
                             <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
                                 <i className="fas fa-thumbtack text-teal-500"></i> <span className="menu-text">2. Muro Colaborativo</span>
                             </div>
+                            <div className={`menu-item ${activeSection==='ficha_narrativa'?'active':''}`} onClick={()=>setActiveSection('ficha_narrativa')}>
+                                <i className="fas fa-pen-fancy text-rose-500"></i> <span className="menu-text">3. Ficha Narrativa</span>
+                            </div>
                             <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
-                                <i className="fas fa-puzzle-piece text-yellow-500"></i> <span className="menu-text">3. Quiz Interactivo</span>
+                                <i className="fas fa-puzzle-piece text-yellow-500"></i> <span className="menu-text">4. Quiz Interactivo</span>
                             </div>
                             <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
-                                <i className="fas fa-address-card text-pink-500"></i> <span className="menu-text">4. Ficha de Personajes</span>
+                                <i className="fas fa-address-card text-pink-500"></i> <span className="menu-text">5. Ficha de Personajes</span>
                             </div>
                             <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}>
-                                <i className="fas fa-palette text-purple-500"></i> <span className="menu-text">5. Moodboard</span>
+                                <i className="fas fa-palette text-purple-500"></i> <span className="menu-text">6. Moodboard</span>
                             </div>
                             <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
-                                <i className="fas fa-film text-orange-500"></i> <span className="menu-text">6. Storyboard</span>
+                                <i className="fas fa-film text-orange-500"></i> <span className="menu-text">7. Storyboard</span>
                             </div>
                             
                             <div className={`menu-item`} onClick={handleMyBook}>
@@ -991,6 +1008,21 @@
                                             className="w-full h-full border-none"
                                             title="Ficha de Personajes Google Form"
                                         >Cargando…</iframe>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* --- NUEVA SECCIÓN: FICHA NARRATIVA --- */}
+                            {activeSection === 'ficha_narrativa' && (
+                                <div className="h-full flex flex-col">
+                                    <div className="mb-6">
+                                        <h2 className="module-title text-rose-500 mb-2">FICHA NARRATIVA</h2>
+                                        <p className="text-gray-600">Desarrolla la estructura de tu historia paso a paso.</p>
+                                    </div>
+                                    <div className="flex-1 bg-white rounded-3xl border-4 border-rose-100 overflow-hidden relative shadow-lg overflow-y-auto">
+                                         <div style={{ position: 'relative', width: '100%', height: 0, paddingTop: '141.4286%', paddingBottom: 0, boxShadow: '0 2px 8px 0 rgba(63,69,81,0.16)', marginTop: '1.6em', marginBottom: '0.9em', overflow: 'hidden', borderRadius: '8px', willChange: 'transform' }}>
+                                             <iframe loading="lazy" style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, border: 'none', padding: 0, margin: 0 }} src="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view?embed" allowFullScreen="allowfullscreen" allow="fullscreen"></iframe>
+                                         </div>
                                     </div>
                                 </div>
                             )}
