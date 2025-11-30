@@ -74,7 +74,7 @@
         .menu-item.active { background: #E0F2FE; color: var(--electric-cyan); box-shadow: inset 4px 0 0 var(--electric-cyan); }
         .menu-item i { width: 24px; text-align: center; font-size: 1.2rem; }
 
-        .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 40px; position: relative; }
+        .classroom-content { flex: 1; background: var(--bg-ice); overflow-y: auto; padding: 20px 40px; position: relative; } /* Adjusted padding */
         .module-header { margin-bottom: 30px; border-bottom: 3px solid #E2E8F0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .module-title { font-size: 2rem; color: var(--text-main); font-family: 'Luckiest Guy'; }
 
@@ -83,6 +83,22 @@
 
         .input-pop { background: white; border: 3px solid #E2E8F0; border-radius: 15px; padding: 12px 15px; width: 100%; font-family: 'Nunito', font-weight: 700; color: #475569; outline: none; }
         .input-pop:focus { border-color: var(--electric-cyan); }
+
+        /* --- NUEVO: TOP BAR PROFILE --- */
+        .top-bar { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; gap: 15px; }
+        .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 6px 8px 6px 15px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid white; cursor: pointer; transition: 0.2s; }
+        .user-chip:hover { transform: translateY(-2px); border-color: var(--electric-cyan); }
+        .user-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: #e2e8f0; border: 2px solid var(--electric-cyan); }
+        .user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
+        .user-name { font-weight: 800; font-size: 0.95rem; color: var(--text-main); font-family: 'Dosis'; text-transform: uppercase; }
+        .user-role { font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .logout-btn-top { background: #fee2e2; color: #ef4444; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: 2px solid #fecaca; box-shadow: 0 4px 0 #f87171; }
+        .logout-btn-top:active { box-shadow: none; transform: translateY(4px); }
+        .logout-btn-top:hover { background: #ef4444; color: white; border-color: #ef4444; }
+
+        /* MODAL PERFIL */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); text-align: center; }
 
         /* --- EDITOR STYLES --- */
         .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: var(--canvas-dark); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; width: 100%; height: 100%; }
@@ -313,35 +329,55 @@
             const [editingId, setEditingId] = useState(null);
             const [tempTitle, setTempTitle] = useState("");
             
+            // Estado para el perfil del usuario (nombre y foto)
+            const [userProfile, setUserProfile] = useState({ name: user.email.split('@')[0], photo: '' });
+            const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
             // Estado para el Zoom del Padlet
             const [padletZoom, setPadletZoom] = useState(1);
 
-            // Ya no usamos selector, pero mantenemos el estado por si acaso para evitar errores
-            const [showBookSelector, setShowBookSelector] = useState(false);
-
-            // Cargar libros y datos de portafolio
+            // Cargar datos (libros, portafolio y perfil)
             useEffect(() => { 
                 if(!user || !db) return; 
+                
+                // 1. Libros
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
                 onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()}))));
                 
+                // 2. Portafolio
                 onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (doc) => {
                     if(doc.exists()) setPortfolioData(doc.data());
                 });
+
+                // 3. Perfil de Usuario - CORREGIDO: Ruta con número par de segmentos (colección/doc)
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => {
+                    if(doc.exists()) {
+                        setUserProfile(doc.data());
+                    }
+                });
             }, [user]);
+
+            // Guardar perfil - CORREGIDO
+            const saveProfile = async () => {
+                // Ruta corregida: .../profile/user_info
+                await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), userProfile, { merge: true });
+                setIsProfileModalOpen(false);
+                alert("¡Perfil actualizado!");
+            };
+
+            // Subir foto de perfil
+            const handleProfilePic = (e) => {
+                const file = e.target.files[0];
+                if(file) processImage(file, (base64) => setUserProfile({...userProfile, photo: base64}));
+            };
 
             // Lógica ajustada: Crea libro si no existe, o abre el existente
             const handleMyBook = async () => {
                 if (books.length > 0) {
-                    // Ya existe un libro, abrir el primero (único)
                     openBook(books[0].id);
                 } else {
-                    // No existe, crear uno nuevo
                     const ref = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() });
-                    
-                    // Asignarlo automáticamente al portafolio también
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: ref.id }, { merge: true });
-                    
                     localStorage.setItem('currentBookId', ref.id);
                     setView('editor');
                 }
@@ -365,14 +401,11 @@
                 alert("Enlace público copiado.");
             };
             
-            // Lógica de visualización del libro en Portafolio
-            // Si hay libros, tomamos el primero como "Featured" por defecto
             const getFeaturedBook = () => {
                 if (books.length > 0) return books[0];
                 return null;
             };
 
-            // Lógica de Zoom
             const handleZoomIn = () => setPadletZoom(prev => Math.min(prev + 0.1, 1.5));
             const handleZoomOut = () => setPadletZoom(prev => Math.max(prev - 0.1, 0.5));
             const resetZoom = () => setPadletZoom(1);
@@ -392,45 +425,87 @@
                         
                         <div className="mt-6 mb-2 text-xs font-bold text-gray-400 uppercase pl-4">ACTIVIDADES</div>
                         
-                        {/* 1. Muro (Ahora es el primero) */}
                         <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
                             <i className="fas fa-thumbtack text-teal-500"></i> 1. MURO COLABORATIVO
                         </div>
-
-                        {/* 2. Quiz */}
                         <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
                             <i className="fas fa-puzzle-piece text-yellow-500"></i> 2. QUIZ INTERACTIVO
                         </div>
-
-                        {/* 3. Ficha */}
                         <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
                             <i className="fas fa-address-card text-pink-500"></i> 3. FICHA DE PERSONAJES
                         </div>
-
-                        {/* 4. Moodboard */}
                         <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}>
                             <i className="fas fa-palette text-purple-500"></i> 4. MOODBOARD
                         </div>
-
-                        {/* 5. Storyboard */}
                         <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
                             <i className="fas fa-film text-orange-500"></i> 5. STORYBOARD
                         </div>
                         
-                        {/* BOTÓN UNIFICADO: MI LIBRO (Crear o Editar) - Ahora al final */}
                         <div className={`menu-item`} onClick={handleMyBook}>
                             <i className="fas fa-book-open text-green-500"></i> {books.length > 0 ? 'EDITAR LIBRO' : 'MI LIBRO'}
-                        </div>
-
-                        <div className="mt-auto pt-6 border-t">
-                             <div className="menu-item text-red-400 hover:bg-red-50" onClick={()=>signOut(auth)}>
-                                <i className="fas fa-sign-out-alt"></i> CERRAR SESIÓN
-                            </div>
                         </div>
                     </div>
 
                     {/* AREA DE CONTENIDO */}
                     <div className="classroom-content">
+                        
+                        {/* --- TOP BAR: PERFIL Y LOGOUT --- */}
+                        <div className="top-bar">
+                            <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
+                                {userProfile.photo ? (
+                                    <img src={userProfile.photo} className="user-avatar" />
+                                ) : (
+                                    <div className="user-avatar flex items-center justify-center bg-blue-100 text-blue-500 font-bold text-xl">
+                                        {userProfile.name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                                <div className="user-info">
+                                    <span className="user-name">{userProfile.name}</span>
+                                    <span className="user-role">Estudiante</span>
+                                </div>
+                                <i className="fas fa-cog text-gray-400 text-xs ml-2"></i>
+                            </div>
+                            
+                            <div className="logout-btn-top" onClick={()=>signOut(auth)} title="Cerrar Sesión">
+                                <i className="fas fa-sign-out-alt"></i>
+                            </div>
+                        </div>
+
+                        {/* --- MODAL DE PERFIL --- */}
+                        {isProfileModalOpen && (
+                            <div className="modal-overlay">
+                                <div className="modal-content">
+                                    <h3 className="pop-title text-2xl text-gray-700 mb-6">MI PERFIL DE CREADOR</h3>
+                                    <div className="flex flex-col items-center gap-4">
+                                        <div className="relative group cursor-pointer w-32 h-32">
+                                            {userProfile.photo ? (
+                                                <img src={userProfile.photo} className="w-full h-full rounded-full object-cover border-4 border-blue-200" />
+                                            ) : (
+                                                <div className="w-full h-full rounded-full bg-blue-100 flex items-center justify-center text-4xl text-blue-400 border-4 border-blue-200">
+                                                    <i className="fas fa-user"></i>
+                                                </div>
+                                            )}
+                                            <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                                <i className="fas fa-camera text-white text-2xl"></i>
+                                            </div>
+                                            <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleProfilePic} />
+                                        </div>
+                                        
+                                        <input 
+                                            className="input-pop text-center text-xl" 
+                                            value={userProfile.name} 
+                                            onChange={(e)=>setUserProfile({...userProfile, name: e.target.value})}
+                                            placeholder="Escribe tu nombre aquí"
+                                        />
+                                        
+                                        <div className="flex gap-2 w-full mt-4">
+                                            <button className="btn-gummy btn-lime flex-1" onClick={saveProfile}>GUARDAR CAMBIOS</button>
+                                            <button className="btn-gummy bg-gray-400 text-white" onClick={()=>setIsProfileModalOpen(false)}>CANCELAR</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         
                         {/* VISTA INICIO - AHORA MUESTRA VIDEO Y BIENVENIDA */}
                         {activeSection === 'inicio' && (
@@ -477,7 +552,7 @@
                                 <div className="portfolio-container" style={{height:'auto', minHeight:'80vh', borderRadius:'20px', boxShadow:'0 0 20px rgba(0,0,0,0.05)'}}>
                                     <div className="portfolio-header-bg">
                                         <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
-                                        <p className="text-xl opacity-80 font-sans">De: {user.email.split('@')[0].toUpperCase()}</p>
+                                        <p className="text-xl opacity-80 font-sans">De: {userProfile.name}</p> {/* NOMBRE DINAMICO */}
                                     </div>
 
                                     <div className="gallery-content">
@@ -676,10 +751,17 @@
             const [portfolio, setPortfolio] = useState({});
             const [book, setBook] = useState(null);
             const [loading, setLoading] = useState(true);
+            const [userProfile, setUserProfile] = useState({ name: 'Usuario' }); // Estado local para vista pública
+
             useEffect(() => {
                 if(!db) return;
                 const load = async () => {
+                    // Cargar portafolio
                     onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid), (d) => { if(d.exists()) setPortfolio(d.data()); });
+                    
+                    // Cargar perfil para mostrar el nombre correcto - CORREGIDO
+                    onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'), (d) => { if(d.exists()) setUserProfile(d.data()); });
+
                     const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
                     onSnapshot(q, (snap) => { /* Just to trigger updates if needed */ });
                 }; load();
@@ -711,7 +793,7 @@
                     <div className="portfolio-container">
                         <div className="portfolio-header-bg">
                             <h1 className="text-5xl font-bold kids-title mb-2">PORTAFOLIO CREATIVO</h1>
-                            <p className="text-xl opacity-80 font-sans">Explorando el mundo de la narración</p>
+                            <p className="text-xl opacity-80 font-sans">De: {userProfile.name}</p>
                         </div>
                         <div className="gallery-content">
                             <div className="book-showcase">
