@@ -63,6 +63,7 @@
         .btn-cyan { background: var(--electric-cyan); box-shadow: 0 4px 0 #0097bd; }
         .btn-orange { background: var(--hot-orange); box-shadow: 0 4px 0 #C2410C; }
         .btn-pink { background: var(--pop-pink); box-shadow: 0 4px 0 #BE185D; }
+        .btn-indigo { background: #6366f1; box-shadow: 0 4px 0 #4338ca; } /* Nuevo botón índigo */
 
         /* --- LOGIN STYLES (CLEAN BLUE) --- */
         .login-page-bg {
@@ -121,8 +122,11 @@
         /* MODAL PERFIL */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); text-align: center; }
+        .book-select-item { border: 2px solid #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
+        .book-select-item:hover { border-color: var(--electric-cyan); background: #f0f9ff; }
+        .book-select-thumb { width: 60px; height: 60px; background: #ddd; border-radius: 10px; object-fit: cover; }
 
-        /* --- EDITOR STYLES (MANTENIDOS) --- */
+        /* --- EDITOR STYLES --- */
         .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: var(--canvas-dark); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; width: 100%; height: 100%; }
         .sidebar-editor { width: 80px; height: 100%; background: white; border-right: 3px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 40; gap: 20px; flex-shrink: 0; }
         .icon-chunk { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; cursor: pointer; transition: 0.1s; position: relative; top: 0; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); }
@@ -162,62 +166,6 @@
         .nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 60px; height: 60px; border-radius: 50%; background: white; border: 3px solid var(--electric-cyan); color: var(--electric-cyan); font-size: 1.5rem; cursor: pointer; transition: 0.1s; z-index: 90; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 0 #0099cc; }
         .nav-btn:hover { transform: translateY(-55%); background: var(--electric-cyan); color: white; } .nav-btn:active { transform: translateY(-45%); box-shadow: none; }
         .prev-btn { left: 110px; } .next-btn { right: 40px; }
-        
-        /* --- TARJETAS HERRAMIENTAS --- */
-        .tool-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 0 rgba(0,0,0,0.05); border: 4px solid white; transition: 0.2s; position: relative; display: flex; flex-direction: column; height: 260px; }
-        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); z-index: 10; }
-        .tool-header { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
-        .tool-icon-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 1.8rem; color: white; }
-        .tool-title { font-family: 'Luckiest Guy', cursive; font-size: 1.4rem; color: white; text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
-        .tool-footer { background: #f8fafc; padding: 10px; border-top: 2px dashed #e2e8f0; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 5px; }
-        .evidence-preview { width: 100%; height: 80px; border-radius: 10px; object-fit: cover; border: 2px solid #ddd; margin-bottom: 5px; }
-        .evidence-label { font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
-
-        /* --- TARJETAS PROYECTO --- */
-        .project-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 4px solid white; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; height: 300px; }
-        .project-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .card-img-container { flex: 1; background-color: #f1f5f9; position: relative; overflow: hidden; border-radius: 20px 20px 0 0; }
-        .card-footer { padding: 15px; text-align: center; border-radius: 0 0 20px 20px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90px; }
-        .card-title { font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; margin-bottom: 5px; color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .simple-edit-input { background: transparent; border: none; border-bottom: 2px solid white; color: white; font-family: 'Dosis', sans-serif; font-weight: 800; font-size: 1.3rem; text-align: center; width: 90%; outline: none; padding-bottom: 2px; }
-        .card-tag { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; background: rgba(255,255,255,0.25); color: white; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
-        .project-card:hover .card-tag { background: white; color: #333; }
-
-        /* --- PUBLIC PORTFOLIO STYLES (REUSADOS EN EDICIÓN) --- */
-        .portfolio-container { height: auto; min-height: 100vh; background: #F8FAFC; padding-bottom: 50px; }
-        .portfolio-header-bg { width: 100%; background: var(--header-blue); color: white; padding: 60px 20px 100px 20px; text-align: center; clip-path: ellipse(150% 100% at 50% 0%); margin-bottom: -60px; }
-        .gallery-content { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        /* Showcase del Libro */
-        .book-showcase { 
-            background: #1e293b; width: 100%; max-width: 900px; height: 550px; 
-            border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
-            border: 6px solid white; display: flex; align-items: center; justify-content: center; 
-            position: relative; overflow: hidden; margin-bottom: 40px; z-index: 10;
-        }
-        
-        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; width: 100%; max-width: 900px; }
-        .evidence-item { 
-            background: white; border-radius: 20px; overflow: hidden; 
-            border: 3px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
-            position: relative; cursor: pointer; display: flex; flex-direction: column;
-        }
-        .evidence-item img { width: 100%; height: 250px; object-fit: cover; background: #f0f0f0; }
-        .evidence-tag { 
-            color: white; padding: 15px; text-align: center; font-weight: 800; 
-            letter-spacing: 1px; font-family: 'Dosis'; font-size: 1.2rem; 
-        }
-        .overlay-edit-evidence { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; }
-        .evidence-item:hover .overlay-edit-evidence { opacity: 1; }
-
-        /* MODAL SELECTOR DE LIBRO */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--electric-cyan); text-align: center; }
-        .book-select-item { border: 2px solid #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
-        .book-select-item:hover { border-color: var(--electric-cyan); background: #f0f9ff; }
-        .book-select-thumb { width: 60px; height: 60px; background: #ddd; border-radius: 10px; object-fit: cover; }
-
-        @media (max-width: 900px) { :root { --book-width: 44vw; --book-height: calc(44vw * 1.35); } #stage { perspective: 1200px; } .sidebar-editor { width: 60px; } .icon-chunk { width: 45px; height: 45px; font-size: 1.2rem; } .prev-btn { left: 80px; } .classroom-container { flex-direction: column; } .classroom-sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; } }
     </style>
 </head>
 <body class="h-screen overflow-hidden">
@@ -342,6 +290,34 @@
 
             const renderContent = () => {
                 switch(activity) {
+                    case 'guia':
+                    case 'reference_book':
+                        return (
+                            <div className="h-full flex flex-col p-8">
+                                <div className="mb-6 flex justify-between items-end">
+                                    <div className="text-center w-full">
+                                        <h2 className="module-title text-indigo-500 mb-2 text-3xl">LIBRO GUÍA</h2>
+                                        <p className="text-gray-600">Explora el libro ilustrado y aprende su estructura (Acceso Invitado)</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => {
+                                            const elem = document.getElementById('guide-book-public-container');
+                                            if (!document.fullscreenElement) {
+                                                elem.requestFullscreen().catch(err => console.log(err));
+                                            } else {
+                                                document.exitFullscreen();
+                                            }
+                                        }} 
+                                        className="btn-gummy btn-indigo bg-indigo-500 text-sm px-4 py-2 shadow-indigo-700 flex-shrink-0 ml-4"
+                                    >
+                                        <i className="fas fa-expand mr-2"></i> PANTALLA COMPLETA
+                                    </button>
+                                </div>
+                                <div id="guide-book-public-container" className="flex-1 bg-white rounded-3xl border-4 border-indigo-100 overflow-hidden relative shadow-lg">
+                                    <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>
+                                </div>
+                            </div>
+                        );
                     case 'moodboard':
                         return (
                             <div className="h-full flex flex-col p-8">
@@ -634,21 +610,29 @@
                                 <i className="fas fa-briefcase text-blue-500"></i> <span className="menu-text">Mi Portafolio</span>
                             </div>
                             <div className="mt-6 mb-2 text-xs font-bold text-gray-400 uppercase pl-4">ACTIVIDADES</div>
+
+                            {/* --- NUEVA SECCIÓN 1: LIBRO GUÍA --- */}
+                            <div className={`menu-item ${activeSection==='reference_book'?'active':''}`} onClick={()=>setActiveSection('reference_book')}>
+                                <i className="fas fa-book-reader text-indigo-500"></i> <span className="menu-text">1. Libro Guía</span>
+                            </div>
+
+                            {/* --- RE-ENUMERACIÓN --- */}
                             <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
-                                <i className="fas fa-thumbtack text-teal-500"></i> <span className="menu-text">1. Muro Colaborativo</span>
+                                <i className="fas fa-thumbtack text-teal-500"></i> <span className="menu-text">2. Muro Colaborativo</span>
                             </div>
                             <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
-                                <i className="fas fa-puzzle-piece text-yellow-500"></i> <span className="menu-text">2. Quiz Interactivo</span>
+                                <i className="fas fa-puzzle-piece text-yellow-500"></i> <span className="menu-text">3. Quiz Interactivo</span>
                             </div>
                             <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
-                                <i className="fas fa-address-card text-pink-500"></i> <span className="menu-text">3. Ficha de Personajes</span>
+                                <i className="fas fa-address-card text-pink-500"></i> <span className="menu-text">4. Ficha de Personajes</span>
                             </div>
                             <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}>
-                                <i className="fas fa-palette text-purple-500"></i> <span className="menu-text">4. Moodboard</span>
+                                <i className="fas fa-palette text-purple-500"></i> <span className="menu-text">5. Moodboard</span>
                             </div>
                             <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
-                                <i className="fas fa-film text-orange-500"></i> <span className="menu-text">5. Storyboard</span>
+                                <i className="fas fa-film text-orange-500"></i> <span className="menu-text">6. Storyboard</span>
                             </div>
+                            
                             <div className={`menu-item`} onClick={handleMyBook}>
                                 <i className="fas fa-book-open text-green-500"></i> <span className="menu-text">{books.length > 0 ? 'Editar Libro' : 'Mi Libro'}</span>
                             </div>
@@ -751,6 +735,34 @@
                                 </div>
                             )}
 
+                            {/* --- NUEVA SECCIÓN 1: LIBRO GUÍA --- */}
+                            {activeSection === 'reference_book' && (
+                                <div className="h-full flex flex-col">
+                                    <div className="mb-6 flex justify-between items-end">
+                                        <div>
+                                            <h2 className="module-title text-indigo-500 mb-2">LIBRO GUÍA</h2>
+                                            <p className="text-gray-600">Explora el libro ilustrado y aprende su estructura.</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => {
+                                                const elem = document.getElementById('guide-book-container');
+                                                if (!document.fullscreenElement) {
+                                                    elem.requestFullscreen().catch(err => console.log(err));
+                                                } else {
+                                                    document.exitFullscreen();
+                                                }
+                                            }} 
+                                            className="btn-gummy btn-indigo bg-indigo-500 text-sm px-4 py-2 shadow-indigo-700"
+                                        >
+                                            <i className="fas fa-expand mr-2"></i> PANTALLA COMPLETA
+                                        </button>
+                                    </div>
+                                    <div id="guide-book-container" className="flex-1 bg-white rounded-3xl border-4 border-indigo-100 overflow-hidden relative shadow-lg">
+                                        <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>
+                                    </div>
+                                </div>
+                            )}
+
                             {activeSection === 'moodboard' && (
                                 <div className="h-full flex flex-col">
                                     <div className="mb-6">
@@ -782,9 +794,19 @@
                                         <p className="text-gray-600">¡Demuestra lo que has aprendido!</p>
                                     </div>
                                     <div className="flex-1 bg-white rounded-3xl border-4 border-yellow-100 overflow-hidden relative shadow-lg group">
-                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" alt="Kahoot Quiz" className="w-full h-full object-cover" />
+                                        <img 
+                                            src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" 
+                                            alt="Kahoot Quiz" 
+                                            className="w-full h-full object-cover"
+                                        />
                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                            <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" rel="noopener noreferrer" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}>
+                                            <a 
+                                                href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform"
+                                                style={{textDecoration: 'none'}}
+                                            >
                                                 <i className="fas fa-play-circle mr-3"></i> HACER QUIZ
                                             </a>
                                         </div>
@@ -802,7 +824,11 @@
                                         <div className="bg-pink-50 p-2 text-center text-xs text-pink-600 border-b border-pink-100">
                                             ¿No carga el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="font-bold underline">Haz clic aquí para abrirlo</a>
                                         </div>
-                                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" className="w-full h-full border-none" title="Ficha de Personajes Google Form">Cargando…</iframe>
+                                        <iframe 
+                                            src="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform?embedded=true" 
+                                            className="w-full h-full border-none"
+                                            title="Ficha de Personajes Google Form"
+                                        >Cargando…</iframe>
                                     </div>
                                 </div>
                             )}
@@ -814,6 +840,7 @@
                                             <h2 className="module-title text-teal-500 mb-2">MURO COLABORATIVO</h2>
                                             <p className="text-gray-600">Comparte tus ideas, preguntas y avances con el resto de la clase.</p>
                                         </div>
+                                        
                                         <div className="flex gap-2">
                                             <div className="bg-white p-2 rounded-xl shadow-md border border-gray-200 flex gap-1">
                                                 <button onClick={handleZoomOut} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold flex items-center justify-center transition" title="Alejar"><i className="fas fa-minus"></i></button>
@@ -823,9 +850,22 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <div className="flex-1 bg-white rounded-3xl border-4 border-teal-100 overflow-hidden relative shadow-lg" id="padlet-container">
-                                        <div style={{width: `${100 / padletZoom}%`, height: `${100 / padletZoom}%`, transform: `scale(${padletZoom})`, transformOrigin: '0 0', transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'}}>
-                                            <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" frameBorder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write" style={{width:'100%', height:'100%', display:'block'}} title="Muro Colaborativo Padlet"></iframe>
+                                        <div style={{
+                                            width: `${100 / padletZoom}%`,
+                                            height: `${100 / padletZoom}%`,
+                                            transform: `scale(${padletZoom})`,
+                                            transformOrigin: '0 0',
+                                            transition: 'transform 0.2s ease, width 0.2s ease, height 0.2s ease'
+                                        }}>
+                                            <iframe 
+                                                src="https://padlet.com/embed/kz78sfkwdm9abosj" 
+                                                frameBorder="0" 
+                                                allow="camera;microphone;geolocation;display-capture;clipboard-write" 
+                                                style={{width:'100%', height:'100%', display:'block'}}
+                                                title="Muro Colaborativo Padlet"
+                                            ></iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -837,6 +877,7 @@
             );
         }
 
+        // --- EDITOR (Lienzo Completo) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1); 
@@ -861,6 +902,7 @@
             );
         }
 
+        // --- VISTA PÚBLICA ---
         function PublicGallery({ uid }) {
             const [portfolio, setPortfolio] = useState({});
             const [book, setBook] = useState(null);
@@ -873,7 +915,7 @@
                     onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid), (d) => { if(d.exists()) setPortfolio(d.data()); });
                     onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'), (d) => { if(d.exists()) setUserProfile(d.data()); });
                     const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
-                    onSnapshot(q, (snap) => { });
+                    onSnapshot(q, (snap) => { /* Just to trigger updates if needed */ });
                 }; load();
             }, [uid]);
             useEffect(() => {
@@ -883,6 +925,7 @@
                           const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books'));
                           const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books')); 
                       }
+
                       if(bookIdToFetch) {
                          getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', bookIdToFetch)).then(snap => { 
                              if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
@@ -924,6 +967,7 @@
             );
         }
 
+        // --- COMPONENTE DEL LIBRO ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
@@ -994,7 +1038,9 @@
                             })}
                         </div>
                     </div>
+                    {/* Botón Prev solo aparece si currentIdx >= 0 (libro abierto) */}
                     {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-chevron-left"></i></button>}
+                    {/* Botón Next siempre aparece si no es el final */}
                     {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-chevron-right"></i></button>}
                 </div>
             );
