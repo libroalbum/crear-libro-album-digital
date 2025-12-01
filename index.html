@@ -373,6 +373,11 @@
         }
         .action-btn:hover { transform: scale(1.05); background: var(--rim-color); color: #333; }
         @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
+        
+        /* MINI PREVIEWS FOR PORTFOLIO */
+        .preview-container { width: 100%; height: 100%; position: relative; overflow: hidden; border-radius: 12px; background: #eee; }
+        .mini-board-scaler { transform-origin: top left; width: 1600px; height: 900px; position: absolute; top:0; left:0; }
+        .mini-note { position: relative; background: var(--sb-yellow); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 5px; font-size: 10px; display: flex; flex-direction: column; overflow: hidden; height: 140px; }
     </style>
 </head>
 <body>
@@ -443,11 +448,137 @@
             ]
         };
 
+        /* --- MINI PREVIEWS FOR PORTFOLIO --- */
+        function MiniMoodboard({ items }) {
+            if (!items || items.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
+            return (
+                <div className="preview-container bg-blue-500 relative">
+                    <div className="mini-board-scaler" style={{ transform: 'scale(0.25)' }}>
+                        {items.map((item, i) => (
+                            <div key={i} style={{
+                                position: 'absolute', left: item.left, top: item.top, transform: item.transform, zIndex: item.zIndex,
+                                width: item.width || 'auto', height: item.height || 'auto', background: 'white', padding: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
+                            }}>
+                                {item.type === 'text' ? 
+                                    <div style={{fontSize: '1.5rem', fontFamily: 'Permanent Marker', textAlign:'center'}}>{item.content}</div> : 
+                                    <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>
+                                }
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function MiniStoryboard({ notes }) {
+            if (!notes || notes.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
+            return (
+                <div className="preview-container bg-gray-100">
+                    <div className="mini-board-scaler p-5" style={{ transform: 'scale(0.28)', display:'grid', gridTemplateColumns:'repeat(auto-fill, 240px)', gap:'25px', width:'100%' }}>
+                        {notes.map((note, i) => (
+                            <div key={i} className="mini-note" style={{ backgroundColor: note.color || '#FFEA00' }}>
+                                <div className="font-bold mb-1">Escena #{note.sceneNum}</div>
+                                <div className="bg-white/50 p-1 mb-1 rounded text-[10px] h-10 overflow-hidden">{note.sceneText}</div>
+                                <div className="bg-white/50 p-1 rounded text-[10px] h-10 overflow-hidden"><i>{note.dialogText}</i></div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // --- LOGIN SCREEN (MOVIDO AL INICIO PARA EVITAR ERROR) ---
+        function LoginScreen({ setUser }) {
+            const [email, setEmail] = useState(''); 
+            const [password, setPassword] = useState(''); 
+            const [isRegister, setIsRegister] = useState(false);
+            const [isReset, setIsReset] = useState(false);
+
+            const handleAuth = async (e) => { 
+                e.preventDefault(); 
+                try { 
+                    if (isRegister) await createUserWithEmailAndPassword(auth, email, password); 
+                    else await signInWithEmailAndPassword(auth, email, password); 
+                } catch (err) { alert(err.message); } 
+            };
+
+            const handleGoogleLogin = async () => {
+                try {
+                    const provider = new GoogleAuthProvider();
+                    await signInWithPopup(auth, provider);
+                } catch (error) {
+                    alert(error.message);
+                }
+            };
+
+            const handleReset = async (e) => {
+                e.preventDefault();
+                if (!email) return alert("Escribe tu correo.");
+                try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); }
+            };
+
+            return (
+                <div className="login-split-wrapper">
+                    <div className="login-visual-side">
+                        <div className="visual-overlay">
+                            <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
+                            <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte tus historias con el mundo.</p>
+                        </div>
+                    </div>
+                    <div className="login-form-side">
+                        <div className="w-full max-w-md">
+                            <h1 className="login-brand-title">CREATOR STUDIO</h1>
+                            <p className="login-description">La plataforma definitiva para crear tu Libro Álbum Digital.<br/>Empieza tu aventura creativa ahora.</p>
+                            <div className="features-mini">
+                                <div className="feature-pill"><i className="fas fa-magic"></i> Edición Fácil</div>
+                                <div className="feature-pill"><i className="fas fa-palette"></i> Arte & Color</div>
+                                <div className="feature-pill"><i className="fas fa-share-alt"></i> Compartir</div>
+                            </div>
+                            <div className="login-box">
+                                {isReset ? (
+                                    <form onSubmit={handleReset} className="space-y-4">
+                                        <input className="input-field-clean" placeholder="Tu correo para recuperar" value={email} onChange={e=>setEmail(e.target.value)} />
+                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Enviar Enlace</button>
+                                        <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Cancelar</div>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={handleAuth} className="space-y-4">
+                                        <div className="relative">
+                                            <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} />
+                                        </div>
+                                        <div className="relative">
+                                            <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
+                                        </div>
+                                        <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
+                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
+                                        
+                                        <div className="relative flex py-2 items-center">
+                                            <div className="flex-grow border-t border-gray-200"></div>
+                                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs">O continúa con</span>
+                                            <div className="flex-grow border-t border-gray-200"></div>
+                                        </div>
+                                        <button type="button" onClick={handleGoogleLogin} className="btn-modern bg-white text-gray-700 w-full py-3 text-lg border border-gray-200 hover:bg-gray-50">
+                                            <i className="fab fa-google text-red-500"></i> Google
+                                        </button>
+
+                                        <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         // --- COMPONENTE MOODBOARD ---
         function MoodboardComponent({ user }) {
             const canvasRef = useRef(null);
             const [isSaving, setIsSaving] = useState(false);
-            const [showIntro, setShowIntro] = useState(true); // Restaurado el estado del modal
+            const [showIntro, setShowIntro] = useState(true);
+            const [isPasting, setIsPasting] = useState(false);
             const zIndexCounter = useRef(100);
 
             useEffect(() => {
@@ -459,15 +590,22 @@
                     } catch (e) { console.error("Error cargando moodboard", e); }
                 };
                 loadData();
+
                 const handlePaste = (e) => {
                     const items = e.clipboardData.items;
+                    let blob = null;
+                    // 1. Buscar imagen binaria
                     for (let i = 0; i < items.length; i++) {
                         if (items[i].type.indexOf('image') !== -1) {
-                            const blob = items[i].getAsFile();
-                            uploadImageToStorage(blob, `users/${user.uid}/moodboard/paste_${Date.now()}`)
-                                .then(url => createImageElement(url))
-                                .catch(err => alert("Error al pegar imagen: " + err));
+                            blob = items[i].getAsFile();
+                            break;
                         }
+                    }
+                    if (blob) {
+                        setIsPasting(true);
+                        uploadImageToStorage(blob, `users/${user.uid}/moodboard/paste_${Date.now()}`)
+                            .then(url => { createImageElement(url); setIsPasting(false); })
+                            .catch(err => { alert("Error al pegar imagen: " + err); setIsPasting(false); });
                     }
                 };
                 document.addEventListener('paste', handlePaste);
@@ -589,7 +727,8 @@
             };
 
             return (
-                <div className="moodboard-wrapper">
+                <div className="moodboard-wrapper relative">
+                    {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Pegando imagen...</div>}
                     {showIntro && (
                         <div className="mb-intro-overlay">
                             <div className="mb-intro-modal">
@@ -623,11 +762,11 @@
             );
         }
 
-        // --- COMPONENTE STORYBOARD (NUEVO Y ADAPTADO) ---
+        // --- COMPONENTE STORYBOARD ---
         function StoryboardComponent({ user }) {
             const boardRef = useRef(null);
             const [isSaving, setIsSaving] = useState(false);
-            const [showIntro, setShowIntro] = useState(true); // Restaurado modal
+            const [showIntro, setShowIntro] = useState(true);
             
             const colors = [
                 { bg: '#FFEB3B', name: 'Amarillo Sol' }, { bg: '#FF4081', name: 'Fucsia Neón' }, 
@@ -640,10 +779,10 @@
                     if (!user) return;
                     try {
                         const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'));
-                        if (docSnap.exists()) {
+                        if (docSnap.exists() && docSnap.data().notes && docSnap.data().notes.length > 0) {
                             restoreBoard(docSnap.data().notes);
                         } else {
-                            // Inicialización masiva para el Grid (Como en el original)
+                            // Inicialización masiva si está vacío (Recupera la estructura de Grid)
                             const initialNotesCount = 10;
                             const sampleData = [
                                 { scene: "Intro: Parque soleado", dialog: "¡Qué buen día!" },
@@ -1155,92 +1294,6 @@
             );
         }
 
-        // --- LOGIN SCREEN ---
-        function LoginScreen({ setUser }) {
-            const [email, setEmail] = useState(''); 
-            const [password, setPassword] = useState(''); 
-            const [isRegister, setIsRegister] = useState(false);
-            const [isReset, setIsReset] = useState(false);
-
-            const handleAuth = async (e) => { 
-                e.preventDefault(); 
-                try { 
-                    if (isRegister) await createUserWithEmailAndPassword(auth, email, password); 
-                    else await signInWithEmailAndPassword(auth, email, password); 
-                } catch (err) { alert(err.message); } 
-            };
-
-            const handleGoogleLogin = async () => {
-                try {
-                    const provider = new GoogleAuthProvider();
-                    await signInWithPopup(auth, provider);
-                } catch (error) {
-                    alert(error.message);
-                }
-            };
-
-            const handleReset = async (e) => {
-                e.preventDefault();
-                if (!email) return alert("Escribe tu correo.");
-                try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); }
-            };
-
-            return (
-                <div className="login-split-wrapper">
-                    <div className="login-visual-side">
-                        <div className="visual-overlay">
-                            <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
-                            <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte tus historias con el mundo.</p>
-                        </div>
-                    </div>
-                    <div className="login-form-side">
-                        <div className="w-full max-w-md">
-                            <h1 className="login-brand-title">CREATOR STUDIO</h1>
-                            <p className="login-description">La plataforma definitiva para crear tu Libro Álbum Digital.<br/>Empieza tu aventura creativa ahora.</p>
-                            <div className="features-mini">
-                                <div className="feature-pill"><i className="fas fa-magic"></i> Edición Fácil</div>
-                                <div className="feature-pill"><i className="fas fa-palette"></i> Arte & Color</div>
-                                <div className="feature-pill"><i className="fas fa-share-alt"></i> Compartir</div>
-                            </div>
-                            <div className="login-box">
-                                {isReset ? (
-                                    <form onSubmit={handleReset} className="space-y-4">
-                                        <input className="input-field-clean" placeholder="Tu correo para recuperar" value={email} onChange={e=>setEmail(e.target.value)} />
-                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Enviar Enlace</button>
-                                        <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Cancelar</div>
-                                    </form>
-                                ) : (
-                                    <form onSubmit={handleAuth} className="space-y-4">
-                                        <div className="relative">
-                                            <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
-                                            <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} />
-                                        </div>
-                                        <div className="relative">
-                                            <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
-                                            <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
-                                        </div>
-                                        <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
-                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
-                                        
-                                        <div className="relative flex py-2 items-center">
-                                            <div className="flex-grow border-t border-gray-200"></div>
-                                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs">O continúa con</span>
-                                            <div className="flex-grow border-t border-gray-200"></div>
-                                        </div>
-                                        <button type="button" onClick={handleGoogleLogin} className="btn-modern bg-white text-gray-700 w-full py-3 text-lg border border-gray-200 hover:bg-gray-50">
-                                            <i className="fab fa-google text-red-500"></i> Google
-                                        </button>
-
-                                        <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
-                                    </form>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
         // --- DASHBOARD ---
         function Dashboard({ user, setView }) {
             const [activeSection, setActiveSection] = useState('inicio');
@@ -1249,6 +1302,10 @@
             const [userProfile, setUserProfile] = useState({ name: user.email ? user.email.split('@')[0] : 'Creador', photo: user.photoURL || '' });
             const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
             const [zoom, setZoom] = useState(1);
+            
+            // STATES FOR PREVIEWS
+            const [moodboardItems, setMoodboardItems] = useState([]);
+            const [storyboardNotes, setStoryboardNotes] = useState([]);
 
             useEffect(() => { 
                 if(!user) return; 
@@ -1261,6 +1318,15 @@
                         setUserProfile({ name: user.displayName || 'Creador', photo: user.photoURL || '' });
                     }
                 });
+                
+                // FETCH PREVIEW DATA
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'), (doc) => {
+                    if (doc.exists()) setMoodboardItems(doc.data().items);
+                });
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'), (doc) => {
+                    if (doc.exists()) setStoryboardNotes(doc.data().notes);
+                });
+
             }, [user]);
 
             const saveProfile = async () => {
@@ -1291,24 +1357,6 @@
                 }
             };
 
-            const uploadEvidence = async (type, e) => {
-                const file = e.target.files[0]; if(!file) return;
-                const container = e.target.parentElement;
-                const overlay = container.querySelector('.absolute.inset-0');
-                if(overlay) overlay.innerHTML = '<i class="fas fa-spinner fa-spin text-white text-3xl"></i>';
-
-                try {
-                    const path = `users/${user.uid}/portfolio/${type}_${Date.now()}`;
-                    const url = await uploadImageToStorage(file, path);
-                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { [type]: url }, { merge: true });
-                    alert("¡Imagen subida correctamente!");
-                } catch(err) {
-                    alert("Error: " + err.message);
-                } finally {
-                    if(overlay) overlay.innerHTML = '<i class="fas fa-upload text-white text-3xl"></i>';
-                }
-            };
-
             const getSectionTitle = () => {
                 const titles = {
                     'inicio': 'Mi Estudio',
@@ -1325,6 +1373,14 @@
             };
 
             const renderActivityContent = () => {
+                const zoomControls = (
+                    <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-gray-200 shadow-sm ml-auto">
+                        <button onClick={()=>setZoom(z=>Math.max(0.5, z-0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-minus"></i></button>
+                        <span className="text-xs font-bold w-8 text-center">{Math.round(zoom*100)}%</span>
+                        <button onClick={()=>setZoom(z=>Math.min(1.5, z+0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-plus"></i></button>
+                    </div>
+                );
+
                 const frameStyle = { width: `${100/zoom}%`, height: `${100/zoom}%`, transform: `scale(${zoom})`, transformOrigin: '0 0' };
                 const containerClass = "flex-1 bg-white rounded-3xl overflow-hidden shadow-sm border-4 relative h-full"; 
 
@@ -1366,17 +1422,15 @@
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Evidencias del Proceso</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10">
-                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-mood').click()}>
-                                                <div className="absolute top-4 left-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold z-10">MOODBOARD</div>
-                                                {portfolioData.moodboard ? <img src={portfolioData.moodboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
-                                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
-                                                <input type="file" id="upl-mood" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
+                                            {/* MINI MOODBOARD */}
+                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group overflow-hidden h-80 cursor-pointer hover:shadow-lg transition" onClick={()=>setActiveSection('moodboard')}>
+                                                <div className="absolute top-4 left-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold z-10">MOODBOARD (Vista Previa)</div>
+                                                <MiniMoodboard items={moodboardItems} />
                                             </div>
-                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-story').click()}>
-                                                <div className="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">STORYBOARD</div>
-                                                {portfolioData.storyboard ? <img src={portfolioData.storyboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
-                                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
-                                                <input type="file" id="upl-story" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
+                                            {/* MINI STORYBOARD */}
+                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group overflow-hidden h-80 cursor-pointer hover:shadow-lg transition" onClick={()=>setActiveSection('storyboard')}>
+                                                <div className="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">STORYBOARD (Vista Previa)</div>
+                                                <MiniStoryboard notes={storyboardNotes} />
                                             </div>
                                     </div>
                                 </div>
