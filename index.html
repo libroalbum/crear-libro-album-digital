@@ -214,7 +214,8 @@
 
     <script type="text/babel" data-type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        /* AJUSTE 1: Importamos GoogleAuthProvider y signInWithPopup */
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const { useState, useEffect, useRef } = React;
@@ -622,6 +623,16 @@
                 } catch (err) { alert(err.message); } 
             };
 
+            /* AJUSTE 2: Función para Login con Google */
+            const handleGoogleLogin = async () => {
+                try {
+                    const provider = new GoogleAuthProvider();
+                    await signInWithPopup(auth, provider);
+                } catch (error) {
+                    alert(error.message);
+                }
+            };
+
             const handleReset = async (e) => {
                 e.preventDefault();
                 if (!email) return alert("Escribe tu correo.");
@@ -664,6 +675,18 @@
                                         </div>
                                         <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
                                         <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
+                                        
+                                        {/* AJUSTE 3: Botón de Google */}
+                                        <div className="relative flex py-2 items-center">
+                                            <div className="flex-grow border-t border-gray-200"></div>
+                                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs">O continúa con</span>
+                                            <div className="flex-grow border-t border-gray-200"></div>
+                                        </div>
+                                        <button type="button" onClick={handleGoogleLogin} className="btn-modern bg-white text-gray-700 w-full py-3 text-lg border border-gray-200 hover:bg-gray-50">
+                                            <i className="fab fa-google text-red-500"></i> Google
+                                        </button>
+                                        {/* FIN AJUSTE 3 */}
+
                                         <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
                                     </form>
                                 )}
@@ -679,7 +702,7 @@
             const [activeSection, setActiveSection] = useState('inicio');
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
-            const [userProfile, setUserProfile] = useState({ name: user.email.split('@')[0], photo: '' });
+            const [userProfile, setUserProfile] = useState({ name: user.email ? user.email.split('@')[0] : 'Creador', photo: user.photoURL || '' });
             const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
             const [zoom, setZoom] = useState(1);
 
@@ -688,7 +711,13 @@
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
                 onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()}))));
                 onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (doc) => { if(doc.exists()) setPortfolioData(doc.data()); });
-                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => { if(doc.exists()) setUserProfile(doc.data()); });
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => { 
+                    if(doc.exists()) setUserProfile(doc.data()); 
+                    else if(user.displayName || user.photoURL) {
+                        // Auto-fill from Google if fresh account
+                        setUserProfile({ name: user.displayName || 'Creador', photo: user.photoURL || '' });
+                    }
+                });
             }, [user]);
 
             const saveProfile = async () => {
@@ -698,6 +727,7 @@
 
             const handleProfilePic = (e) => {
                 const file = e.target.files[0];
+                const reader = new FileReader();
                 if(file) processImage(file, (base64) => setUserProfile({...userProfile, photo: base64}));
             };
 
