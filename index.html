@@ -8,11 +8,9 @@
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- HTML2CANVAS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <!-- FUENTES -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Dosis:wght@400;600;800&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&family=Fredoka:wght@400;600&family=Permanent+Marker&family=Bangers&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Dosis:wght@400;600;800&family=Cinzel:wght@700&family=Merriweather&family=Luckiest+Guy&display=swap" rel="stylesheet">
 
     <!-- REACT -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -37,18 +35,6 @@
             --dark-text: #1e293b;
             --muted-text: #64748b;
             --book-width: 460px; --book-height: 600px; --paper-texture: #fdfbf7; --text-color: #2c3e50; --accent-color: #5d4037; --gold-color: #d4af37; --endpaper-bg: #a5d6a7; --endpaper-dot: #ffffff; 
-            
-            /* MOODBOARD VARS */
-            --mat-yellow: #FFEB3B;
-            --mat-red: #F44336;
-            --mat-blue: #2196F3;
-            --mat-green: #4CAF50;
-            --rim-color: #FFD700; 
-
-            /* STORYBOARD VARS */
-            --sb-bg: #f0f4f8;
-            --sb-yellow: #FFEA00;
-            --sb-shadow: 0 4px 6px rgba(0,0,0,0.15);
         }
 
         html, body, #root { height: 100%; margin: 0; padding: 0; overflow: hidden; }
@@ -220,164 +206,6 @@
         .ped-cloud p { font-family: 'Outfit', sans-serif; font-size: 0.9rem; color: #4b5563; line-height: 1.5; margin: 0; }
         .ped-character { width: 130px; height: auto; margin-right: 10px; transform: scaleX(-1); filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        /* --- ESTILOS MOODBOARD --- */
-        .moodboard-wrapper {
-            position: relative; width: 100%; height: 100%; background-color: #263238; 
-            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 40px 40px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-            border-radius: 20px;
-        }
-        #doodle-mat {
-            position: relative; width: 95%; height: 90%; max-width: 1600px; background-color: var(--mat-blue);
-            background-image: linear-gradient(90deg, var(--mat-red) 25%, var(--mat-yellow) 25%, var(--mat-yellow) 50%, var(--mat-blue) 50%, var(--mat-blue) 75%, var(--mat-green) 75%);
-            background-size: 100px 100%; display: flex; flex-direction: column; padding: 60px; padding-top: 0;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 20px;
-        }
-        #mat-header {
-            background-color: var(--mat-red); width: calc(100% + 120px); margin-left: -60px; height: 80px;
-            display: flex; align-items: center; justify-content: center; border-bottom: 5px solid rgba(0,0,0,0.1);
-            position: relative; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 20px 20px 0 0;
-        }
-        #mat-title { font-family: 'Bangers', cursive; font-size: 3rem; color: #fff; text-shadow: 2px 2px 0px #333, 4px 4px 0px rgba(0,0,0,0.2); letter-spacing: 2px; }
-        #canvas-area {
-            flex-grow: 1; width: 100%; background-color: white; border-radius: 0 0 15px 15px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.15); position: relative; z-index: 2; overflow: hidden;
-            background-image: radial-gradient(#ddd 1px, transparent 1px); background-size: 25px 25px;
-            display: flex; justify-content: center; align-items: flex-start;
-        }
-        #instruction-text { margin-top: 20px; font-family: 'Fredoka', sans-serif; color: #ccc; font-size: 1.2rem; text-align: center; pointer-events: none; user-select: none; z-index: 0; }
-        #toolbar {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.95);
-            padding: 8px 20px; border-radius: 50px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); display: flex; gap: 15px; z-index: 5000;
-            border: 3px solid var(--rim-color); transition: z-index 0.3s;
-        }
-        .tool-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #555; transition: 0.2s; position: relative; }
-        .tool-btn i { font-size: 1.4rem; margin-bottom: 2px; background: #f0f0f0; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; box-shadow: 0 3px 5px rgba(0,0,0,0.15); }
-        .tool-btn:hover i { transform: translateY(-5px) scale(1.1); color: white; }
-        #btn-text:hover i { background: var(--mat-red); }
-        #btn-image:hover i { background: var(--mat-blue); }
-        #btn-clear:hover i { background: #ff5252; }
-        #btn-save:hover i { background: var(--mat-green); }
-        #btn-save-cloud:hover i { background: #6366f1; }
-        
-        .board-item {
-            position: absolute; display: inline-block; cursor: grab; transition: box-shadow 0.2s; transform-origin: center center;
-            background: white; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-radius: 4px;
-            min-width: 100px; min-height: 100px; border: 1px solid #eee; z-index: 100;
-        }
-        .board-item:active { cursor: grabbing; }
-        .board-item.selected { box-shadow: 0 0 0 3px var(--mat-blue), 0 15px 40px rgba(0,0,0,0.3); z-index: 1000 !important; }
-        .board-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; display: block; }
-        .board-item.text-item { background: rgba(255,255,255,0.9); padding: 10px; border: 1px solid #eee; }
-        .text-content { font-family: 'Permanent Marker', cursive; font-size: 1.5rem; color: #333; outline: none; background: transparent; width: 100%; height: 100%; text-align: center; cursor: text; user-select: text; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
-        .handle-btn { width: 30px; height: 30px; border-radius: 50%; position: absolute; display: none; align-items: center; justify-content: center; font-size: 1rem; color: white; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); cursor: pointer; z-index: 2000; }
-        .board-item.selected .handle-btn { display: flex; }
-        .delete-handle { background: #ff5252; top: -18px; left: -18px; }
-        .resize-handle { background: var(--mat-blue); top: -18px; right: -18px; cursor: nwse-resize; }
-        .rotate-handle { background: var(--mat-yellow); color: #333; top: -30px; left: 50%; transform: translateX(-50%); cursor: grab; }
-        .rotate-handle:active { cursor: grabbing; }
-
-        /* --- ESTILOS STORYBOARD --- */
-        .storyboard-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; background-color: var(--sb-bg); background-image: radial-gradient(var(--dot-color) 2px, transparent 2px); background-size: 30px 30px; overflow-y: auto; padding: 20px; }
-        
-        #sb-toolbar {
-            position: sticky; top: 10px; margin-bottom: 30px; z-index: 2000;
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-            padding: 10px 20px; border-radius: 50px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            display: flex; gap: 12px; align-items: center;
-            border: 2px solid white; flex-wrap: wrap; justify-content: center;
-        }
-        
-        .btn-main {
-            border: none; padding: 10px 20px; border-radius: 30px;
-            font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.95rem;
-            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-            display: flex; align-items: center; gap: 8px; white-space: nowrap;
-            color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .btn-main:hover { transform: translateY(-2px); }
-        .btn-main:active { transform: scale(0.95); }
-        #btn-add { background: linear-gradient(135deg, #FF4081, #F50057); }
-        #btn-save { background: linear-gradient(135deg, #00E5FF, #00B0FF); }
-        #btn-save-cloud { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
-
-        #sb-board {
-            width: 100%; display: grid;
-            grid-template-columns: repeat(auto-fit, 240px); grid-auto-rows: 250px; 
-            gap: 25px; justify-content: center; padding-bottom: 50px;
-        }
-
-        .note {
-            position: relative; width: 100%; height: 100%;
-            background-color: var(--sb-yellow); border-radius: 16px; 
-            box-shadow: var(--sb-shadow); padding: 10px 15px 15px 15px; 
-            display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;
-            cursor: grab; overflow: hidden;
-        }
-        .note.sortable-dragging { opacity: 0.5; transform: scale(0.95); border: 2px dashed #333; cursor: grabbing; }
-        .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .page-toggle { font-size: 0.75rem; font-weight: 700; color: rgba(0,0,0,0.6); display: flex; align-items: center; gap: 4px; cursor: pointer; background: rgba(255,255,255,0.4); padding: 2px 6px; border-radius: 8px; }
-        .scene-badge { background: rgba(255,255,255,0.6); border-radius: 12px; padding: 2px 8px; font-size: 0.8rem; font-weight: 700; color: #444; display: flex; align-items: center; gap: 5px; }
-        .scene-number-input { width: 30px; border: none; background: transparent; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.9rem; color: #222; text-align: center; outline: none; }
-        .note-body { flex-grow: 1; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
-        .field-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: rgba(0,0,0,0.6); margin-bottom: 1px; display: flex; align-items: center; gap: 5px; }
-        .editable-area {
-            width: 100%; background: rgba(255,255,255,0.4); border-radius: 8px; padding: 6px 8px; 
-            font-size: 0.7rem; line-height: 1.25; color: #222; font-weight: 500; outline: none; 
-            border: 1px solid transparent; min-height: 40px; flex-grow: 1; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto;
-        }
-        .editable-area:focus { background: rgba(255,255,255,0.8); }
-        .editable-area:empty:before { content: attr(placeholder); color: rgba(0,0,0,0.3); font-style: italic; }
-        .note-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; opacity: 0; transition: opacity 0.2s; }
-        .note:hover .note-controls { opacity: 1; }
-        .color-picker { display: flex; gap: 4px; }
-        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.6); transition: transform 0.2s; }
-        .color-dot:hover { transform: scale(1.2); }
-        .btn-delete { background: rgba(255,255,255,0.5); border: none; color: #d32f2f; font-size: 1rem; cursor: pointer; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .btn-delete:hover { background: rgba(255, 82, 82, 0.3); }
-
-        /* INTRO OVERLAYS - MOODBOARD & STORYBOARD */
-        .mb-intro-overlay, .sb-intro-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 9999; 
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        .mb-intro-modal {
-            background: #fff; width: 90%; max-width: 550px; padding: 40px;
-            border-radius: 20px; text-align: center; border: 5px solid var(--rim-color);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-family: 'Lato', sans-serif;
-            position: relative; animation: popIn 0.5s;
-        }
-        .sb-intro-modal {
-            background: #fff; width: 90%; max-width: 500px; padding: 40px 30px;
-            border-radius: 20px; text-align: center; position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 4px solid var(--gold-color);
-            font-family: 'Lato', sans-serif; animation: popIn 0.5s;
-        }
-        .intro-character-circle {
-            width: 120px; height: 120px; background: var(--endpaper-bg); 
-            border-radius: 50%; margin: -70px auto 20px auto; 
-            border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-            overflow: hidden; display: flex; align-items: flex-end; justify-content: center;
-        }
-        .intro-character-img { width: 80%; height: auto; }
-        .intro-title { font-family: 'Cinzel', serif; color: var(--accent-color); font-size: 2rem; margin-bottom: 20px; }
-        .intro-text { color: #555; line-height: 1.6; font-size: 1.1rem; margin-bottom: 30px; }
-        .action-btn {
-            background: var(--accent-color); color: white; padding: 12px 30px; border: none;
-            border-radius: 30px; font-size: 1.1rem; cursor: pointer; font-family: 'Cinzel', serif;
-            transition: 0.3s;
-        }
-        .action-btn:hover { transform: scale(1.05); background: var(--rim-color); color: #333; }
-        @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
-        
-        /* MINI PREVIEWS FOR PORTFOLIO (FIXED) */
-        .preview-container { width: 100%; height: 100%; position: relative; overflow: hidden; border-radius: 12px; background: #eee; }
-        .mini-board-scaler { transform-origin: top left; width: 100%; height: 100%; position: absolute; top:0; left:0; }
-        .mini-note { position: relative; background: var(--sb-yellow); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 5px; font-size: 10px; display: flex; flex-direction: column; overflow: hidden; height: 140px; }
     </style>
 </head>
 <body>
@@ -386,9 +214,8 @@
 
     <script type="text/babel" data-type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const { useState, useEffect, useRef } = React;
 
@@ -402,69 +229,29 @@
             measurementId: "G-C9LFEFG2Z0"
         };
 
-        let app, auth, db, storage;
-        try { 
-            app = initializeApp(firebaseConfig); 
-            auth = getAuth(app); 
-            db = getFirestore(app); 
-            storage = getStorage(app); 
-        } catch (e) { console.error(e); }
+        let app, auth, db;
+        try { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); } catch (e) { console.error(e); }
 
-        // --- UTILS DE SUBIDA OPTIMIZADOS (TURBO MODE) ---
-        const uploadOriginal = async (blobOrFile, path, resolve, reject) => {
-            try {
-                const storageRef = ref(storage, path);
-                const snapshot = await uploadBytes(storageRef, blobOrFile);
-                const url = await getDownloadURL(snapshot.ref);
-                resolve(url);
-            } catch (err) { reject(err); }
+        // --- UTILS ---
+        const processImage = (file, callback) => {
+            if (!file) return;
+            if (file.size > 2000000) { if(!confirm("Imagen grande. ¿Seguir?")) return; }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_WIDTH = 800; let width = img.width; let height = img.height;
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.8));
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(file);
         };
 
-        const uploadImageToStorage = async (file, path) => {
-            return new Promise((resolve, reject) => {
-                // 1. Validación básica
-                if (!file.type.startsWith('image/')) {
-                    return reject("El archivo no es una imagen válida");
-                }
-
-                // 2. TURBO MODE: Si pesa menos de 1MB, sube directo (saltar canvas)
-                // Esto soluciona el 90% de los bloqueos por "cargando"
-                if (file.size < 1024 * 1024) {
-                    uploadOriginal(file, path, resolve, reject);
-                    return;
-                }
-
-                // 3. Intento de optimización para imágenes grandes
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const MAX_WIDTH = 800; let width = img.width; let height = img.height;
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                        canvas.width = width; canvas.height = height;
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        canvas.toBlob(async (blob) => {
-                            if (!blob) {
-                                // Si falla la compresión, subimos original como fallback
-                                uploadOriginal(file, path, resolve, reject);
-                                return;
-                            }
-                            uploadOriginal(blob, path, resolve, reject);
-                        }, 'image/jpeg', 0.8);
-                    }; 
-                    // Si la imagen falla al cargar (ej: formato webp raro), subimos original
-                    img.onerror = () => uploadOriginal(file, path, resolve, reject);
-                    img.src = e.target.result;
-                };
-                // Si el lector falla, subimos original
-                reader.onerror = () => uploadOriginal(file, path, resolve, reject);
-                reader.readAsDataURL(file);
-            });
-        };
-
+        // --- MASTER TEMPLATE ---
         const MASTER_TEMPLATE = {
             title: "Nuevo Libro",
             pages: [
@@ -476,523 +263,7 @@
             ]
         };
 
-        /* --- MINI PREVIEWS FOR PORTFOLIO (FIXED) --- */
-        function MiniMoodboard({ items }) {
-            if (!items || items.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
-            
-            return (
-                <div className="preview-container relative" style={{background: 'var(--mat-blue)', backgroundImage: 'linear-gradient(90deg, var(--mat-red) 25%, var(--mat-yellow) 25%, var(--mat-yellow) 50%, var(--mat-blue) 50%, var(--mat-blue) 75%, var(--mat-green) 75%)', backgroundSize: '100px 100%'}}>
-                    <div className="absolute inset-0 bg-white m-2 rounded-lg overflow-hidden">
-                        {items.map((item, i) => {
-                            // Parseamos posiciones relativas simples para la vista previa
-                            const leftVal = parseInt(item.left) || 0;
-                            const topVal = parseInt(item.top) || 0;
-                            const scaleFactor = 0.2; // Escala fija para vista previa
-                            
-                            return (
-                                <div key={i} style={{
-                                    position: 'absolute', 
-                                    left: leftVal * scaleFactor, 
-                                    top: topVal * scaleFactor, 
-                                    transform: item.transform, 
-                                    zIndex: item.zIndex,
-                                    width: (parseInt(item.width) || 150) * scaleFactor, 
-                                    height: 'auto', 
-                                    background: 'white', 
-                                    padding: '2px', 
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                                    fontSize: '0.5rem',
-                                    whiteSpace: 'nowrap'
-                                }}>
-                                    {item.type === 'text' ? 
-                                        <div style={{fontFamily: 'Permanent Marker', textAlign:'center', overflow:'hidden'}}>{item.content}</div> : 
-                                        <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>
-                                    }
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-            );
-        }
-
-        function MiniStoryboard({ notes }) {
-            if (!notes || notes.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
-            return (
-                <div className="preview-container bg-gray-100 p-2 overflow-hidden">
-                    <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'5px', width:'100%' }}>
-                        {notes.slice(0, 8).map((note, i) => ( // Mostramos solo las primeras 8 para que quepan
-                            <div key={i} style={{ backgroundColor: note.color || '#FFEA00', borderRadius: '4px', padding: '3px', height: '60px', overflow: 'hidden', fontSize: '6px', boxShadow:'0 1px 2px rgba(0,0,0,0.1)' }}>
-                                <div style={{fontWeight:'bold', marginBottom:'2px'}}>#{note.sceneNum}</div>
-                                <div style={{background:'rgba(255,255,255,0.5)', padding:'1px', marginBottom:'1px', borderRadius:'2px', height:'12px', overflow:'hidden'}}>{note.sceneText || '...'}</div>
-                                <div style={{background:'rgba(255,255,255,0.5)', padding:'1px', borderRadius:'2px', height:'12px', overflow:'hidden'}}><i>{note.dialogText || '...'}</i></div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        }
-
-        // --- LOGIN SCREEN (MOVIDO AL INICIO PARA EVITAR ERROR) ---
-        function LoginScreen({ setUser }) {
-            const [email, setEmail] = useState(''); 
-            const [password, setPassword] = useState(''); 
-            const [isRegister, setIsRegister] = useState(false);
-            const [isReset, setIsReset] = useState(false);
-
-            const handleAuth = async (e) => { 
-                e.preventDefault(); 
-                try { 
-                    if (isRegister) await createUserWithEmailAndPassword(auth, email, password); 
-                    else await signInWithEmailAndPassword(auth, email, password); 
-                } catch (err) { alert(err.message); } 
-            };
-
-            const handleGoogleLogin = async () => {
-                try {
-                    const provider = new GoogleAuthProvider();
-                    await signInWithPopup(auth, provider);
-                } catch (error) {
-                    alert(error.message);
-                }
-            };
-
-            const handleReset = async (e) => {
-                e.preventDefault();
-                if (!email) return alert("Escribe tu correo.");
-                try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); }
-            };
-
-            return (
-                <div className="login-split-wrapper">
-                    <div className="login-visual-side">
-                        <div className="visual-overlay">
-                            <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
-                            <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte tus historias con el mundo.</p>
-                        </div>
-                    </div>
-                    <div className="login-form-side">
-                        <div className="w-full max-w-md">
-                            <h1 className="login-brand-title">CREATOR STUDIO</h1>
-                            <p className="login-description">La plataforma definitiva para crear tu Libro Álbum Digital.<br/>Empieza tu aventura creativa ahora.</p>
-                            <div className="features-mini">
-                                <div className="feature-pill"><i className="fas fa-magic"></i> Edición Fácil</div>
-                                <div className="feature-pill"><i className="fas fa-palette"></i> Arte & Color</div>
-                                <div className="feature-pill"><i className="fas fa-share-alt"></i> Compartir</div>
-                            </div>
-                            <div className="login-box">
-                                {isReset ? (
-                                    <form onSubmit={handleReset} className="space-y-4">
-                                        <input className="input-field-clean" placeholder="Tu correo para recuperar" value={email} onChange={e=>setEmail(e.target.value)} />
-                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Enviar Enlace</button>
-                                        <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Cancelar</div>
-                                    </form>
-                                ) : (
-                                    <form onSubmit={handleAuth} className="space-y-4">
-                                        <div className="relative">
-                                            <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
-                                            <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} />
-                                        </div>
-                                        <div className="relative">
-                                            <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
-                                            <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
-                                        </div>
-                                        <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
-                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
-                                        
-                                        <div className="relative flex py-2 items-center">
-                                            <div className="flex-grow border-t border-gray-200"></div>
-                                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs">O continúa con</span>
-                                            <div className="flex-grow border-t border-gray-200"></div>
-                                        </div>
-                                        <button type="button" onClick={handleGoogleLogin} className="btn-modern bg-white text-gray-700 w-full py-3 text-lg border border-gray-200 hover:bg-gray-50">
-                                            <i className="fab fa-google text-red-500"></i> Google
-                                        </button>
-
-                                        <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
-                                    </form>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // --- CORRECCIÓN: Componente aislado para evitar que React borre el DOM manual ---
-        const CanvasInternal = React.memo(React.forwardRef((props, ref) => {
-            return (
-                <div id="canvas-area" ref={ref} onClick={props.onClick}>
-                    <p id="instruction-text">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>
-                </div>
-            );
-        }), () => true); // El 'true' fuerza a que este componente NUNCA se re-renderice
-
-        // --- COMPONENTE MOODBOARD ---
-        function MoodboardComponent({ user }) {
-            const canvasRef = useRef(null);
-            const [isSaving, setIsSaving] = useState(false);
-            const [showIntro, setShowIntro] = useState(true);
-            const [isPasting, setIsPasting] = useState(false);
-            const zIndexCounter = useRef(100);
-
-            useEffect(() => {
-                const loadData = async () => {
-                    if (!user) return;
-                    try {
-                        const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'));
-                        if (docSnap.exists()) { restoreBoard(docSnap.data().items); }
-                    } catch (e) { console.error("Error cargando moodboard", e); }
-                };
-                loadData();
-
-                const handlePaste = (e) => {
-                    const items = e.clipboardData.items;
-                    let blob = null;
-                    
-                    // 1. Buscar imagen binaria (Ctrl+V típico)
-                    for (let i = 0; i < items.length; i++) {
-                        if (items[i].type.indexOf('image') !== -1) {
-                            blob = items[i].getAsFile();
-                            break;
-                        }
-                    }
-
-                    if (blob) {
-                        setIsPasting(true);
-                        uploadImageToStorage(blob, `users/${user.uid}/moodboard/paste_${Date.now()}`)
-                            .then(url => { createImageElement(url); setIsPasting(false); })
-                            .catch(err => { alert("Error al pegar imagen: " + err); setIsPasting(false); });
-                    }
-                };
-                document.addEventListener('paste', handlePaste);
-                return () => document.removeEventListener('paste', handlePaste);
-            }, [user]);
-
-            const createBoardElement = (type) => {
-                const div = document.createElement('div');
-                div.className = 'board-item';
-                div.style.zIndex = zIndexCounter.current++;
-                div.style.transform = `rotate(0deg)`;
-                div.style.left = '50px'; div.style.top = '50px'; 
-
-                if (type === 'text') {
-                    div.classList.add('text-item');
-                    const p = document.createElement('div');
-                    p.contentEditable = false; p.className = 'text-content'; p.innerText = "¡Doble clic para editar!";
-                    div.ondblclick = (e) => { e.stopPropagation(); p.contentEditable = true; p.focus(); div.draggable = false; };
-                    p.onblur = () => { p.contentEditable = false; };
-                    p.onmousedown = (e) => { if(p.isContentEditable) e.stopPropagation(); };
-                    div.appendChild(p); addControls(div);
-                }
-                
-                const startDrag = (e) => {
-                    if (type === 'text' && div.querySelector('.text-content').isContentEditable) return;
-                    if (e.target.classList.contains('handle-btn') || e.target.closest('.handle-btn')) return;
-                    document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected'));
-                    div.classList.add('selected');
-                    let startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                    let startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-                    let startLeft = div.offsetLeft; let startTop = div.offsetTop;
-                    const move = (ev) => {
-                        ev.preventDefault();
-                        const cx = ev.type.includes('mouse') ? ev.clientX : ev.touches[0].clientX;
-                        const cy = ev.type.includes('mouse') ? ev.clientY : ev.touches[0].clientY;
-                        div.style.left = (startLeft + cx - startX) + 'px';
-                        div.style.top = (startTop + cy - startY) + 'px';
-                    };
-                    const stop = () => {
-                        document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop);
-                        document.removeEventListener('touchmove', move); document.removeEventListener('touchend', stop);
-                    };
-                    document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop);
-                    document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', stop);
-                };
-                div.onmousedown = startDrag; div.ontouchstart = startDrag;
-                return div;
-            };
-
-            const addControls = (el) => {
-                const delBtn = document.createElement('div'); delBtn.className = 'handle-btn delete-handle'; delBtn.innerHTML = '<i class="fas fa-times"></i>';
-                delBtn.onclick = (e) => { e.stopPropagation(); el.remove(); };
-                el.appendChild(delBtn);
-                const rotBtn = document.createElement('div'); rotBtn.className = 'handle-btn rotate-handle'; rotBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
-                rotBtn.onmousedown = (e) => {
-                    e.stopPropagation();
-                    const rect = el.getBoundingClientRect(); const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2;
-                    const move = (ev) => {
-                        const cx = ev.clientX; const cy = ev.clientY;
-                        const angle = Math.atan2(cy - centerY, cx - centerX);
-                        el.style.transform = `rotate(${angle}rad)`;
-                    };
-                    const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); };
-                    document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop);
-                };
-                el.appendChild(rotBtn);
-            };
-
-            const addText = () => { const el = createBoardElement('text'); canvasRef.current.appendChild(el); };
-            const createImageElement = (src) => {
-                const el = createBoardElement('image'); const img = document.createElement('img');
-                img.src = src; img.ondragstart = () => false;
-                el.appendChild(img); addControls(el); canvasRef.current.appendChild(el);
-            };
-            const handleImageUpload = (e) => {
-                const file = e.target.files[0];
-                if(file) {
-                    setIsPasting(true); // Reutilizamos el loader
-                    uploadImageToStorage(file, `users/${user.uid}/moodboard/upl_${Date.now()}`)
-                        .then(url => { createImageElement(url); setIsPasting(false); })
-                        .catch(err => { alert("Error: " + err); setIsPasting(false); });
-                    
-                    e.target.value = ''; // Reset input value to allow same file upload
-                }
-            };
-            const clearBoard = () => { if(confirm("¿Borrar todo?")) canvasRef.current.innerHTML = '<p id="instruction-text">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; };
-            const downloadImage = () => {
-                document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected'));
-                html2canvas(document.querySelector('.moodboard-wrapper'), { useCORS: true, scale: 2 }).then(canvas => {
-                    const link = document.createElement('a'); link.download = 'mi-moodboard.png'; link.href = canvas.toDataURL(); link.click();
-                });
-            };
-            const saveToCloud = async () => {
-                setIsSaving(true);
-                const items = [];
-                canvasRef.current.querySelectorAll('.board-item').forEach(el => {
-                    const isText = el.classList.contains('text-item');
-                    items.push({
-                        type: isText ? 'text' : 'image',
-                        left: el.style.left, top: el.style.top,
-                        transform: el.style.transform, zIndex: el.style.zIndex,
-                        width: el.style.width, height: el.style.height,
-                        content: isText ? el.querySelector('.text-content').innerText : el.querySelector('img').src
-                    });
-                });
-                try {
-                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'), { items });
-                    alert("¡Trabajo guardado en la nube!");
-                } catch(e) { alert("Error al guardar: " + e.message); }
-                setIsSaving(false);
-            };
-            const restoreBoard = (items) => {
-                if(!items) return;
-                canvasRef.current.innerHTML = '<p id="instruction-text">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>';
-                items.forEach(item => {
-                    const el = createBoardElement(item.type);
-                    el.style.left = item.left; el.style.top = item.top; el.style.transform = item.transform; el.style.zIndex = item.zIndex;
-                    if(item.width) el.style.width = item.width; if(item.height) el.style.height = item.height;
-                    if (item.type === 'text') { el.querySelector('.text-content').innerText = item.content; } 
-                    else { const img = document.createElement('img'); img.src = item.content; img.ondragstart = () => false; el.appendChild(img); addControls(el); }
-                    canvasRef.current.appendChild(el);
-                });
-            };
-
-            return (
-                <div className="moodboard-wrapper relative">
-                    {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Procesando imagen...</div>}
-                    {showIntro && (
-                        <div className="mb-intro-overlay">
-                            <div className="mb-intro-modal">
-                                <div className="intro-character-circle">
-                                    <img src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/personaje%20derecha.png" className="intro-character-img" alt="Guía"/>
-                                </div>
-                                <h2 className="intro-title">¡Bienvenido a tu Moodboard!</h2>
-                                <p className="intro-text">
-                                    Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.
-                                    <br/><br/>
-                                    <strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.
-                                </p>
-                                <button className="action-btn" onClick={() => setShowIntro(false)}>¡A Crear!</button>
-                            </div>
-                        </div>
-                    )}
-                    <div id="doodle-mat">
-                        <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
-                        <CanvasInternal 
-                            ref={canvasRef} 
-                            onClick={(e) => { if(e.target.id === 'canvas-area') document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); }} 
-                        />
-                        <div id="toolbar">
-                            <button className="tool-btn" onClick={addText}><i className="fas fa-font"></i></button>
-                            <label className="tool-btn"><i className="fas fa-image"></i><input type="file" hidden accept="image/*" onChange={handleImageUpload}/></label>
-                            <button className="tool-btn" onClick={clearBoard}><i className="fas fa-trash-alt"></i></button>
-                            <button className="tool-btn" onClick={downloadImage}><i className="fas fa-download"></i></button>
-                            <button className="tool-btn" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving}><i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i></button>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // --- COMPONENTE STORYBOARD ---
-        function StoryboardComponent({ user }) {
-            const boardRef = useRef(null);
-            const [isSaving, setIsSaving] = useState(false);
-            const [showIntro, setShowIntro] = useState(true);
-            
-            const colors = [
-                { bg: '#FFEB3B', name: 'Amarillo Sol' }, { bg: '#FF4081', name: 'Fucsia Neón' }, 
-                { bg: '#00E5FF', name: 'Azul Eléctrico' }, { bg: '#76FF03', name: 'Verde Lima' }, 
-                { bg: '#E040FB', name: 'Morado Vivo' }, { bg: '#FF9100', name: 'Naranja Fuego' }
-            ];
-
-            useEffect(() => {
-                const loadData = async () => {
-                    if (!user) return;
-                    try {
-                        const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'));
-                        if (docSnap.exists() && docSnap.data().notes && docSnap.data().notes.length > 0) {
-                            restoreBoard(docSnap.data().notes);
-                        } else {
-                            // Inicialización masiva si está vacío
-                            const initialNotesCount = 10;
-                            const sampleData = [
-                                { scene: "Intro: Parque soleado", dialog: "¡Qué buen día!" },
-                                { scene: "Aparece el villano", dialog: "¡Jajaja!" },
-                                { scene: "El héroe llega volando", dialog: "¡Alto ahí!" },
-                                { scene: "Persecución", dialog: "(Sin diálogo)" },
-                                { scene: "Final feliz", dialog: "¡Ganamos!" }
-                            ];
-                            for (let i = 0; i < initialNotesCount; i++) {
-                                const data = sampleData[i] || { scene: "", dialog: "" };
-                                const colorIndex = i % colors.length;
-                                createNote(data.scene, data.dialog, colors[colorIndex].bg, i + 1);
-                            }
-                        }
-                    } catch (e) { console.error("Error storyboard", e); }
-                };
-                loadData();
-            }, [user]);
-
-            const createNote = (sceneText, dialogText, colorCode, sceneNum) => {
-                const note = document.createElement('div');
-                note.className = 'note';
-                note.style.backgroundColor = colorCode;
-                note.setAttribute('draggable', 'true');
-                note.innerHTML = `
-                    <div class="note-header">
-                        <label class="page-toggle"><input type="checkbox"> Doble Pág.</label>
-                        <div class="scene-badge"># <input type="number" class="scene-number-input" value="${sceneNum}" min="1"></div>
-                    </div>
-                    <div class="note-body">
-                        <div class="field-label"><i class="fa-solid fa-video"></i> Descripción de escena</div>
-                        <div class="editable-area scene-input" contenteditable="true" placeholder="Describe el lugar...">${sceneText || ''}</div>
-                        <div class="field-label" style="margin-top: 8px;"><i class="fa-solid fa-comments"></i> Diálogo</div>
-                        <div class="editable-area dialogue-input" contenteditable="true" placeholder="¿Qué dicen?">${dialogText || ''}</div>
-                    </div>
-                    <div class="note-controls">
-                        <div class="color-picker">
-                            ${colors.map(c => `<div class="color-dot" style="background-color: ${c.bg}" data-color="${c.bg}" title="${c.name}"></div>`).join('')}
-                        </div>
-                        <button class="btn-delete" title="Borrar nota"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                `;
-                
-                note.querySelector('.btn-delete').onclick = () => { note.style.transform = "scale(0)"; setTimeout(() => note.remove(), 200); };
-                note.querySelectorAll('.color-dot').forEach(dot => {
-                    dot.onclick = () => { note.style.backgroundColor = dot.dataset.color; };
-                });
-                
-                note.addEventListener('dragstart', (e) => { e.dataTransfer.effectAllowed = 'move'; e.target.classList.add('sortable-dragging'); setTimeout(() => e.target.style.opacity = '0.5', 0); });
-                note.addEventListener('dragend', (e) => { e.target.classList.remove('sortable-dragging'); e.target.style.opacity = '1'; });
-                
-                note.querySelectorAll('.editable-area, input').forEach(input => {
-                    input.addEventListener('mousedown', (e) => { note.setAttribute('draggable', 'false'); e.stopPropagation(); });
-                    input.addEventListener('mouseup', () => note.setAttribute('draggable', 'true'));
-                    input.addEventListener('mouseleave', () => note.setAttribute('draggable', 'true'));
-                });
-
-                if (boardRef.current) boardRef.current.appendChild(note);
-            };
-
-            const handleDragOver = (e) => {
-                e.preventDefault();
-                const draggingItem = document.querySelector('.sortable-dragging');
-                if(!draggingItem) return;
-                const siblings = [...boardRef.current.querySelectorAll('.note:not(.sortable-dragging)')];
-                const nextSibling = siblings.find(sibling => {
-                    const rect = sibling.getBoundingClientRect();
-                    return e.clientX < rect.left + rect.width / 2;
-                });
-                boardRef.current.insertBefore(draggingItem, nextSibling);
-            };
-
-            const addNewNote = () => {
-                const count = boardRef.current.querySelectorAll('.note').length;
-                const randomColor = colors[Math.floor(Math.random() * colors.length)].bg;
-                createNote("", "", randomColor, count + 1);
-            };
-
-            const saveToCloud = async () => {
-                setIsSaving(true);
-                const notesData = [];
-                if (boardRef.current) {
-                    boardRef.current.querySelectorAll('.note').forEach(note => {
-                        notesData.push({
-                            color: note.style.backgroundColor,
-                            isDouble: note.querySelector('input[type="checkbox"]').checked,
-                            sceneNum: note.querySelector('.scene-number-input').value,
-                            sceneText: note.querySelector('.scene-input').innerText,
-                            dialogText: note.querySelector('.dialogue-input').innerText
-                        });
-                    });
-                }
-                try {
-                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'), { notes: notesData });
-                    alert("¡Storyboard guardado en la nube!");
-                } catch(e) { alert("Error al guardar: " + e.message); }
-                setIsSaving(false);
-            };
-
-            const restoreBoard = (notes) => {
-                if (boardRef.current) {
-                    boardRef.current.innerHTML = '';
-                    notes.forEach(n => {
-                        createNote(n.sceneText, n.dialogText, n.color, n.sceneNum);
-                        const lastNote = boardRef.current.lastElementChild;
-                        if(lastNote && n.isDouble) lastNote.querySelector('input[type="checkbox"]').checked = true;
-                    });
-                }
-            };
-
-            const downloadImage = () => {
-                html2canvas(document.querySelector('.storyboard-wrapper'), { scale: 2 }).then(canvas => {
-                    const link = document.createElement('a'); link.download = 'mi-storyboard.png'; link.href = canvas.toDataURL(); link.click();
-                });
-            };
-
-            return (
-                <div className="storyboard-wrapper">
-                    {showIntro && (
-                        <div className="sb-intro-overlay">
-                            <div className="sb-intro-modal">
-                                <button className="absolute top-4 right-4 text-gray-400 hover:text-red-500" onClick={() => setShowIntro(false)}><i className="fas fa-times"></i></button>
-                                <div className="intro-character-circle">
-                                    <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png" className="intro-character-img" alt="Guía"/>
-                                </div>
-                                <h2 className="intro-title">¡Hola, Aventurero!</h2>
-                                <p className="intro-text">
-                                    Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.
-                                    <br/><br/>
-                                    Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.
-                                </p>
-                                <button className="action-btn" onClick={() => setShowIntro(false)}>Comenzar a Crear</button>
-                            </div>
-                        </div>
-                    )}
-                    <div id="sb-toolbar">
-                        <button className="btn-main" id="btn-add" onClick={addNewNote}><i className="fa-solid fa-plus"></i> Nueva Nota</button>
-                        <button className="btn-main" id="btn-save" onClick={downloadImage}><i className="fa-solid fa-download"></i> Descargar</button>
-                        <button className="btn-main" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving}>
-                            <i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i> Guardar en Nube
-                        </button>
-                    </div>
-                    <div id="sb-board" ref={boardRef} onDragOver={handleDragOver}></div>
-                </div>
-            );
-        }
-
-        // --- COMPONENTS BOOKVIEWER & REGISTRATION BUBBLE ---
+        // --- COMPONENTES (BOOKVIEWER) ---
         function BookViewer({ pages, activeIdx, setActiveIdx, isEditor, onUpdatePage }) {
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
@@ -1013,27 +284,6 @@
             const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
             const isEditableText = (idx, side) => { if (idx === 1 && side === 'back') return false; return true; };
 
-            /* MANEJADOR DE SUBIDA OPTIMIZADO PARA LIBRO */
-            const handleBookImageUpload = async (e, pageIdx, side) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                if(!auth.currentUser) return alert("Debes iniciar sesión");
-                
-                const btn = e.target.parentElement;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
-                
-                try {
-                    const path = `users/${auth.currentUser.uid}/uploads/${Date.now()}_${file.name}`;
-                    const url = await uploadImageToStorage(file, path);
-                    onUpdatePage(pageIdx, side, 'bg', url);
-                } catch(error) {
-                    alert("Error al subir imagen: " + error.message);
-                } finally {
-                    btn.innerHTML = originalText;
-                }
-            };
-
             const renderEditOverlay = (pageIdx, side, currentBg) => {
                 if (!isEditor || !isEditableImage(pageIdx, side)) return null;
                 return (
@@ -1041,7 +291,7 @@
                         <div className="upload-card">
                             <label className="btn-modern bg-gradient-accent" style={{width:'100%', fontSize:'0.9rem', padding:'8px'}}>
                                 <i className="fas fa-camera mr-2"></i> {currentBg ? 'Cambiar' : 'Subir'}
-                                <input type="file" accept="image/*" className="hidden" onChange={(e) => handleBookImageUpload(e, pageIdx, side)} />
+                                <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64)); }} />
                             </label>
                             <input className="input-field-clean" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px', padding:'8px'}} />
                             {currentBg && <button className="remove-btn" style={{marginTop:'10px', color:'#ef4444', fontWeight:'bold'}} onClick={(e) => { e.stopPropagation(); onUpdatePage(pageIdx, side, 'bg', ''); }}>ELIMINAR</button>}
@@ -1090,6 +340,7 @@
             );
         }
 
+        // --- COMPONENTE BURBUJA REGISTRO ---
         function RegistrationBubble({ onClose }) {
             return (
                 <div className="ped-unit-container">
@@ -1167,7 +418,7 @@
                     <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
                         <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-pen-nib mr-2"></i> RELLENAR FICHA</a>
                         </div>
                     </div>
                 );
@@ -1356,39 +607,88 @@
             );
         }
 
+        // --- LOGIN SCREEN ---
+        function LoginScreen({ setUser }) {
+            const [email, setEmail] = useState(''); 
+            const [password, setPassword] = useState(''); 
+            const [isRegister, setIsRegister] = useState(false);
+            const [isReset, setIsReset] = useState(false);
+
+            const handleAuth = async (e) => { 
+                e.preventDefault(); 
+                try { 
+                    if (isRegister) await createUserWithEmailAndPassword(auth, email, password); 
+                    else await signInWithEmailAndPassword(auth, email, password); 
+                } catch (err) { alert(err.message); } 
+            };
+
+            const handleReset = async (e) => {
+                e.preventDefault();
+                if (!email) return alert("Escribe tu correo.");
+                try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); }
+            };
+
+            return (
+                <div className="login-split-wrapper">
+                    <div className="login-visual-side">
+                        <div className="visual-overlay">
+                            <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
+                            <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte tus historias con el mundo.</p>
+                        </div>
+                    </div>
+                    <div className="login-form-side">
+                        <div className="w-full max-w-md">
+                            <h1 className="login-brand-title">CREATOR STUDIO</h1>
+                            <p className="login-description">La plataforma definitiva para crear tu Libro Álbum Digital.<br/>Empieza tu aventura creativa ahora.</p>
+                            <div className="features-mini">
+                                <div className="feature-pill"><i className="fas fa-magic"></i> Edición Fácil</div>
+                                <div className="feature-pill"><i className="fas fa-palette"></i> Arte & Color</div>
+                                <div className="feature-pill"><i className="fas fa-share-alt"></i> Compartir</div>
+                            </div>
+                            <div className="login-box">
+                                {isReset ? (
+                                    <form onSubmit={handleReset} className="space-y-4">
+                                        <input className="input-field-clean" placeholder="Tu correo para recuperar" value={email} onChange={e=>setEmail(e.target.value)} />
+                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Enviar Enlace</button>
+                                        <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Cancelar</div>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={handleAuth} className="space-y-4">
+                                        <div className="relative">
+                                            <i className="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" placeholder="Correo electrónico" value={email} onChange={e=>setEmail(e.target.value)} />
+                                        </div>
+                                        <div className="relative">
+                                            <i className="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
+                                            <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
+                                        </div>
+                                        <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
+                                        <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
+                                        <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         // --- DASHBOARD ---
         function Dashboard({ user, setView }) {
             const [activeSection, setActiveSection] = useState('inicio');
             const [books, setBooks] = useState([]);
             const [portfolioData, setPortfolioData] = useState({});
-            const [userProfile, setUserProfile] = useState({ name: user.email ? user.email.split('@')[0] : 'Creador', photo: user.photoURL || '' });
+            const [userProfile, setUserProfile] = useState({ name: user.email.split('@')[0], photo: '' });
             const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
             const [zoom, setZoom] = useState(1);
-            
-            // STATES FOR PREVIEWS
-            const [moodboardItems, setMoodboardItems] = useState([]);
-            const [storyboardNotes, setStoryboardNotes] = useState([]);
 
             useEffect(() => { 
                 if(!user) return; 
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
                 onSnapshot(q, (snap) => setBooks(snap.docs.map(d => ({id: d.id, ...d.data()}))));
                 onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), (doc) => { if(doc.exists()) setPortfolioData(doc.data()); });
-                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => { 
-                    if(doc.exists()) setUserProfile(doc.data()); 
-                    else if(user.displayName || user.photoURL) {
-                        setUserProfile({ name: user.displayName || 'Creador', photo: user.photoURL || '' });
-                    }
-                });
-                
-                // FETCH PREVIEW DATA
-                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'), (doc) => {
-                    if (doc.exists()) setMoodboardItems(doc.data().items);
-                });
-                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'), (doc) => {
-                    if (doc.exists()) setStoryboardNotes(doc.data().notes);
-                });
-
+                onSnapshot(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'profile', 'user_info'), (doc) => { if(doc.exists()) setUserProfile(doc.data()); });
             }, [user]);
 
             const saveProfile = async () => {
@@ -1396,15 +696,9 @@
                 setIsProfileModalOpen(false);
             };
 
-            const handleProfilePic = async (e) => {
+            const handleProfilePic = (e) => {
                 const file = e.target.files[0];
-                if(file) {
-                    try {
-                        const path = `users/${user.uid}/profile/avatar_${Date.now()}`;
-                        const url = await uploadImageToStorage(file, path);
-                        setUserProfile({...userProfile, photo: url});
-                    } catch (error) { alert("Error al subir perfil: " + error.message); }
-                }
+                if(file) processImage(file, (base64) => setUserProfile({...userProfile, photo: base64}));
             };
 
             const handleMyBook = async () => {
@@ -1417,6 +711,14 @@
                     localStorage.setItem('currentBookId', ref.id);
                     setView('editor');
                 }
+            };
+
+            const uploadEvidence = (type, e) => {
+                const file = e.target.files[0]; if(!file) return;
+                processImage(file, async (base64) => {
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { [type]: base64 }, { merge: true });
+                    alert("¡Imagen actualizada!");
+                });
             };
 
             const getSectionTitle = () => {
@@ -1484,15 +786,17 @@
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-4">Evidencias del Proceso</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10">
-                                            {/* MINI MOODBOARD */}
-                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group overflow-hidden h-80 cursor-pointer hover:shadow-lg transition" onClick={()=>setActiveSection('moodboard')}>
-                                                <div className="absolute top-4 left-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold z-10">MOODBOARD (Vista Previa)</div>
-                                                <MiniMoodboard items={moodboardItems} />
+                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-mood').click()}>
+                                                <div className="absolute top-4 left-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-bold z-10">MOODBOARD</div>
+                                                {portfolioData.moodboard ? <img src={portfolioData.moodboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
+                                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
+                                                <input type="file" id="upl-mood" className="hidden" onChange={(e)=>uploadEvidence('moodboard', e)}/>
                                             </div>
-                                            {/* MINI STORYBOARD */}
-                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group overflow-hidden h-80 cursor-pointer hover:shadow-lg transition" onClick={()=>setActiveSection('storyboard')}>
-                                                <div className="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">STORYBOARD (Vista Previa)</div>
-                                                <MiniStoryboard notes={storyboardNotes} />
+                                            <div className="bg-white rounded-2xl p-4 border border-gray-200 relative group cursor-pointer overflow-hidden h-80" onClick={()=>document.getElementById('upl-story').click()}>
+                                                <div className="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold z-10">STORYBOARD</div>
+                                                {portfolioData.storyboard ? <img src={portfolioData.storyboard} className="w-full h-full object-cover rounded-xl"/> : <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold">SUBIR IMAGEN</div>}
+                                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i className="fas fa-upload text-white text-3xl"></i></div>
+                                                <input type="file" id="upl-story" className="hidden" onChange={(e)=>uploadEvidence('storyboard', e)}/>
                                             </div>
                                     </div>
                                 </div>
@@ -1503,22 +807,10 @@
                         return <div className="h-full flex flex-col"><div className={containerClass}><iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe></div></div>;
                     
                     case 'moodboard':
-                        return (
-                            <div className="h-full flex flex-col">
-                                <div className="flex-1 rounded-3xl overflow-hidden shadow-sm border-4 border-white relative h-full">
-                                    <MoodboardComponent user={user} />
-                                </div>
-                            </div>
-                        );
+                        return <div className="h-full flex flex-col"><div className={containerClass}><div style={frameStyle}><iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe></div></div></div>;
                     
                     case 'storyboard':
-                        return (
-                            <div className="h-full flex flex-col">
-                                <div className="flex-1 rounded-3xl overflow-hidden shadow-sm border-4 border-white relative h-full">
-                                    <StoryboardComponent user={user} />
-                                </div>
-                            </div>
-                        );
+                        return <div className="h-full flex flex-col"><div className={containerClass}><div style={frameStyle}><iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe></div></div></div>;
                     
                     case 'padlet':
                         return <div className="h-full flex flex-col"><div className={containerClass}><div style={frameStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div></div>;
@@ -1551,7 +843,7 @@
                         return (
                             <div className="h-full flex flex-col">
                                 <div className={`${containerClass} border-indigo-100 group`}>
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
+                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                                         <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO</a>
                                     </div>
