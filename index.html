@@ -455,27 +455,84 @@
             ]
         };
 
-        /* --- MINI PREVIEWS FOR PORTFOLIO --- */
+        /* --- MINI PREVIEWS FOR PORTFOLIO (ADJUSTED VISUALS) --- */
+        
         function MiniMoodboard({ items }) {
             if (!items || items.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
             
+            // ESCALA MÁGICA: Renderizamos al 400% y encogemos al 25% para simular "zoom out" perfecto
+            const SCALE = 0.25; 
+            
             return (
-                <div className="preview-container relative" style={{background: 'var(--mat-blue)', backgroundImage: 'linear-gradient(90deg, var(--mat-red) 25%, var(--mat-yellow) 25%, var(--mat-yellow) 50%, var(--mat-blue) 50%, var(--mat-blue) 75%, var(--mat-green) 75%)', backgroundSize: '100px 100%'}}>
-                    <div className="absolute inset-0 bg-white m-2 rounded-lg overflow-hidden">
-                        {items.map((item, i) => {
-                            const leftVal = parseInt(item.left) || 0;
-                            const topVal = parseInt(item.top) || 0;
-                            const scaleFactor = 0.2;
-                            return (
-                                <div key={i} style={{
-                                    position: 'absolute', left: leftVal * scaleFactor, top: topVal * scaleFactor, transform: item.transform, zIndex: item.zIndex,
-                                    width: (parseInt(item.width) || 150) * scaleFactor, height: 'auto', background: 'white', padding: '2px', 
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)', fontSize: '0.5rem', whiteSpace: 'nowrap'
-                                }}>
-                                    {item.type === 'text' ? <div style={{fontFamily: 'Permanent Marker', textAlign:'center', overflow:'hidden'}}>{item.content}</div> : <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>}
-                                </div>
-                            )
-                        })}
+                <div className="preview-container relative w-full h-full overflow-hidden rounded-xl bg-gray-900">
+                    <div style={{
+                        width: '400%', height: '400%', // Lienzo gigante virtual
+                        transform: `scale(${SCALE})`, transformOrigin: 'top left',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: '#263238',
+                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+                        backgroundSize: '40px 40px',
+                        padding: '20px'
+                    }}>
+                        <div style={{
+                            position: 'relative', width: '95%', height: '90%', maxWidth: '1600px',
+                            backgroundColor: 'var(--mat-blue)',
+                            backgroundImage: 'linear-gradient(90deg, var(--mat-red) 25%, var(--mat-yellow) 25%, var(--mat-yellow) 50%, var(--mat-blue) 50%, var(--mat-blue) 75%, var(--mat-green) 75%)',
+                            backgroundSize: '100px 100%',
+                            display: 'flex', flexDirection: 'column',
+                            padding: '60px', paddingTop: '0',
+                            boxShadow: '0 30px 60px rgba(0,0,0,0.6)', borderRadius: '20px'
+                        }}>
+                            {/* Cabecera idéntica al real */}
+                            <div style={{
+                                backgroundColor: 'var(--mat-red)', width: 'calc(100% + 120px)', marginLeft: '-60px', height: '80px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                borderBottom: '5px solid rgba(0,0,0,0.1)',
+                                boxShadow: '0 5px 15px rgba(0,0,0,0.2)', borderRadius: '20px 20px 0 0', zIndex: 10
+                            }}>
+                                <h1 style={{fontFamily: "'Bangers', cursive", fontSize: '3rem', color: '#fff', textShadow: '2px 2px 0px #333'}}>MOOD BOARD</h1>
+                            </div>
+
+                            {/* Área de Canvas idéntica */}
+                            <div style={{
+                                flexGrow: 1, width: '100%', backgroundColor: 'white', borderRadius: '0 0 15px 15px',
+                                boxShadow: 'inset 0 0 20px rgba(0,0,0,0.15)', position: 'relative', overflow: 'hidden',
+                                backgroundImage: 'radial-gradient(#ddd 1px, transparent 1px)', backgroundSize: '25px 25px'
+                            }}>
+                                {items.map((item, i) => (
+                                    <div key={i} style={{
+                                        position: 'absolute',
+                                        left: item.left, top: item.top,
+                                        transform: item.transform, zIndex: item.zIndex,
+                                        width: item.width || '200px',
+                                        height: item.height || 'auto',
+                                        padding: '10px',
+                                        display: 'inline-block' 
+                                    }}>
+                                        <div style={{
+                                            backgroundColor: 'white', 
+                                            padding: '10px', 
+                                            boxShadow: '0 4px 10px rgba(0,0,0,0.2)', 
+                                            borderRadius: '4px',
+                                            border: '1px solid #eee',
+                                            height: '100%', width: '100%'
+                                        }}>
+                                            {item.type === 'text' ? 
+                                                <div style={{
+                                                    fontFamily: "'Permanent Marker', cursive", fontSize: '1.5rem', 
+                                                    color: '#333', textAlign: 'center', width: '100%', height: '100%',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                }}>
+                                                    {item.content}
+                                                </div> 
+                                                : 
+                                                <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>
+                                            }
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             );
@@ -483,13 +540,42 @@
 
         function MiniStoryboard({ notes }) {
             if (!notes || notes.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
+            
+            const SCALE = 0.25;
+
             return (
-                <div className="preview-container bg-gray-100 p-2 overflow-hidden">
-                    <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'5px', width:'100%' }}>
-                        {notes.slice(0, 8).map((note, i) => (
-                            <div key={i} style={{ backgroundColor: note.color || '#FFEA00', borderRadius: '4px', padding: '3px', height: '60px', overflow: 'hidden', fontSize: '6px', boxShadow:'0 1px 2px rgba(0,0,0,0.1)' }}>
-                                <div style={{fontWeight:'bold', marginBottom:'2px'}}>#{note.sceneNum}</div>
-                                <div style={{background:'rgba(255,255,255,0.5)', padding:'1px', marginBottom:'1px', borderRadius:'2px', height:'12px', overflow:'hidden'}}>{note.sceneText || '...'}</div>
+                <div className="preview-container relative w-full h-full overflow-hidden bg-gray-100 rounded-xl">
+                    <div style={{
+                        width: '400%', height: '400%',
+                        transform: `scale(${SCALE})`, transformOrigin: 'top left',
+                        padding: '40px',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, 240px)',
+                        gridAutoRows: '250px',
+                        gap: '25px',
+                        justifyContent: 'center',
+                        backgroundColor: 'var(--sb-bg)',
+                        backgroundImage: 'radial-gradient(rgba(0,0,0,0.1) 2px, transparent 2px)', backgroundSize: '30px 30px'
+                    }}>
+                        {notes.map((note, i) => (
+                            <div key={i} style={{
+                                position: 'relative', width: '100%', height: '100%',
+                                backgroundColor: note.color || '#FFEA00', borderRadius: '16px',
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.15)', padding: '15px',
+                                display: 'flex', flexDirection: 'column', overflow: 'hidden'
+                            }}>
+                                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'6px'}}>
+                                    <div style={{background:'rgba(255,255,255,0.6)', borderRadius:'12px', padding:'2px 8px', fontSize:'0.8rem', fontWeight:'700', color:'#444'}}>
+                                        # {note.sceneNum}
+                                    </div>
+                                </div>
+                                <div style={{flexGrow:1, display:'flex', flexDirection:'column', gap:'6px', overflow:'hidden'}}>
+                                    <div style={{fontSize:'0.75rem', textTransform:'uppercase', fontWeight:'700', color:'rgba(0,0,0,0.6)'}}>DESCRIPCIÓN</div>
+                                    <div style={{background:'rgba(255,255,255,0.4)', borderRadius:'8px', padding:'6px 8px', fontSize:'0.7rem', minHeight:'40px'}}>{note.sceneText}</div>
+                                    
+                                    <div style={{fontSize:'0.75rem', textTransform:'uppercase', fontWeight:'700', color:'rgba(0,0,0,0.6)', marginTop:'8px'}}>DIÁLOGO</div>
+                                    <div style={{background:'rgba(255,255,255,0.4)', borderRadius:'8px', padding:'6px 8px', fontSize:'0.7rem', minHeight:'40px', fontStyle:'italic'}}>{note.dialogText}</div>
+                                </div>
                             </div>
                         ))}
                     </div>
