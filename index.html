@@ -374,9 +374,9 @@
         .action-btn:hover { transform: scale(1.05); background: var(--rim-color); color: #333; }
         @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
         
-        /* MINI PREVIEWS FOR PORTFOLIO */
+        /* MINI PREVIEWS FOR PORTFOLIO (FIXED) */
         .preview-container { width: 100%; height: 100%; position: relative; overflow: hidden; border-radius: 12px; background: #eee; }
-        .mini-board-scaler { transform-origin: top left; width: 1600px; height: 900px; position: absolute; top:0; left:0; }
+        .mini-board-scaler { transform-origin: top left; width: 100%; height: 100%; position: absolute; top:0; left:0; }
         .mini-note { position: relative; background: var(--sb-yellow); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 5px; font-size: 10px; display: flex; flex-direction: column; overflow: hidden; height: 140px; }
     </style>
 </head>
@@ -413,6 +413,12 @@
         // --- UTILS DE SUBIDA ---
         const uploadImageToStorage = async (file, path) => {
             return new Promise((resolve, reject) => {
+                // 1. Intentar subir directo si es imagen válida
+                if (!file.type.startsWith('image/')) {
+                    return reject("El archivo no es una imagen válida");
+                }
+
+                // 2. Optimización opcional (si falla, subimos original)
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const img = new Image();
@@ -423,18 +429,31 @@
                         if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
                         canvas.width = width; canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
+                        
                         canvas.toBlob(async (blob) => {
-                            if (!blob) return reject("Error al procesar imagen");
-                            try {
-                                const storageRef = ref(storage, path);
-                                const snapshot = await uploadBytes(storageRef, blob);
-                                const url = await getDownloadURL(snapshot.ref);
-                                resolve(url);
-                            } catch (err) { reject(err); }
+                            if (!blob) {
+                                // Fallback: Subir original si falla compresión
+                                uploadOriginal(file, path, resolve, reject);
+                                return;
+                            }
+                            uploadOriginal(blob, path, resolve, reject);
                         }, 'image/jpeg', 0.8);
-                    }; img.src = e.target.result;
-                }; reader.readAsDataURL(file);
+                    }; 
+                    img.onerror = () => uploadOriginal(file, path, resolve, reject); // Fallback
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => uploadOriginal(file, path, resolve, reject); // Fallback
+                reader.readAsDataURL(file);
             });
+        };
+
+        const uploadOriginal = async (blobOrFile, path, resolve, reject) => {
+            try {
+                const storageRef = ref(storage, path);
+                const snapshot = await uploadBytes(storageRef, blobOrFile);
+                const url = await getDownloadURL(snapshot.ref);
+                resolve(url);
+            } catch (err) { reject(err); }
         };
 
         const MASTER_TEMPLATE = {
@@ -448,23 +467,44 @@
             ]
         };
 
-        /* --- MINI PREVIEWS FOR PORTFOLIO --- */
+        /* --- MINI PREVIEWS FOR PORTFOLIO (FIXED) --- */
         function MiniMoodboard({ items }) {
             if (!items || items.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
+            
+            // Calculamos los límites para escalar
+            const containerW = 300; // Aprox width de la tarjeta
+            const containerH = 200; // Aprox height
+            
             return (
-                <div className="preview-container bg-blue-500 relative">
-                    <div className="mini-board-scaler" style={{ transform: 'scale(0.25)' }}>
-                        {items.map((item, i) => (
-                            <div key={i} style={{
-                                position: 'absolute', left: item.left, top: item.top, transform: item.transform, zIndex: item.zIndex,
-                                width: item.width || 'auto', height: item.height || 'auto', background: 'white', padding: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
-                            }}>
-                                {item.type === 'text' ? 
-                                    <div style={{fontSize: '1.5rem', fontFamily: 'Permanent Marker', textAlign:'center'}}>{item.content}</div> : 
-                                    <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>
-                                }
-                            </div>
-                        ))}
+                <div className="preview-container bg-blue-500 relative" style={{background: 'var(--mat-blue)', backgroundImage: 'linear-gradient(90deg, var(--mat-red) 25%, var(--mat-yellow) 25%, var(--mat-yellow) 50%, var(--mat-blue) 50%, var(--mat-blue) 75%, var(--mat-green) 75%)', backgroundSize: '100px 100%'}}>
+                    <div className="absolute inset-0 bg-white m-2 rounded-lg overflow-hidden">
+                        {items.map((item, i) => {
+                            // Parseamos posiciones relativas simples para la vista previa
+                            const leftVal = parseInt(item.left) || 0;
+                            const topVal = parseInt(item.top) || 0;
+                            const scaleFactor = 0.2; // Escala fija para vista previa
+                            
+                            return (
+                                <div key={i} style={{
+                                    position: 'absolute', 
+                                    left: leftVal * scaleFactor, 
+                                    top: topVal * scaleFactor, 
+                                    transform: item.transform, 
+                                    zIndex: item.zIndex,
+                                    width: (parseInt(item.width) || 150) * scaleFactor, 
+                                    height: 'auto', 
+                                    background: 'white', 
+                                    padding: '2px', 
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                                    fontSize: '0.5rem'
+                                }}>
+                                    {item.type === 'text' ? 
+                                        <div style={{fontFamily: 'Permanent Marker', textAlign:'center', overflow:'hidden'}}>{item.content}</div> : 
+                                        <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>
+                                    }
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             );
@@ -473,13 +513,13 @@
         function MiniStoryboard({ notes }) {
             if (!notes || notes.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
             return (
-                <div className="preview-container bg-gray-100">
-                    <div className="mini-board-scaler p-5" style={{ transform: 'scale(0.28)', display:'grid', gridTemplateColumns:'repeat(auto-fill, 240px)', gap:'25px', width:'100%' }}>
-                        {notes.map((note, i) => (
-                            <div key={i} className="mini-note" style={{ backgroundColor: note.color || '#FFEA00' }}>
-                                <div className="font-bold mb-1">Escena #{note.sceneNum}</div>
-                                <div className="bg-white/50 p-1 mb-1 rounded text-[10px] h-10 overflow-hidden">{note.sceneText}</div>
-                                <div className="bg-white/50 p-1 rounded text-[10px] h-10 overflow-hidden"><i>{note.dialogText}</i></div>
+                <div className="preview-container bg-gray-100 p-2 overflow-hidden">
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:'5px', width:'100%' }}>
+                        {notes.slice(0, 8).map((note, i) => ( // Mostramos solo las primeras 8 para que quepan
+                            <div key={i} style={{ backgroundColor: note.color || '#FFEA00', borderRadius: '4px', padding: '3px', height: '60px', overflow: 'hidden', fontSize: '6px', boxShadow:'0 1px 2px rgba(0,0,0,0.1)' }}>
+                                <div style={{fontWeight:'bold', marginBottom:'2px'}}>#{note.sceneNum}</div>
+                                <div style={{background:'rgba(255,255,255,0.5)', padding:'1px', marginBottom:'1px', borderRadius:'2px', height:'12px', overflow:'hidden'}}>{note.sceneText || '...'}</div>
+                                <div style={{background:'rgba(255,255,255,0.5)', padding:'1px', borderRadius:'2px', height:'12px', overflow:'hidden'}}><i>{note.dialogText || '...'}</i></div>
                             </div>
                         ))}
                     </div>
@@ -594,7 +634,7 @@
                 const handlePaste = (e) => {
                     const items = e.clipboardData.items;
                     let blob = null;
-                    // 1. Buscar imagen binaria
+                    // 1. Buscar imagen binaria (Ctrl+V típico)
                     for (let i = 0; i < items.length; i++) {
                         if (items[i].type.indexOf('image') !== -1) {
                             blob = items[i].getAsFile();
@@ -683,8 +723,10 @@
             const handleImageUpload = (e) => {
                 const file = e.target.files[0];
                 if(file) {
+                    setIsPasting(true); // Reutilizamos el loader
                     uploadImageToStorage(file, `users/${user.uid}/moodboard/upl_${Date.now()}`)
-                        .then(url => createImageElement(url)).catch(err => alert("Error: " + err));
+                        .then(url => { createImageElement(url); setIsPasting(false); })
+                        .catch(err => { alert("Error: " + err); setIsPasting(false); });
                 }
             };
             const clearBoard = () => { if(confirm("¿Borrar todo?")) canvasRef.current.innerHTML = '<p id="instruction-text">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; };
@@ -728,7 +770,7 @@
 
             return (
                 <div className="moodboard-wrapper relative">
-                    {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Pegando imagen...</div>}
+                    {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Procesando imagen...</div>}
                     {showIntro && (
                         <div className="mb-intro-overlay">
                             <div className="mb-intro-modal">
@@ -782,7 +824,7 @@
                         if (docSnap.exists() && docSnap.data().notes && docSnap.data().notes.length > 0) {
                             restoreBoard(docSnap.data().notes);
                         } else {
-                            // Inicialización masiva si está vacío (Recupera la estructura de Grid)
+                            // Inicialización masiva si está vacío
                             const initialNotesCount = 10;
                             const sampleData = [
                                 { scene: "Intro: Parque soleado", dialog: "¡Qué buen día!" },
