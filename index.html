@@ -411,6 +411,15 @@
         } catch (e) { console.error(e); }
 
         // --- UTILS DE SUBIDA ---
+        const uploadOriginal = async (blobOrFile, path, resolve, reject) => {
+            try {
+                const storageRef = ref(storage, path);
+                const snapshot = await uploadBytes(storageRef, blobOrFile);
+                const url = await getDownloadURL(snapshot.ref);
+                resolve(url);
+            } catch (err) { reject(err); }
+        };
+
         const uploadImageToStorage = async (file, path) => {
             return new Promise((resolve, reject) => {
                 // 1. Intentar subir directo si es imagen válida
@@ -418,7 +427,13 @@
                     return reject("El archivo no es una imagen válida");
                 }
 
-                // 2. Optimización opcional (si falla, subimos original)
+                // OPTIMIZACIÓN: Si pesa menos de 1MB, subir directo (Saltar Canvas)
+                if (file.size < 1024 * 1024) {
+                    uploadOriginal(file, path, resolve, reject);
+                    return;
+                }
+
+                // 2. Optimización (Solo si es grande)
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const img = new Image();
@@ -447,15 +462,6 @@
             });
         };
 
-        const uploadOriginal = async (blobOrFile, path, resolve, reject) => {
-            try {
-                const storageRef = ref(storage, path);
-                const snapshot = await uploadBytes(storageRef, blobOrFile);
-                const url = await getDownloadURL(snapshot.ref);
-                resolve(url);
-            } catch (err) { reject(err); }
-        };
-
         const MASTER_TEMPLATE = {
             title: "Nuevo Libro",
             pages: [
@@ -471,12 +477,8 @@
         function MiniMoodboard({ items }) {
             if (!items || items.length === 0) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin contenido</div>;
             
-            // Calculamos los límites para escalar
-            const containerW = 300; // Aprox width de la tarjeta
-            const containerH = 200; // Aprox height
-            
             return (
-                <div className="preview-container bg-blue-500 relative" style={{background: 'var(--mat-blue)', backgroundImage: 'linear-gradient(90deg, var(--mat-red) 25%, var(--mat-yellow) 25%, var(--mat-yellow) 50%, var(--mat-blue) 50%, var(--mat-blue) 75%, var(--mat-green) 75%)', backgroundSize: '100px 100%'}}>
+                <div className="preview-container relative" style={{background: 'var(--mat-blue)', backgroundImage: 'linear-gradient(90deg, var(--mat-red) 25%, var(--mat-yellow) 25%, var(--mat-yellow) 50%, var(--mat-blue) 50%, var(--mat-blue) 75%, var(--mat-green) 75%)', backgroundSize: '100px 100%'}}>
                     <div className="absolute inset-0 bg-white m-2 rounded-lg overflow-hidden">
                         {items.map((item, i) => {
                             // Parseamos posiciones relativas simples para la vista previa
@@ -496,7 +498,8 @@
                                     background: 'white', 
                                     padding: '2px', 
                                     boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                                    fontSize: '0.5rem'
+                                    fontSize: '0.5rem',
+                                    whiteSpace: 'nowrap'
                                 }}>
                                     {item.type === 'text' ? 
                                         <div style={{fontFamily: 'Permanent Marker', textAlign:'center', overflow:'hidden'}}>{item.content}</div> : 
@@ -634,6 +637,7 @@
                 const handlePaste = (e) => {
                     const items = e.clipboardData.items;
                     let blob = null;
+                    
                     // 1. Buscar imagen binaria (Ctrl+V típico)
                     for (let i = 0; i < items.length; i++) {
                         if (items[i].type.indexOf('image') !== -1) {
@@ -641,6 +645,7 @@
                             break;
                         }
                     }
+
                     if (blob) {
                         setIsPasting(true);
                         uploadImageToStorage(blob, `users/${user.uid}/moodboard/paste_${Date.now()}`)
@@ -727,6 +732,8 @@
                     uploadImageToStorage(file, `users/${user.uid}/moodboard/upl_${Date.now()}`)
                         .then(url => { createImageElement(url); setIsPasting(false); })
                         .catch(err => { alert("Error: " + err); setIsPasting(false); });
+                    
+                    e.target.value = ''; // Reset input value to allow same file upload
                 }
             };
             const clearBoard = () => { if(confirm("¿Borrar todo?")) canvasRef.current.innerHTML = '<p id="instruction-text">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; };
@@ -948,7 +955,7 @@
                             <div className="sb-intro-modal">
                                 <button className="absolute top-4 right-4 text-gray-400 hover:text-red-500" onClick={() => setShowIntro(false)}><i className="fas fa-times"></i></button>
                                 <div className="intro-character-circle">
-                                    <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png?raw=true" className="intro-character-img" alt="Guía"/>
+                                    <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png" className="intro-character-img" alt="Guía"/>
                                 </div>
                                 <h2 className="intro-title">¡Hola, Aventurero!</h2>
                                 <p className="intro-text">
