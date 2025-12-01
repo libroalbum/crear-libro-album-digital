@@ -361,6 +361,56 @@
             );
         }
 
+        // --- NUEVO COMPONENTE: VISOR PÚBLICO DEL EDITOR ---
+        function PublicEditorView({ uid }) {
+            const [book, setBook] = useState(null);
+            const [userProfile, setUserProfile] = useState({ name: 'Creador' });
+            const [showGuide, setShowGuide] = useState(true);
+
+            useEffect(() => {
+                if(!db) return;
+                const load = async () => {
+                    const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
+                    if(docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.publishedBook) {
+                            setBook(data.publishedBook);
+                        } else if (data.featuredBookId) {
+                            try {
+                                const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', data.featuredBookId));
+                                if(bookSnap.exists()) setBook({id: bookSnap.id, ...bookSnap.data()});
+                            } catch(err) { console.log("Error cargando libro", err); }
+                        }
+                    }
+                    const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
+                    if(profileSnap.exists()) setUserProfile(profileSnap.data());
+                }; 
+                load();
+            }, [uid]);
+
+            return (
+                 <div className="h-screen w-full bg-white flex flex-col font-sans relative">
+                    {showGuide && <RegistrationBubble onClose={() => setShowGuide(false)} />}
+                    <div className="h-16 bg-white border-b shadow-sm sticky top-0 z-50 px-6 flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                            <div className="font-bold text-xl text-indigo-600 tracking-tight">CREATOR STUDIO</div>
+                            <span className="text-gray-300">/</span>
+                            <div className="font-semibold text-gray-600 uppercase tracking-widest text-sm">VISTA PREVIA: {userProfile.name}</div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <button onClick={() => window.location.href = window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4 py-2">REGISTRARME</button>
+                        </div>
+                    </div>
+                    
+                    <div className="flex-1 relative overflow-hidden">
+                        <div className="canvas-grid" style={{width:'100%', height:'100%'}}>
+                             {book ? <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /> : <div className="text-white">Cargando...</div>}
+                        </div>
+                    </div>
+                 </div>
+            )
+        }
+
         // --- VISOR PÚBLICO ---
         function PublicActivityViewer({ activity }) {
             const [zoom, setZoom] = useState(1);
@@ -940,11 +990,18 @@
             useEffect(() => {
                 const params = new URLSearchParams(window.location.search);
                 const pUid = params.get('portfolio');
-                const activityParam = params.get('activity'); 
-                if (pUid) { setPortfolioUid(pUid); setView('public-view'); } 
+                const activityParam = params.get('activity');
+                // NUEVO: Capturar el parámetro 'public_preview'
+                const publicPreviewUid = params.get('public_preview');
+                
+                if (publicPreviewUid) { setPortfolioUid(publicPreviewUid); setView('public-preview'); }
+                else if (pUid) { setPortfolioUid(pUid); setView('public-view'); } 
                 else if (activityParam) { setPublicActivity(activityParam); setView('public-activity'); } 
                 else { if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); } }
             }, []);
+            
+            // NUEVO: Renderizar la nueva vista
+            if (view === 'public-preview') return <PublicEditorView uid={portfolioUid} />;
             if (view === 'public-view') return <PublicGallery uid={portfolioUid} />;
             if (view === 'public-activity') return <PublicActivityViewer activity={publicActivity} />;
             if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-indigo-500 font-outfit animate-pulse">CARGANDO STUDIO...</div>;
