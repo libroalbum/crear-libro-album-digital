@@ -619,6 +619,15 @@
             );
         }
 
+        // --- CORRECCIÓN: Componente aislado para evitar que React borre el DOM manual ---
+        const CanvasInternal = React.memo(React.forwardRef((props, ref) => {
+            return (
+                <div id="canvas-area" ref={ref} onClick={props.onClick}>
+                    <p id="instruction-text">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>
+                </div>
+            );
+        }), () => true); // El 'true' fuerza a que este componente NUNCA se re-renderice
+
         // --- COMPONENTE MOODBOARD ---
         function MoodboardComponent({ user }) {
             const canvasRef = useRef(null);
@@ -799,9 +808,10 @@
                     )}
                     <div id="doodle-mat">
                         <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
-                        <div id="canvas-area" ref={canvasRef} onClick={(e) => { if(e.target.id === 'canvas-area') document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); }}>
-                            <p id="instruction-text">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>
-                        </div>
+                        <CanvasInternal 
+                            ref={canvasRef} 
+                            onClick={(e) => { if(e.target.id === 'canvas-area') document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); }} 
+                        />
                         <div id="toolbar">
                             <button className="tool-btn" onClick={addText}><i className="fas fa-font"></i></button>
                             <label className="tool-btn"><i className="fas fa-image"></i><input type="file" hidden accept="image/*" onChange={handleImageUpload}/></label>
