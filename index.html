@@ -266,19 +266,17 @@
         /* --- TOP BAR PROFILE --- */
         .top-bar-glass { 
             position: sticky; top: 0; z-index: 40; 
-            margin-bottom: 15px; /* Reduje margen para ganar espacio */
-            display: flex; justify-content: space-between; align-items: center; 
-            padding-bottom: 5px;
-            flex-shrink: 0;
+            margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; 
+            padding-bottom: 10px;
         }
-        .page-header-title { font-size: 1.8rem; font-weight: 800; color: var(--dark-text); font-family: 'Dosis'; letter-spacing: -1px; line-height: 1; }
+        .page-header-title { font-size: 2rem; font-weight: 800; color: var(--dark-text); font-family: 'Dosis'; letter-spacing: -1px; }
         
-        .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 4px 6px 4px 12px; border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s; }
+        .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 6px 8px 6px 15px; border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s; }
         .user-chip:hover { transform: translateY(-2px); border-color: var(--accent-primary); }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #e2e8f0; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #e2e8f0; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; margin-right: 5px; }
-        .user-name { font-weight: 700; font-size: 0.85rem; color: var(--dark-text); font-family: 'Outfit'; }
-        .user-role { font-size: 0.65rem; color: var(--accent-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name { font-weight: 700; font-size: 0.9rem; color: var(--dark-text); font-family: 'Outfit'; }
+        .user-role { font-size: 0.7rem; color: var(--accent-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* --- EDITOR STYLES (Canvas) --- */
         .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #2b2d42; background-image: radial-gradient(#3d405b 1px, transparent 1px); background-size: 30px 30px; width: 100%; height: 100%; }
@@ -338,86 +336,6 @@
             .book-showcase { height: 300px; }
             .nav-btn { width: 35px; height: 35px; font-size: 0.9rem; }
             .prev-btn { left: 5px; } .next-btn { right: 5px; }
-        }
-
-        /* --- ESTILOS DE LA BURBUJA (NUEVO) --- */
-        .ped-unit-container {
-            display: flex;
-            flex-direction: column;
-            width: 280px; 
-            position: fixed; /* Posición fija en la pantalla */
-            top: 75px; /* Ajustado para estar cerca del botón de registro */
-            right: 20px; /* Alineado a la derecha */
-            z-index: 9999; /* Por encima de todo */
-            animation: slideInRight 0.6s ease-out; /* Animación de entrada */
-            align-items: flex-end; /* Alinear contenido a la derecha */
-        }
-
-        .ped-cloud {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            border: 2px solid var(--accent-primary);
-            position: relative;
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        /* Triángulo de la nube (apuntando a la derecha) */
-        .ped-cloud::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            right: 40px; 
-            left: auto;
-            border-width: 12px 12px 0 12px;
-            border-style: solid;
-            border-color: #fff transparent transparent transparent; /* Triángulo blanco */
-        }
-        /* Borde del triángulo (truco visual) */
-        .ped-cloud::before {
-            content: '';
-            position: absolute;
-            top: 100%;
-            right: 37px; /* Ajuste fino */
-            left: auto;
-            border-width: 15px 15px 0 15px;
-            border-style: solid;
-            border-color: var(--accent-primary) transparent transparent transparent;
-            z-index: -1;
-        }
-
-        .ped-cloud h3 {
-            font-family: 'Cinzel', serif;
-            color: var(--accent-primary);
-            font-size: 1.1rem;
-            margin: 0 0 10px 0;
-            border-bottom: 2px solid var(--gold-color);
-            display: inline-block;
-            padding-bottom: 3px;
-            font-weight: 700;
-        }
-
-        .ped-cloud p {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.9rem;
-            color: #4b5563;
-            line-height: 1.5;
-            margin: 0;
-        }
-
-        .ped-character {
-            width: 130px; 
-            height: auto;
-            margin-right: 10px;
-            transform: scaleX(-1); /* Voltear personaje para mirar al centro */
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
-        }
-
-        @keyframes slideInRight { 
-            from { transform: translateX(100%); opacity: 0; } 
-            to { transform: translateX(0); opacity: 1; } 
         }
     </style>
 </head>
@@ -569,31 +487,9 @@
             );
         }
 
-        // --- COMPONENTE BURBUJA REGISTRO (NUEVO) ---
-        function RegistrationBubble({ onClose }) {
-            return (
-                <div className="ped-unit-container">
-                    <div className="ped-cloud">
-                        <div onClick={onClose} className="absolute top-2 left-2 cursor-pointer text-gray-400 hover:text-red-500"><i className="fas fa-times"></i></div>
-                        <h3>¡Hola, Creador!</h3>
-                        <p>Estás viendo una vista previa pública.<br/> <a href="/" className="text-indigo-600 font-bold hover:underline">Regístrate gratis</a> para crear y guardar tus propias historias.</p>
-                        <div className="mt-3">
-                            <button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4 py-2 w-full shadow-md">
-                                ¡CREAR MI CUENTA!
-                            </button>
-                        </div>
-                    </div>
-                    <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20izquierda.png?raw=true" 
-                         alt="Personaje Guía" 
-                         className="ped-character" />
-                </div>
-            );
-        }
-
         // --- VISOR PÚBLICO (MODO INVITADO) ---
         function PublicActivityViewer({ activity }) {
             const [zoom, setZoom] = useState(1);
-            const [showGuide, setShowGuide] = useState(true); // Control de la burbuja
             const handleZoomIn = () => setZoom(p => Math.min(p + 0.1, 1.5));
             const handleZoomOut = () => setZoom(p => Math.max(p - 0.1, 0.5));
             const resetZoom = () => setZoom(1);
@@ -656,10 +552,7 @@
             };
 
             return (
-                <div className="h-screen w-full bg-gray-50 flex flex-col font-sans relative">
-                    {/* --- AQUÍ SE AGREGA LA BURBUJA --- */}
-                    {showGuide && <RegistrationBubble onClose={() => setShowGuide(false)} />}
-                    
+                <div className="h-screen w-full bg-gray-50 flex flex-col font-sans">
                     <div className="h-16 bg-white border-b shadow-sm sticky top-0 z-50 px-6 flex justify-between items-center">
                         <div className="flex items-center gap-4">
                             <div className="font-bold text-xl text-indigo-600 tracking-tight">CREATOR STUDIO</div>
@@ -800,8 +693,6 @@
 
             return (
                 <div className="h-full overflow-y-auto bg-gray-50 relative">
-                    {/* --- AQUÍ SE AGREGA LA BURBUJA --- */}
-                    {showGuide && <RegistrationBubble onClose={() => setShowGuide(false)} />}
 
                     <div className="bg-white border-b shadow-sm sticky top-0 z-50 px-8 py-4 flex justify-between items-center">
                         <div>
@@ -1195,26 +1086,7 @@
                         </div>
                         <div className="classroom-content">
                             <div className="top-bar-glass">
-                                <div className="flex items-center gap-4">
-                                     <h2 className={`page-header-title ${getTitleColor()}`}>{getSectionTitle()}</h2>
-                                     {['moodboard', 'storyboard', 'padlet'].includes(activeSection) && (
-                                         <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-gray-200 shadow-sm ml-4">
-                                             <button onClick={()=>setZoom(z=>Math.max(0.5, z-0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-minus"></i></button>
-                                             <span className="text-xs font-bold w-8 text-center">{Math.round(zoom*100)}%</span>
-                                             <button onClick={()=>setZoom(z=>Math.min(1.5, z+0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-plus"></i></button>
-                                         </div>
-                                     )}
-                                     {activeSection === 'portafolio' && (
-                                         <div className="flex gap-2 ml-4">
-                                            <button onClick={() => window.open(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`, '_blank')} className="btn-modern bg-white text-indigo-600 border border-indigo-100 text-xs shadow-sm py-1 px-3">
-                                                <i className="fas fa-eye mr-2"></i> VER
-                                            </button>
-                                            <button onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`); alert("Link copiado")}} className="btn-modern bg-gradient-dark text-xs py-1 px-3">
-                                                <i className="fas fa-share-alt mr-2"></i> LINK
-                                            </button>
-                                        </div>
-                                     )}
-                                </div>
+                                <div></div> 
                                 <div className="flex items-center gap-4">
                                     <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
                                         <div className="user-info"><span className="user-name">{userProfile.name}</span><span className="user-role">CREATOR</span></div>
@@ -1223,9 +1095,7 @@
                                     <button onClick={()=>signOut(auth)} className="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm"><i className="fas fa-power-off"></i></button>
                                 </div>
                             </div>
-                            <div className="flex-1 relative overflow-hidden h-full flex flex-col">
-                                {renderActivityContent()}
-                            </div>
+                            {renderActivityContent()}
                         </div>
                     </div>
                 </div>
