@@ -1308,10 +1308,15 @@
             const [loading, setLoading] = useState(true);
             const [userProfile, setUserProfile] = useState({ name: 'Creador' });
             const [showGuide, setShowGuide] = useState(true); 
+            
+            // NUEVOS ESTADOS PARA VISTA PÚBLICA
+            const [moodboardItems, setMoodboardItems] = useState([]);
+            const [storyboardNotes, setStoryboardNotes] = useState([]);
 
             useEffect(() => {
                 if(!db) return;
                 const load = async () => {
+                    // 1. Cargar Portafolio Base
                     const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
                     if(docSnap.exists()) {
                         const data = docSnap.data();
@@ -1325,8 +1330,23 @@
                             } catch(err) { console.log("No se pudo cargar libro privado", err); }
                         }
                     }
+                    
+                    // 2. Cargar Perfil
                     const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
                     if(profileSnap.exists()) setUserProfile(profileSnap.data());
+
+                    // 3. NUEVO: Cargar Datos Vivos para Moodboard
+                    try {
+                        const mbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'moodboards', 'main'));
+                        if (mbSnap.exists()) setMoodboardItems(mbSnap.data().items || []);
+                    } catch(e) { console.log("No moodboard data", e); }
+
+                    // 4. NUEVO: Cargar Datos Vivos para Storyboard
+                    try {
+                        const sbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'storyboards', 'main'));
+                        if (sbSnap.exists()) setStoryboardNotes(sbSnap.data().notes || []);
+                    } catch(e) { console.log("No storyboard data", e); }
+
                     setLoading(false);
                 }; 
                 load();
@@ -1357,24 +1377,43 @@
 
                         <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-6">Galería de Evidencias</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            
+                            {/* TARJETA MOODBOARD */}
                             <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><i className="fas fa-palette"></i></div>
                                     <h4 className="font-bold text-gray-700">Moodboard</h4>
                                 </div>
-                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
-                                    {portfolio.moodboard ? <img src={portfolio.moodboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>}
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center relative">
+                                    {/* Lógica: Si hay datos vivos, usa MiniMoodboard. Si no, busca imagen subida. Si no, muestra texto. */}
+                                    {moodboardItems && moodboardItems.length > 0 ? (
+                                        <div className="w-full h-full transform scale-90">
+                                            <MiniMoodboard items={moodboardItems} />
+                                        </div>
+                                    ) : (
+                                        portfolio.moodboard ? <img src={portfolio.moodboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>
+                                    )}
                                 </div>
                             </div>
+
+                            {/* TARJETA STORYBOARD */}
                             <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><i className="fas fa-film"></i></div>
                                     <h4 className="font-bold text-gray-700">Storyboard</h4>
                                 </div>
-                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
-                                    {portfolio.storyboard ? <img src={portfolio.storyboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>}
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center relative">
+                                    {/* Lógica: Si hay datos vivos, usa MiniStoryboard. Si no, busca imagen subida. Si no, muestra texto. */}
+                                    {storyboardNotes && storyboardNotes.length > 0 ? (
+                                        <div className="w-full h-full transform scale-90">
+                                            <MiniStoryboard notes={storyboardNotes} />
+                                        </div>
+                                    ) : (
+                                        portfolio.storyboard ? <img src={portfolio.storyboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>
+                                    )}
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
