@@ -214,7 +214,7 @@
 
     <script type="text/babel" data-type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const { useState, useEffect, useRef } = React;
@@ -268,21 +268,17 @@
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
             const currentIdx = isEditor ? activeIdx : localIdx;
-            
-            // FIX: Asegurar que pages es un array válido antes de procesar
-            const safePages = pages || [];
-            const isOpen = currentIdx >= 0 && currentIdx < safePages.length - 1;
-            const isClosedBack = currentIdx === safePages.length - 1;
-            
+            const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
+            const isClosedBack = currentIdx === pages.length - 1;
             const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx); };
             
             useEffect(() => {
                 const handleKeyDown = (e) => { 
-                    if (e.key === "ArrowRight" && currentIdx < safePages.length-1) changePage(currentIdx+1); 
+                    if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); 
                     if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); 
                 };
                 window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [currentIdx, safePages]);
+            }, [currentIdx, pages]);
 
             const isEditableImage = (idx, side) => { if (idx === 1 && side === 'back') return false; if (idx === 2) return false; return true; };
             const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
@@ -309,8 +305,8 @@
                     <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
                     <div id="stage">
                         <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
-                            {safePages.map((p, i) => {
-                                const zIndex = currentIdx >= i ? i + 1 : safePages.length - i;
+                            {pages.map((p, i) => {
+                                const zIndex = currentIdx >= i ? i + 1 : pages.length - i;
                                 return (
                                     <div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}>
                                         <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
@@ -321,7 +317,7 @@
                                                     <textarea disabled={!isEditor || !isEditableText(i, 'front')} value={p.front.text} onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)} className="inline-input-text" rows="6" />
                                                 </div>
                                             )}
-                                            {i>0 && i<safePages.length-1 && <span className="page-number">{i*2}</span>}
+                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}
                                         </div>
                                         <div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>
                                             {renderEditOverlay(i, 'back', p.back.bg)}
@@ -331,7 +327,7 @@
                                                     <textarea disabled={!isEditor || !isEditableText(i, 'back')} value={p.back.text} onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)} className="inline-input-text" rows="6" />
                                                 </div>
                                             )}
-                                            {i>0 && i<safePages.length-1 && <span className="page-number">{i*2+1}</span>}
+                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}
                                         </div>
                                     </div>
                                 )
@@ -339,7 +335,7 @@
                         </div>
                     </div>
                     {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-arrow-left"></i></button>}
-                    {currentIdx < safePages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}
+                    {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}
                 </div>
             );
         }
@@ -363,109 +359,6 @@
                          className="ped-character" />
                 </div>
             );
-        }
-
-        // --- NUEVO COMPONENTE: VISOR PÚBLICO DEL EDITOR ---
-        function PublicEditorView({ uid }) {
-            const [book, setBook] = useState(null);
-            const [userProfile, setUserProfile] = useState({ name: 'Creador' });
-            const [showGuide, setShowGuide] = useState(true);
-            const [errorMsg, setErrorMsg] = useState(''); // Estado de error detallado
-
-            useEffect(() => {
-                if(!db || !uid) return;
-                const load = async () => {
-                    try {
-                        // FIX: Intentar auth anónima para permisos, pero NO bloquear si falla
-                        if (!auth.currentUser) {
-                            try { await signInAnonymously(auth); } catch(e) { console.log("Auth anónima opcional saltada"); }
-                        }
-
-                        // 1. Obtener perfil público (Portafolio)
-                        const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
-                        
-                        if(docSnap.exists()) {
-                            const data = docSnap.data();
-                            
-                            // 2. Prioridad: Libro Publicado (Este es accesible públicamente)
-                            if (data.publishedBook && data.publishedBook.pages) {
-                                setBook(data.publishedBook);
-                            } 
-                            // 3. Fallback: Referencia a libro privado (Falla a menudo por permisos)
-                            else if (data.featuredBookId) {
-                                try {
-                                    const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', data.featuredBookId));
-                                    if(bookSnap.exists()) {
-                                        setBook({id: bookSnap.id, ...bookSnap.data()});
-                                    } else {
-                                        setErrorMsg("Libro no encontrado.");
-                                    }
-                                } catch (err) {
-                                    console.error("Error acceso libro privado:", err);
-                                    setErrorMsg("El creador debe entrar a su cuenta y hacer clic en 'Guardar' para actualizar su libro público.");
-                                }
-                            } else {
-                                setErrorMsg("Este portafolio no tiene libros visibles.");
-                            }
-                        } else {
-                            setErrorMsg("Portafolio no encontrado. Verifica el enlace.");
-                        }
-
-                        // Cargar info de perfil
-                        try {
-                            const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
-                            if(profileSnap.exists()) setUserProfile(profileSnap.data());
-                        } catch(e) { console.log("Perfil privado"); }
-
-                    } catch (e) {
-                        console.error("Error general carga:", e);
-                        setErrorMsg("Error de conexión. Intenta recargar.");
-                    }
-                }; 
-                load();
-            }, [uid]);
-
-            const showReadOnlyMsg = () => alert("Estás en modo previsualización pública. Regístrate para editar.");
-
-            return (
-                 <div className="h-screen w-full bg-white flex flex-col font-sans relative">
-                    {showGuide && <RegistrationBubble onClose={() => setShowGuide(false)} />}
-                    <div className="h-16 bg-white border-b shadow-sm sticky top-0 z-50 px-6 flex justify-between items-center flex-shrink-0">
-                        <div className="flex items-center gap-4">
-                            <div className="font-bold text-xl text-indigo-600 tracking-tight">CREATOR STUDIO</div>
-                            <span className="text-gray-300">/</span>
-                            <div className="font-semibold text-gray-600 uppercase tracking-widest text-sm">VISTA DE EDITOR: {userProfile.name}</div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <button onClick={() => window.location.href = window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4 py-2">REGISTRARME</button>
-                        </div>
-                    </div>
-                    
-                    <div className="flex-1 relative overflow-hidden flex">
-                        {/* SIDEBAR VISUAL (NO FUNCIONAL) */}
-                        <div className="sidebar-editor">
-                            <div className="icon-chunk opacity-50 cursor-not-allowed" onClick={showReadOnlyMsg} title="Volver"><i className="fas fa-arrow-left"></i></div>
-                            <div className="icon-chunk opacity-50 cursor-not-allowed" onClick={showReadOnlyMsg} title="Guardar"><i className="fas fa-save text-green-400"></i></div>
-                            <div className="icon-chunk opacity-50 cursor-not-allowed" onClick={showReadOnlyMsg} title="Reiniciar"><i className="fas fa-undo-alt text-red-400"></i></div>
-                            <div className="mt-auto"><div className="icon-chunk opacity-50 cursor-not-allowed" onClick={showReadOnlyMsg} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div>
-                        </div>
-
-                        {/* LIENZO */}
-                        <div className="canvas-grid" style={{width:'100%', height:'100%'}}>
-                             {book ? (
-                                <BookViewer pages={book.pages || []} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
-                             ) : errorMsg ? (
-                                <div className="text-white font-bold text-xl text-center px-4 max-w-lg">
-                                    {errorMsg}<br/>
-                                    <span className="text-sm opacity-70 font-normal mt-4 block p-3 bg-white/10 rounded-lg border border-white/20">Nota para el Creador: Si ves este mensaje, entra al editor y presiona el botón <strong className="text-green-300"><i className="fas fa-save"></i> GUARDAR</strong> para publicar los cambios.</span>
-                                </div>
-                             ) : (
-                                <div className="text-white font-bold text-xl animate-pulse">Cargando Lienzo...</div>
-                             )}
-                        </div>
-                    </div>
-                 </div>
-            )
         }
 
         // --- VISOR PÚBLICO ---
@@ -645,9 +538,6 @@
             useEffect(() => {
                 if(!db) return;
                 const load = async () => {
-                    // FIX: Autenticar anónimamente si no hay usuario para poder leer la DB pública
-                    if (!auth.currentUser) await signInAnonymously(auth);
-
                     const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
                     if(docSnap.exists()) {
                         const data = docSnap.data();
@@ -1050,18 +940,11 @@
             useEffect(() => {
                 const params = new URLSearchParams(window.location.search);
                 const pUid = params.get('portfolio');
-                const activityParam = params.get('activity');
-                // NUEVO: Capturar el parámetro 'public_preview'
-                const publicPreviewUid = params.get('public_preview');
-                
-                if (publicPreviewUid) { setPortfolioUid(publicPreviewUid); setView('public-preview'); }
-                else if (pUid) { setPortfolioUid(pUid); setView('public-view'); } 
+                const activityParam = params.get('activity'); 
+                if (pUid) { setPortfolioUid(pUid); setView('public-view'); } 
                 else if (activityParam) { setPublicActivity(activityParam); setView('public-activity'); } 
                 else { if (auth) { onAuthStateChanged(auth, (u) => { setUser(u); setView(u ? 'dashboard' : 'login'); }); } }
             }, []);
-            
-            // NUEVO: Renderizar la nueva vista
-            if (view === 'public-preview') return <PublicEditorView uid={portfolioUid} />;
             if (view === 'public-view') return <PublicGallery uid={portfolioUid} />;
             if (view === 'public-activity') return <PublicActivityViewer activity={publicActivity} />;
             if (view === 'loading') return <div className="flex h-screen items-center justify-center font-bold text-xl text-indigo-500 font-outfit animate-pulse">CARGANDO STUDIO...</div>;
