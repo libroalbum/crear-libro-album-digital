@@ -268,17 +268,21 @@
             const audioRef = useRef(null);
             const [localIdx, setLocalIdx] = useState(activeIdx); 
             const currentIdx = isEditor ? activeIdx : localIdx;
-            const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1;
-            const isClosedBack = currentIdx === pages.length - 1;
+            
+            // FIX: Asegurar que pages es un array válido antes de procesar
+            const safePages = pages || [];
+            const isOpen = currentIdx >= 0 && currentIdx < safePages.length - 1;
+            const isClosedBack = currentIdx === safePages.length - 1;
+            
             const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx); };
             
             useEffect(() => {
                 const handleKeyDown = (e) => { 
-                    if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); 
+                    if (e.key === "ArrowRight" && currentIdx < safePages.length-1) changePage(currentIdx+1); 
                     if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); 
                 };
                 window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [currentIdx, pages]);
+            }, [currentIdx, safePages]);
 
             const isEditableImage = (idx, side) => { if (idx === 1 && side === 'back') return false; if (idx === 2) return false; return true; };
             const isEditableTitle = (idx, side) => { if (idx === 2) return false; return true; };
@@ -305,8 +309,8 @@
                     <audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio>
                     <div id="stage">
                         <div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>
-                            {pages.map((p, i) => {
-                                const zIndex = currentIdx >= i ? i + 1 : pages.length - i;
+                            {safePages.map((p, i) => {
+                                const zIndex = currentIdx >= i ? i + 1 : safePages.length - i;
                                 return (
                                     <div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}>
                                         <div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>
@@ -317,7 +321,7 @@
                                                     <textarea disabled={!isEditor || !isEditableText(i, 'front')} value={p.front.text} onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)} className="inline-input-text" rows="6" />
                                                 </div>
                                             )}
-                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}
+                                            {i>0 && i<safePages.length-1 && <span className="page-number">{i*2}</span>}
                                         </div>
                                         <div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>
                                             {renderEditOverlay(i, 'back', p.back.bg)}
@@ -327,7 +331,7 @@
                                                     <textarea disabled={!isEditor || !isEditableText(i, 'back')} value={p.back.text} onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)} className="inline-input-text" rows="6" />
                                                 </div>
                                             )}
-                                            {i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}
+                                            {i>0 && i<safePages.length-1 && <span className="page-number">{i*2+1}</span>}
                                         </div>
                                     </div>
                                 )
@@ -335,7 +339,7 @@
                         </div>
                     </div>
                     {currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-arrow-left"></i></button>}
-                    {currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}
+                    {currentIdx < safePages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}
                 </div>
             );
         }
@@ -366,35 +370,56 @@
             const [book, setBook] = useState(null);
             const [userProfile, setUserProfile] = useState({ name: 'Creador' });
             const [showGuide, setShowGuide] = useState(true);
-            const [error, setError] = useState(false);
+            const [errorMsg, setErrorMsg] = useState(''); // Estado de error detallado
 
             useEffect(() => {
-                if(!db) return;
+                if(!db || !uid) return;
                 const load = async () => {
                     try {
-                        // FIX: Autenticar anónimamente si no hay usuario para poder leer la DB pública
-                        if (!auth.currentUser) await signInAnonymously(auth);
+                        // FIX: Intentar auth anónima para permisos, pero NO bloquear si falla
+                        if (!auth.currentUser) {
+                            try { await signInAnonymously(auth); } catch(e) { console.log("Auth anónima opcional saltada"); }
+                        }
 
+                        // 1. Obtener perfil público (Portafolio)
                         const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
+                        
                         if(docSnap.exists()) {
                             const data = docSnap.data();
-                            if (data.publishedBook) {
+                            
+                            // 2. Prioridad: Libro Publicado (Este es accesible públicamente)
+                            if (data.publishedBook && data.publishedBook.pages) {
                                 setBook(data.publishedBook);
-                            } else if (data.featuredBookId) {
-                                const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', data.featuredBookId));
-                                if(bookSnap.exists()) setBook({id: bookSnap.id, ...bookSnap.data()});
-                                else setError(true);
+                            } 
+                            // 3. Fallback: Referencia a libro privado (Falla a menudo por permisos)
+                            else if (data.featuredBookId) {
+                                try {
+                                    const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', data.featuredBookId));
+                                    if(bookSnap.exists()) {
+                                        setBook({id: bookSnap.id, ...bookSnap.data()});
+                                    } else {
+                                        setErrorMsg("Libro no encontrado.");
+                                    }
+                                } catch (err) {
+                                    console.error("Error acceso libro privado:", err);
+                                    setErrorMsg("El creador debe entrar a su cuenta y hacer clic en 'Guardar' para actualizar su libro público.");
+                                }
                             } else {
-                                setError(true);
+                                setErrorMsg("Este portafolio no tiene libros visibles.");
                             }
                         } else {
-                            setError(true);
+                            setErrorMsg("Portafolio no encontrado. Verifica el enlace.");
                         }
-                        const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
-                        if(profileSnap.exists()) setUserProfile(profileSnap.data());
+
+                        // Cargar info de perfil
+                        try {
+                            const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
+                            if(profileSnap.exists()) setUserProfile(profileSnap.data());
+                        } catch(e) { console.log("Perfil privado"); }
+
                     } catch (e) {
-                        console.error(e);
-                        setError(true);
+                        console.error("Error general carga:", e);
+                        setErrorMsg("Error de conexión. Intenta recargar.");
                     }
                 }; 
                 load();
@@ -428,9 +453,12 @@
                         {/* LIENZO */}
                         <div className="canvas-grid" style={{width:'100%', height:'100%'}}>
                              {book ? (
-                                <BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
-                             ) : error ? (
-                                <div className="text-white font-bold text-xl">No se pudo cargar el libro. Verifica el enlace.</div>
+                                <BookViewer pages={book.pages || []} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
+                             ) : errorMsg ? (
+                                <div className="text-white font-bold text-xl text-center px-4 max-w-lg">
+                                    {errorMsg}<br/>
+                                    <span className="text-sm opacity-70 font-normal mt-4 block p-3 bg-white/10 rounded-lg border border-white/20">Nota para el Creador: Si ves este mensaje, entra al editor y presiona el botón <strong className="text-green-300"><i className="fas fa-save"></i> GUARDAR</strong> para publicar los cambios.</span>
+                                </div>
                              ) : (
                                 <div className="text-white font-bold text-xl animate-pulse">Cargando Lienzo...</div>
                              )}
