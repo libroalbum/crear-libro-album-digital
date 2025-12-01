@@ -266,17 +266,19 @@
         /* --- TOP BAR PROFILE --- */
         .top-bar-glass { 
             position: sticky; top: 0; z-index: 40; 
-            margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; 
-            padding-bottom: 10px;
+            margin-bottom: 15px; /* Reduje margen para ganar espacio */
+            display: flex; justify-content: space-between; align-items: center; 
+            padding-bottom: 5px;
+            flex-shrink: 0;
         }
-        .page-header-title { font-size: 2rem; font-weight: 800; color: var(--dark-text); font-family: 'Dosis'; letter-spacing: -1px; }
+        .page-header-title { font-size: 1.8rem; font-weight: 800; color: var(--dark-text); font-family: 'Dosis'; letter-spacing: -1px; line-height: 1; }
         
-        .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 6px 8px 6px 15px; border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s; }
+        .user-chip { display: flex; align-items: center; gap: 12px; background: white; padding: 4px 6px 4px 12px; border-radius: 50px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s; }
         .user-chip:hover { transform: translateY(-2px); border-color: var(--accent-primary); }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #e2e8f0; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #e2e8f0; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .user-info { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; margin-right: 5px; }
-        .user-name { font-weight: 700; font-size: 0.9rem; color: var(--dark-text); font-family: 'Outfit'; }
-        .user-role { font-size: 0.7rem; color: var(--accent-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name { font-weight: 700; font-size: 0.85rem; color: var(--dark-text); font-family: 'Outfit'; }
+        .user-role { font-size: 0.65rem; color: var(--accent-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* --- EDITOR STYLES (Canvas) --- */
         .canvas-grid { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #2b2d42; background-image: radial-gradient(#3d405b 1px, transparent 1px); background-size: 30px 30px; width: 100%; height: 100%; }
@@ -624,7 +626,7 @@
                     return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div>;
 
                 if(activity === 'quiz') return (
-                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden relative group">
+                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
                         <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
                         <div className="absolute inset-0 flex items-center justify-center">
                             <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-play mr-2"></i> INICIAR QUIZ</a>
@@ -633,19 +635,19 @@
                 );
 
                 if(activity === 'ficha' || activity === 'ficha_personajes') return (
-                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden relative group">
+                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
                         <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
                         <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-accent text-xl px-10 py-4"><i className="fas fa-pen mr-2"></i> COMPLETAR</a>
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-pen mr-2"></i> COMPLETAR</a>
                         </div>
                     </div>
                 );
 
                 if(activity === 'ficha_narrativa') return (
-                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden relative group">
+                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
                         <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-accent text-xl px-10 py-4"><i className="fas fa-pen-nib mr-2"></i> RELLENAR FICHA</a>
+                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-pen-nib mr-2"></i> RELLENAR FICHA</a>
                         </div>
                     </div>
                 );
@@ -982,6 +984,27 @@
                 });
             };
 
+            // --- FUNCIÓN PARA OBTENER EL TÍTULO DINÁMICO EN LA BARRA SUPERIOR (MODIFICADO) ---
+            const getSectionTitle = () => {
+                const titles = {
+                    'inicio': 'MI ESTUDIO',
+                    'portafolio': 'MI PORTAFOLIO',
+                    'reference_book': 'LIBRO GUÍA',
+                    'moodboard': 'MOODBOARD',
+                    'ficha_personajes': 'PERSONAJES',
+                    'storyboard': 'STORYBOARD',
+                    'ficha_narrativa': 'FICHA NARRATIVA',
+                    'padlet': 'MURO SOCIAL',
+                    'quiz': 'QUIZ TIME'
+                };
+                return titles[activeSection] || 'CREATOR STUDIO';
+            };
+
+            const getTitleColor = () => {
+                // Todos los títulos usan el color primario
+                return 'text-indigo-600';
+            };
+
             const renderActivityContent = () => {
                 const zoomControls = (
                     <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-gray-200 shadow-sm ml-auto">
@@ -1092,11 +1115,11 @@
                     case 'quiz':
                         return (
                             <div className="h-full flex flex-col">
-                                <div className="mb-2"><h2 className="module-title text-yellow-500 mb-2 text-3xl">QUIZ TIME</h2></div>
-                                <div className={`${containerClass} border-yellow-100 group`}>
+                                <div className="mb-2"><h2 className="module-title text-indigo-600 mb-2 text-3xl">QUIZ TIME</h2></div>
+                                <div className={`${containerClass} border-indigo-100 group`}>
                                     <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-gummy btn-orange text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-play-circle mr-3"></i> HACER QUIZ</a>
+                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-play-circle mr-3"></i> HACER QUIZ</a>
                                     </div>
                                 </div>
                             </div>
@@ -1105,11 +1128,11 @@
                     case 'ficha_narrativa':
                         return (
                             <div className="h-full flex flex-col">
-                                <div className="mb-2"><h2 className="module-title text-rose-500 mb-2 text-3xl">FICHA NARRATIVA</h2></div>
-                                <div className={`${containerClass} border-rose-100 group`}>
+                                <div className="mb-2"><h2 className="module-title text-indigo-600 mb-2 text-3xl">FICHA NARRATIVA</h2></div>
+                                <div className={`${containerClass} border-indigo-100 group`}>
                                     <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-gummy btn-pink text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                                        <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
                                     </div>
                                 </div>
                             </div>
@@ -1118,11 +1141,11 @@
                     case 'ficha_personajes':
                         return (
                             <div className="h-full flex flex-col">
-                                <div className="mb-2"><h2 className="module-title text-pink-500 mb-2 text-3xl">FICHA DE PERSONAJES</h2></div>
-                                <div className={`${containerClass} border-pink-100 group`}>
+                                <div className="mb-2"><h2 className="module-title text-indigo-600 mb-2 text-3xl">FICHA DE PERSONAJES</h2></div>
+                                <div className={`${containerClass} border-indigo-100 group`}>
                                     <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-gummy btn-pink text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO</a>
+                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO</a>
                                     </div>
                                 </div>
                             </div>
@@ -1172,7 +1195,26 @@
                         </div>
                         <div className="classroom-content">
                             <div className="top-bar-glass">
-                                <div></div> 
+                                <div className="flex items-center gap-4">
+                                     <h2 className={`page-header-title ${getTitleColor()}`}>{getSectionTitle()}</h2>
+                                     {['moodboard', 'storyboard', 'padlet'].includes(activeSection) && (
+                                         <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 border border-gray-200 shadow-sm ml-4">
+                                             <button onClick={()=>setZoom(z=>Math.max(0.5, z-0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-minus"></i></button>
+                                             <span className="text-xs font-bold w-8 text-center">{Math.round(zoom*100)}%</span>
+                                             <button onClick={()=>setZoom(z=>Math.min(1.5, z+0.1))} className="text-gray-500 hover:text-indigo-600"><i className="fas fa-plus"></i></button>
+                                         </div>
+                                     )}
+                                     {activeSection === 'portafolio' && (
+                                         <div className="flex gap-2 ml-4">
+                                            <button onClick={() => window.open(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`, '_blank')} className="btn-modern bg-white text-indigo-600 border border-indigo-100 text-xs shadow-sm py-1 px-3">
+                                                <i className="fas fa-eye mr-2"></i> VER
+                                            </button>
+                                            <button onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?portfolio=${user.uid}`); alert("Link copiado")}} className="btn-modern bg-gradient-dark text-xs py-1 px-3">
+                                                <i className="fas fa-share-alt mr-2"></i> LINK
+                                            </button>
+                                        </div>
+                                     )}
+                                </div>
                                 <div className="flex items-center gap-4">
                                     <div className="user-chip" onClick={()=>setIsProfileModalOpen(true)}>
                                         <div className="user-info"><span className="user-name">{userProfile.name}</span><span className="user-role">CREATOR</span></div>
@@ -1181,7 +1223,9 @@
                                     <button onClick={()=>signOut(auth)} className="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition shadow-sm"><i className="fas fa-power-off"></i></button>
                                 </div>
                             </div>
-                            {renderActivityContent()}
+                            <div className="flex-1 relative overflow-hidden h-full flex flex-col">
+                                {renderActivityContent()}
+                            </div>
                         </div>
                     </div>
                 </div>
