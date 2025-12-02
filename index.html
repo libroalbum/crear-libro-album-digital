@@ -702,9 +702,10 @@
         };
 
         // --- COMPONENTE MOODBOARD (ADAPTADO AL ESTILO ESTÁNDAR) ---
-        function MoodboardComponent({ user }) {
+        function MoodboardComponent({ user, disableIntro = false }) {
             const canvasRef = useRef(null);
             const [isSaving, setIsSaving] = useState(false);
+            const [showIntro, setShowIntro] = useState(!disableIntro);
             const [isPasting, setIsPasting] = useState(false);
             const zIndexCounter = useRef(100);
 
@@ -867,6 +868,7 @@
                 >
                     <div className="moodboard-wrapper relative h-full">
                         {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Procesando imagen...</div>}
+                        {/* SE ELIMINA LA VENTANA VIEJA AQUÍ */}
                         <div id="doodle-mat">
                             <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
                             <CanvasInternal 
@@ -887,9 +889,10 @@
         }
 
         // --- COMPONENTE STORYBOARD (ADAPTADO AL ESTILO ESTÁNDAR) ---
-        function StoryboardComponent({ user }) {
+        function StoryboardComponent({ user, disableIntro = false }) {
             const boardRef = useRef(null);
             const [isSaving, setIsSaving] = useState(false);
+            const [showIntro, setShowIntro] = useState(!disableIntro); // Lógica para desactivar intro interna
             
             const colors = [
                 { bg: '#FFEB3B', name: 'Amarillo Sol' }, { bg: '#FF4081', name: 'Fucsia Neón' }, 
@@ -1031,6 +1034,7 @@
                     </>}
                 >
                     <div className="storyboard-wrapper h-full">
+                        {/* SE ELIMINA LA VENTANA VIEJA AQUÍ */}
                         <div id="sb-toolbar">
                             <button className="btn-main" id="btn-add" onClick={addNewNote}><i className="fa-solid fa-plus"></i> Nueva Nota</button>
                             <button className="btn-main" id="btn-save" onClick={downloadImage}><i className="fa-solid fa-download"></i> Descargar</button>
@@ -1172,10 +1176,61 @@
                     return <div className={wrapperClass}><iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe></div>;
                 
                 if(activity === 'moodboard') 
-                    return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://libroalbum.github.io/mooboard/" className="w-full h-full border-none"></iframe></div></div>;
+                    return (
+                        <ActivityIntro 
+                            title="¡Bienvenido a tu Moodboard!" 
+                            text={
+                                <>
+                                    Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.
+                                    <br/><br/>
+                                    <strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.
+                                </>
+                            }
+                        >
+                            <div className={wrapperClass}>
+                                {/* Contenedor relativo para el overlay */}
+                                <div className="relative w-full h-full">
+                                    {/* Componente en modo solo lectura visual (sin intro interna) */}
+                                    <MoodboardComponent user={null} disableIntro={true} />
+                                    {/* Overlay que captura todos los clics */}
+                                    <div 
+                                        className="absolute inset-0 z-[9999] cursor-pointer"
+                                        onClick={() => { 
+                                            alert("¡Esta es una vista previa!\nRegístrate gratis para crear y editar tus propios tableros.");
+                                        }}
+                                        title="Vista previa de solo lectura"
+                                    ></div>
+                                </div>
+                            </div>
+                        </ActivityIntro>
+                    );
                 
                 if(activity === 'storyboard') 
-                    return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe></div></div>;
+                    return (
+                         <ActivityIntro 
+                            title="¡Hola, Aventurero!" 
+                            text={
+                                <>
+                                    Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.
+                                    <br/><br/>
+                                    Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.
+                                </>
+                            }
+                        >
+                            <div className={wrapperClass}>
+                                 <div className="relative w-full h-full">
+                                    <StoryboardComponent user={null} disableIntro={true} />
+                                    <div 
+                                        className="absolute inset-0 z-[9999] cursor-pointer"
+                                        onClick={() => { 
+                                            alert("¡Esta es una vista previa!\nRegístrate gratis para crear y editar tus propios storyboards.");
+                                        }}
+                                        title="Vista previa de solo lectura"
+                                    ></div>
+                                </div>
+                            </div>
+                        </ActivityIntro>
+                    );
                 
                 // --- CORRECCIÓN: AÑADIDA INTRO PARA PADLET PÚBLICO ---
                 if(activity === 'padlet' || activity === 'muro') 
