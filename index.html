@@ -675,6 +675,32 @@
             );
         }), () => true);
 
+        // --- NUEVO COMPONENTE: INTRO GENÉRICA PARA ACTIVIDADES ---
+        // Este componente crea la ventana de bienvenida para las secciones que faltaban
+        const ActivityIntro = ({ title, text, children }) => {
+            const [show, setShow] = useState(true);
+            return (
+                <div className="h-full flex flex-col relative w-full">
+                    {show && (
+                        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
+                            <div className="bg-white rounded-2xl max-w-lg w-full p-8 text-center border-4 border-indigo-500 shadow-2xl relative overflow-hidden animation-pop-in">
+                                <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-indigo-500 to-pink-500"></div>
+                                <div className="w-24 h-24 bg-green-100 rounded-full mx-auto mb-4 flex items-end justify-center overflow-hidden border-4 border-white shadow-md relative -mt-2">
+                                     <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png?raw=true" className="w-20" />
+                                </div>
+                                <h2 className="text-3xl font-bold text-indigo-700 font-dosis mb-4">{title}</h2>
+                                <p className="text-gray-600 mb-8 font-outfit text-lg leading-relaxed">{text}</p>
+                                <button onClick={() => setShow(false)} className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-10 rounded-full shadow-lg hover:scale-105 transition transform text-lg">
+                                    ¡ENTENDIDO, VAMOS!
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {children}
+                </div>
+            );
+        };
+
         // --- COMPONENTE MOODBOARD (Con carga Base64) ---
         function MoodboardComponent({ user }) {
             const canvasRef = useRef(null);
@@ -1309,14 +1335,14 @@
             const [userProfile, setUserProfile] = useState({ name: 'Creador' });
             const [showGuide, setShowGuide] = useState(true); 
             
-            // NUEVOS ESTADOS PARA VISTA PÚBLICA
+            // AGREGADO: Estados para las vistas previas dinámicas
             const [moodboardItems, setMoodboardItems] = useState([]);
             const [storyboardNotes, setStoryboardNotes] = useState([]);
 
             useEffect(() => {
                 if(!db) return;
                 const load = async () => {
-                    // 1. Cargar Portafolio Base
+                    // 1. Cargar Portafolio General
                     const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
                     if(docSnap.exists()) {
                         const data = docSnap.data();
@@ -1330,22 +1356,22 @@
                             } catch(err) { console.log("No se pudo cargar libro privado", err); }
                         }
                     }
-                    
+
                     // 2. Cargar Perfil
                     const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
                     if(profileSnap.exists()) setUserProfile(profileSnap.data());
 
-                    // 3. NUEVO: Cargar Datos Vivos para Moodboard
+                    // 3. AGREGADO: Cargar Datos del Moodboard para vista previa
                     try {
                         const mbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'moodboards', 'main'));
                         if (mbSnap.exists()) setMoodboardItems(mbSnap.data().items || []);
-                    } catch(e) { console.log("No moodboard data", e); }
+                    } catch (e) { console.error("Error MB preview", e); }
 
-                    // 4. NUEVO: Cargar Datos Vivos para Storyboard
+                    // 4. AGREGADO: Cargar Datos del Storyboard para vista previa
                     try {
                         const sbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'storyboards', 'main'));
                         if (sbSnap.exists()) setStoryboardNotes(sbSnap.data().notes || []);
-                    } catch(e) { console.log("No storyboard data", e); }
+                    } catch (e) { console.error("Error SB preview", e); }
 
                     setLoading(false);
                 }; 
@@ -1377,43 +1403,33 @@
 
                         <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-6">Galería de Evidencias</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            
-                            {/* TARJETA MOODBOARD */}
+                            {/* MOODBOARD CARD */}
                             <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><i className="fas fa-palette"></i></div>
                                     <h4 className="font-bold text-gray-700">Moodboard</h4>
                                 </div>
-                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center relative">
-                                    {/* Lógica: Si hay datos vivos, usa MiniMoodboard. Si no, busca imagen subida. Si no, muestra texto. */}
-                                    {moodboardItems && moodboardItems.length > 0 ? (
-                                        <div className="w-full h-full transform scale-90">
-                                            <MiniMoodboard items={moodboardItems} />
-                                        </div>
-                                    ) : (
-                                        portfolio.moodboard ? <img src={portfolio.moodboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>
-                                    )}
+                                {/* AJUSTE: Reemplazada imagen estática por MiniMoodboard dinámico */}
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden relative">
+                                    <div className="absolute inset-0 transform scale-100 origin-center">
+                                        <MiniMoodboard items={moodboardItems} />
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* TARJETA STORYBOARD */}
+                            {/* STORYBOARD CARD */}
                             <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><i className="fas fa-film"></i></div>
                                     <h4 className="font-bold text-gray-700">Storyboard</h4>
                                 </div>
-                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center relative">
-                                    {/* Lógica: Si hay datos vivos, usa MiniStoryboard. Si no, busca imagen subida. Si no, muestra texto. */}
-                                    {storyboardNotes && storyboardNotes.length > 0 ? (
-                                        <div className="w-full h-full transform scale-90">
-                                            <MiniStoryboard notes={storyboardNotes} />
-                                        </div>
-                                    ) : (
-                                        portfolio.storyboard ? <img src={portfolio.storyboard} className="w-full h-full object-cover" /> : <span className="text-gray-400 text-sm">Sin evidencia</span>
-                                    )}
+                                {/* AJUSTE: Reemplazada imagen estática por MiniStoryboard dinámico */}
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden relative">
+                                    <div className="absolute inset-0 transform scale-100 origin-center">
+                                        <MiniStoryboard notes={storyboardNotes} />
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -1601,42 +1617,64 @@
                         );
                     
                     case 'padlet':
-                        return <div className="h-full flex flex-col"><div className={containerClass}><div style={frameStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div></div>;
+                        return (
+                            <ActivityIntro 
+                                title="Muro Colaborativo" 
+                                text="¡Comparte con la clase! Agrega 2 o 3 etiquetas sobre mitos y leyendas de Norte de Santander que te gusten, añade un breve resumen y, si puedes, una foto."
+                            >
+                                <div className="h-full flex flex-col"><div className={containerClass}><div style={frameStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div></div>
+                            </ActivityIntro>
+                        );
 
                     case 'quiz':
                         return (
-                            <div className="h-full flex flex-col">
-                                <div className={`${containerClass} border-indigo-100 group`}>
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-play-circle mr-3"></i> HACER QUIZ</a>
+                            <ActivityIntro 
+                                title="¿Cuánto Aprendiste?" 
+                                text="Es hora de poner a prueba tus conocimientos. Responderás preguntas sobre conceptos del Libro Álbum y los Mitos y Leyendas que hemos explorado."
+                            >
+                                <div className="h-full flex flex-col">
+                                    <div className={`${containerClass} border-indigo-100 group`}>
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                            <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-play-circle mr-3"></i> HACER QUIZ</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </ActivityIntro>
                         );
 
                     case 'ficha_narrativa':
                         return (
-                            <div className="h-full flex flex-col">
-                                <div className={`${containerClass} border-indigo-100 group`}>
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                            <ActivityIntro 
+                                title="Estructura tu Historia" 
+                                text="Primero, recuerda los cuentos, mitos y leyendas que investigaste. Elige el que más te guste y usa esta ficha para registrar el título, un resumen y los personajes principales."
+                            >
+                                <div className="h-full flex flex-col">
+                                    <div className={`${containerClass} border-indigo-100 group`}>
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </ActivityIntro>
                         );
 
                     case 'ficha_personajes':
                         return (
-                            <div className="h-full flex flex-col">
-                                <div className={`${containerClass} border-indigo-100 group`}>
-                                    <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
-                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO</a>
+                            <ActivityIntro 
+                                title="Taller de Personajes" 
+                                text="Aquí construirás a los protagonistas de tu historia. Define cómo se imaginan físicamente, cómo son emocionalmente y qué ropa llevan."
+                            >
+                                <div className="h-full flex flex-col">
+                                    <div className={`${containerClass} border-indigo-100 group`}>
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
+                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform" style={{textDecoration: 'none'}}><i className="fas fa-edit mr-3"></i> COMPLETAR FORMULARIO</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </ActivityIntro>
                         );
 
                     default: return <div>Selecciona una opción</div>;
