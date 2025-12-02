@@ -1755,14 +1755,43 @@
                             <div className="menu-item" onClick={handleMyBook}><i className="fas fa-book-open"></i> Mi Libro</div>
                             <div className={`menu-item ${activeSection==='portafolio'?'active':''}`} onClick={()=>setActiveSection('portafolio')}><i className="fas fa-briefcase"></i> Portafolio</div>
                             <div className={`menu-item ${activeSection==='reference_book'?'active':''}`} onClick={()=>setActiveSection('reference_book')}><i className="fas fa-book"></i> Libro Guía</div>
+                            
                             <div className="section-label">LABORATORIO CREATIVO</div>
-                            <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}><i className="fas fa-palette text-purple-500"></i> Moodboard</div>
-                            <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}><i className="fas fa-user-tag text-pink-500"></i> Personajes</div>
-                            <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}><i className="fas fa-layer-group text-orange-500"></i> Storyboard</div>
-                            <div className={`menu-item ${activeSection==='ficha_narrativa'?'active':''}`} onClick={()=>setActiveSection('ficha_narrativa')}><i className="fas fa-feather-alt text-rose-500"></i> Ficha Narrativa</div>
-                            <div className={`menu-item ${activeSection==='estructura_cuento'?'active':''}`} onClick={()=>setActiveSection('estructura_cuento')}><i className="fas fa-list-ol text-lime-500"></i> Estructura Cuento</div>
-                            <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}><i className="fas fa-comments text-cyan-500"></i> Muro Social</div>
-                            <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}><i className="fas fa-puzzle-piece text-yellow-500"></i> Quiz Time</div>
+                            
+                            {/* 1. Muro Social */}
+                            <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}>
+                                <i className="fas fa-comments text-cyan-500"></i> 1. Muro Social
+                            </div>
+
+                            {/* 2. Ficha Narrativa */}
+                            <div className={`menu-item ${activeSection==='ficha_narrativa'?'active':''}`} onClick={()=>setActiveSection('ficha_narrativa')}>
+                                <i className="fas fa-feather-alt text-rose-500"></i> 2. Ficha Narrativa
+                            </div>
+
+                            {/* 3. Quiz */}
+                            <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}>
+                                <i className="fas fa-puzzle-piece text-yellow-500"></i> 3. Quiz Time
+                            </div>
+
+                            {/* 4. Estructura Cuento */}
+                            <div className={`menu-item ${activeSection==='estructura_cuento'?'active':''}`} onClick={()=>setActiveSection('estructura_cuento')}>
+                                <i className="fas fa-list-ol text-lime-500"></i> 4. Estructura Cuento
+                            </div>
+
+                            {/* 5. Storyboard */}
+                            <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}>
+                                <i className="fas fa-layer-group text-orange-500"></i> 5. Storyboard
+                            </div>
+
+                            {/* 6. Moodboard */}
+                            <div className={`menu-item ${activeSection==='moodboard'?'active':''}`} onClick={()=>setActiveSection('moodboard')}>
+                                <i className="fas fa-palette text-purple-500"></i> 6. Moodboard
+                            </div>
+
+                            {/* 7. Personajes */}
+                            <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}>
+                                <i className="fas fa-user-tag text-pink-500"></i> 7. Personajes
+                            </div>
                         </div>
                         <div className="classroom-content">
                             <div className="top-bar-glass">
