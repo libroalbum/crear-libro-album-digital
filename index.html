@@ -700,11 +700,10 @@
             );
         };
 
-        // --- COMPONENTE MOODBOARD (Con carga Base64) ---
+        // --- COMPONENTE MOODBOARD (ADAPTADO AL ESTILO ESTÁNDAR) ---
         function MoodboardComponent({ user }) {
             const canvasRef = useRef(null);
             const [isSaving, setIsSaving] = useState(false);
-            const [showIntro, setShowIntro] = useState(true);
             const [isPasting, setIsPasting] = useState(false);
             const zIndexCounter = useRef(100);
 
@@ -857,47 +856,39 @@
             };
 
             return (
-                <div className="moodboard-wrapper relative">
-                    {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Procesando imagen...</div>}
-                    {showIntro && (
-                        <div className="mb-intro-overlay">
-                            <div className="mb-intro-modal">
-                                <div className="intro-character-circle">
-                                    <img src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/personaje%20derecha.png" className="intro-character-img" alt="Guía"/>
-                                </div>
-                                <h2 className="intro-title">¡Bienvenido a tu Moodboard!</h2>
-                                <p className="intro-text">
-                                    Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.
-                                    <br/><br/>
-                                    <strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.
-                                </p>
-                                <button className="action-btn" onClick={() => setShowIntro(false)}>¡A Crear!</button>
+                <ActivityIntro 
+                    title="¡Bienvenido a tu Moodboard!" 
+                    text={<>
+                        Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.
+                        <br/><br/>
+                        <strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.
+                    </>}
+                >
+                    <div className="moodboard-wrapper relative h-full">
+                        {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Procesando imagen...</div>}
+                        <div id="doodle-mat">
+                            <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
+                            <CanvasInternal 
+                                ref={canvasRef} 
+                                onClick={(e) => { if(e.target.id === 'canvas-area') document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); }} 
+                            />
+                            <div id="toolbar">
+                                <button className="tool-btn" onClick={addText}><i className="fas fa-font"></i></button>
+                                <label className="tool-btn"><i className="fas fa-image"></i><input type="file" hidden accept="image/*" onChange={handleImageUpload}/></label>
+                                <button className="tool-btn" onClick={clearBoard}><i className="fas fa-trash-alt"></i></button>
+                                <button className="tool-btn" onClick={downloadImage}><i className="fas fa-download"></i></button>
+                                <button className="tool-btn" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving}><i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i></button>
                             </div>
                         </div>
-                    )}
-                    <div id="doodle-mat">
-                        <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
-                        <CanvasInternal 
-                            ref={canvasRef} 
-                            onClick={(e) => { if(e.target.id === 'canvas-area') document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); }} 
-                        />
-                        <div id="toolbar">
-                            <button className="tool-btn" onClick={addText}><i className="fas fa-font"></i></button>
-                            <label className="tool-btn"><i className="fas fa-image"></i><input type="file" hidden accept="image/*" onChange={handleImageUpload}/></label>
-                            <button className="tool-btn" onClick={clearBoard}><i className="fas fa-trash-alt"></i></button>
-                            <button className="tool-btn" onClick={downloadImage}><i className="fas fa-download"></i></button>
-                            <button className="tool-btn" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving}><i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i></button>
-                        </div>
                     </div>
-                </div>
+                </ActivityIntro>
             );
         }
 
-        // --- COMPONENTE STORYBOARD ---
+        // --- COMPONENTE STORYBOARD (ADAPTADO AL ESTILO ESTÁNDAR) ---
         function StoryboardComponent({ user }) {
             const boardRef = useRef(null);
             const [isSaving, setIsSaving] = useState(false);
-            const [showIntro, setShowIntro] = useState(true);
             
             const colors = [
                 { bg: '#FFEB3B', name: 'Amarillo Sol' }, { bg: '#FF4081', name: 'Fucsia Neón' }, 
@@ -1030,33 +1021,25 @@
             };
 
             return (
-                <div className="storyboard-wrapper">
-                    {showIntro && (
-                        <div className="sb-intro-overlay">
-                            <div className="sb-intro-modal">
-                                <button className="absolute top-4 right-4 text-gray-400 hover:text-red-500" onClick={() => setShowIntro(false)}><i className="fas fa-times"></i></button>
-                                <div className="intro-character-circle">
-                                    <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png" className="intro-character-img" alt="Guía"/>
-                                </div>
-                                <h2 className="intro-title">¡Hola, Aventurero!</h2>
-                                <p className="intro-text">
-                                    Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.
-                                    <br/><br/>
-                                    Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.
-                                </p>
-                                <button className="action-btn" onClick={() => setShowIntro(false)}>Comenzar a Crear</button>
-                            </div>
+                <ActivityIntro 
+                    title="¡Hola, Aventurero!" 
+                    text={<>
+                        Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.
+                        <br/><br/>
+                        Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.
+                    </>}
+                >
+                    <div className="storyboard-wrapper h-full">
+                        <div id="sb-toolbar">
+                            <button className="btn-main" id="btn-add" onClick={addNewNote}><i className="fa-solid fa-plus"></i> Nueva Nota</button>
+                            <button className="btn-main" id="btn-save" onClick={downloadImage}><i className="fa-solid fa-download"></i> Descargar</button>
+                            <button className="btn-main" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving}>
+                                <i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i> Guardar en Nube
+                            </button>
                         </div>
-                    )}
-                    <div id="sb-toolbar">
-                        <button className="btn-main" id="btn-add" onClick={addNewNote}><i className="fa-solid fa-plus"></i> Nueva Nota</button>
-                        <button className="btn-main" id="btn-save" onClick={downloadImage}><i className="fa-solid fa-download"></i> Descargar</button>
-                        <button className="btn-main" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving}>
-                            <i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i> Guardar en Nube
-                        </button>
+                        <div id="sb-board" ref={boardRef} onDragOver={handleDragOver}></div>
                     </div>
-                    <div id="sb-board" ref={boardRef} onDragOver={handleDragOver}></div>
-                </div>
+                </ActivityIntro>
             );
         }
 
@@ -1212,7 +1195,7 @@
                         <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
                             <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-play mr-2"></i> INICIAR QUIZ</a>
+                                <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-10 py-4"><i className="fas fa-play mr-2"></i> INICIAR QUIZ</a>
                             </div>
                         </div>
                     </ActivityIntro>
@@ -1227,7 +1210,7 @@
                         <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
                             <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
                             <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-pen mr-2"></i> COMPLETAR</a>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-2xl px-10 py-4"><i className="fas fa-pen mr-2"></i> COMPLETAR</a>
                             </div>
                         </div>
                     </ActivityIntro>
