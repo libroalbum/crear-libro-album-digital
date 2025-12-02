@@ -566,7 +566,7 @@
                             }}>
                                 <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'6px'}}>
                                     <div style={{background:'rgba(255,255,255,0.6)', borderRadius:'12px', padding:'2px 8px', fontSize:'0.8rem', fontWeight:'700', color:'#444'}}>
-                                        # {note.sceneNum}
+                                            # {note.sceneNum}
                                     </div>
                                 </div>
                                 <div style={{flexGrow:1, display:'flex', flexDirection:'column', gap:'6px', overflow:'hidden'}}>
@@ -1185,6 +1185,11 @@
                 return map[activity] || "Actividad";
             };
 
+            // AGREGADO: ACTUALIZAR EL TÍTULO DE LA PESTAÑA DINÁMICAMENTE
+            useEffect(() => {
+                document.title = getTitle() + " - Creator Studio";
+            }, [activity]);
+
             const BlockerModal = () => (
                 <div className="absolute inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in">
                     <div className="bg-white rounded-2xl p-8 text-center border-4 border-indigo-500 shadow-2xl relative max-w-md animation-pop-in">
@@ -1364,7 +1369,7 @@
             );
         }
 
-        // --- EDITOR COMPONENT ---
+        // --- EDITOR COMPONENT (RESTAURADO) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1); 
@@ -1560,6 +1565,27 @@
             const [moodboardItems, setMoodboardItems] = useState([]);
             const [storyboardNotes, setStoryboardNotes] = useState([]);
 
+            const getSectionTitle = () => {
+                const titles = {
+                    'inicio': 'Mi Estudio',
+                    'portafolio': 'Mi Portafolio',
+                    'reference_book': 'Libro Guía',
+                    'moodboard': 'Moodboard',
+                    'ficha_personajes': 'Personajes',
+                    'storyboard': 'Storyboard',
+                    'ficha_narrativa': 'Ficha Narrativa',
+                    'padlet': 'Muro Social',
+                    'quiz': 'Quiz Time',
+                    'estructura_cuento': "Estructura Cuento"
+                };
+                return titles[activeSection] || 'Creator Studio';
+            };
+
+            // AGREGADO: ACTUALIZAR TÍTULO DE PESTAÑA PARA EL DASHBOARD
+            useEffect(() => {
+                document.title = getSectionTitle() + " - Creator Studio";
+            }, [activeSection]);
+
             useEffect(() => { 
                 if(!user) return; 
                 const q = query(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books')); 
@@ -1612,22 +1638,6 @@
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { [type]: base64 }, { merge: true });
                     alert("¡Imagen actualizada!");
                 });
-            };
-
-            const getSectionTitle = () => {
-                const titles = {
-                    'inicio': 'Mi Estudio',
-                    'portafolio': 'Mi Portafolio',
-                    'reference_book': 'Libro Guía',
-                    'moodboard': 'Moodboard',
-                    'ficha_personajes': 'Personajes',
-                    'storyboard': 'Storyboard',
-                    'ficha_narrativa': 'Ficha Narrativa',
-                    'padlet': 'Muro Social',
-                    'quiz': 'Quiz Time',
-                    'estructura_cuento': "Estructura Cuento"
-                };
-                return titles[activeSection] || 'Creator Studio';
             };
 
             const renderActivityContent = () => {
@@ -1772,7 +1782,6 @@
                             </ActivityIntro>
                         );
                     
-                    // --- NUEVA SECCIÓN: ESTRUCTURA DE CUENTO ---
                     case 'estructura_cuento':
                         return (
                             <ActivityIntro 
