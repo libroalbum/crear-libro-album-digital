@@ -1158,7 +1158,8 @@
                     'moodboard': "Moodboard", 'storyboard': "Storyboard",
                     'quiz': "Quiz Time", 'ficha': "Ficha Personajes", 
                     'ficha_personajes': "Ficha Personajes", 'ficha_narrativa': "Ficha Narrativa",
-                    'padlet': "Muro Colaborativo", 'muro': "Muro Colaborativo"
+                    'padlet': "Muro Colaborativo", 'muro': "Muro Colaborativo",
+                    'estructura_cuento': "Estructura Cuento"
                 };
                 return map[activity] || "Actividad";
             };
@@ -1227,6 +1228,21 @@
                             <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                            </div>
+                        </div>
+                    </ActivityIntro>
+                );
+                
+                // --- NUEVA SECCIÓN PÚBLICA: ESTRUCTURA CUENTO ---
+                if(activity === 'estructura_cuento') return (
+                    <ActivityIntro 
+                        title="Estructura de Cuento" 
+                        text="Aquí aprenderás a estructurar tu cuento: Introducción, Nudo y Desenlace."
+                    >
+                        <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
+                            <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSclddiTEQJVg2wFUoLYeJFMlAiUz0AaAqPT5s2onaiwmk5U_A/viewform" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-list-ol mr-2"></i> COMPLETAR ESTRUCTURA</a>
                             </div>
                         </div>
                     </ActivityIntro>
@@ -1522,7 +1538,8 @@
                     'storyboard': 'Storyboard',
                     'ficha_narrativa': 'Ficha Narrativa',
                     'padlet': 'Muro Social',
-                    'quiz': 'Quiz Time'
+                    'quiz': 'Quiz Time',
+                    'estructura_cuento': "Estructura Cuento"
                 };
                 return titles[activeSection] || 'Creator Studio';
             };
@@ -1668,6 +1685,24 @@
                                 </div>
                             </ActivityIntro>
                         );
+                    
+                    // --- NUEVA SECCIÓN: ESTRUCTURA DE CUENTO ---
+                    case 'estructura_cuento':
+                        return (
+                            <ActivityIntro 
+                                title="Estructura de Cuento" 
+                                text="Aquí aprenderás a estructurar tu cuento: Introducción, Nudo y Desenlace."
+                            >
+                                <div className="h-full flex flex-col">
+                                    <div className={`${containerClass} border-indigo-100 group`}>
+                                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSclddiTEQJVg2wFUoLYeJFMlAiUz0AaAqPT5s2onaiwmk5U_A/viewform" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-list-ol mr-2"></i> COMPLETAR ESTRUCTURA</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ActivityIntro>
+                        );
 
                     case 'ficha_personajes':
                         return (
@@ -1725,6 +1760,7 @@
                             <div className={`menu-item ${activeSection==='ficha_personajes'?'active':''}`} onClick={()=>setActiveSection('ficha_personajes')}><i className="fas fa-user-tag text-pink-500"></i> Personajes</div>
                             <div className={`menu-item ${activeSection==='storyboard'?'active':''}`} onClick={()=>setActiveSection('storyboard')}><i className="fas fa-layer-group text-orange-500"></i> Storyboard</div>
                             <div className={`menu-item ${activeSection==='ficha_narrativa'?'active':''}`} onClick={()=>setActiveSection('ficha_narrativa')}><i className="fas fa-feather-alt text-rose-500"></i> Ficha Narrativa</div>
+                            <div className={`menu-item ${activeSection==='estructura_cuento'?'active':''}`} onClick={()=>setActiveSection('estructura_cuento')}><i className="fas fa-list-ol text-lime-500"></i> Estructura Cuento</div>
                             <div className={`menu-item ${activeSection==='padlet'?'active':''}`} onClick={()=>setActiveSection('padlet')}><i className="fas fa-comments text-cyan-500"></i> Muro Social</div>
                             <div className={`menu-item ${activeSection==='quiz'?'active':''}`} onClick={()=>setActiveSection('quiz')}><i className="fas fa-puzzle-piece text-yellow-500"></i> Quiz Time</div>
                         </div>
