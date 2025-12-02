@@ -681,7 +681,8 @@
             return (
                 <div className="h-full flex flex-col relative w-full">
                     {show && (
-                        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
+                        // AJUSTE AQUÍ: zIndex alto para cubrir los botones de las herramientas
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in" style={{zIndex: 10000}}>
                             <div className="bg-white rounded-2xl max-w-lg w-full p-8 text-center border-4 border-indigo-500 shadow-2xl relative overflow-hidden animation-pop-in">
                                 <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-indigo-500 to-pink-500"></div>
                                 <div className="w-24 h-24 bg-green-100 rounded-full mx-auto mb-4 flex items-end justify-center overflow-hidden border-4 border-white shadow-md relative -mt-2">
