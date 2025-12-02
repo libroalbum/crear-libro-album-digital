@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- TÍTULO POR DEFECTO (Lo ven los robots) -->
     <title>Creator Studio - Album Lab</title>
     
+    <!-- --- METADATOS PARA REDES SOCIALES (NUEVO) --- -->
+    <!-- Estos son los datos que leen WhatsApp, Facebook, etc. al pegar el enlace -->
+    <meta property="og:title" content="Creator Studio - Tu Laboratorio Creativo">
+    <meta property="og:description" content="Explora, crea y diviértete con nuestras herramientas interactivas: Moodboard, Storyboard, Quiz y más. ¡Ingresa ahora!">
+    <meta property="og:image" content="https://github.com/libroalbum/crear-libro-album-digital/blob/main/bienvenida.png?raw=true">
+    <meta property="og:url" content="https://libroalbum.github.io/creator-studio">
+    <meta property="og:type" content="website">
+    
+    <!-- Metadatos para Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Creator Studio - Album Lab">
+    <meta name="twitter:description" content="Herramientas creativas para diseñar tu Libro Álbum Digital.">
+    <meta name="twitter:image" content="https://github.com/libroalbum/crear-libro-album-digital/blob/main/bienvenida.png?raw=true">
+
     <!-- LIBRERÍAS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -1369,189 +1385,6 @@
             );
         }
 
-        // --- EDITOR COMPONENT (RESTAURADO) ---
-        function Editor({ user, setView }) {
-            const [book, setBook] = useState(null);
-            const [activeIdx, setActiveIdx] = useState(-1); 
-            
-            useEffect(() => { 
-                const bid = localStorage.getItem('currentBookId'); 
-                if(!bid || !db) return; 
-                getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid)).then(snap => { 
-                    if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
-                }); 
-            }, []);
-
-            const save = async () => { 
-                try { 
-                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
-                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { 
-                        featuredBookId: book.id,
-                        publishedBook: { 
-                            title: book.title,
-                            pages: book.pages
-                        }
-                    }, { merge: true });
-                    alert("¡GUARDADO Y PUBLICADO CORRECTAMENTE!"); 
-                } catch (e) { alert("Error: " + e.message); } 
-            };
-
-            const resetBook = async () => {
-                if(!confirm("¿Estás seguro de reiniciar el libro? Se perderán todos los cambios actuales.")) return;
-                const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; 
-                setBook({ id: book.id, ...resetState }); 
-                try {
-                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState);
-                    alert("¡Libro reiniciado a la plantilla original!");
-                } catch(e) {
-                    alert("Error al reiniciar: " + e.message);
-                }
-            };
-
-            const handlePageUpdate = (idx, side, field, val) => { 
-                const newPages = [...book.pages]; 
-                newPages[idx][side][field] = val; 
-                setBook({...book, pages: newPages}); 
-            };
-
-            const addPage = () => { 
-                const np = [...book.pages]; 
-                const bodyImg = 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true';
-                np.splice(np.length-1, 0, { 
-                    id: Date.now(), 
-                    type: 'content', 
-                    front: { type: 'image-page', bg: bodyImg }, 
-                    back: { type: 'image-page', bg: bodyImg } 
-                }); 
-                setBook({...book, pages: np}); 
-            };
-
-            if(!book) return <div className="flex h-full items-center justify-center text-white">Cargando Libro...</div>;
-
-            return (
-                <div className="flex h-full w-full relative overflow-hidden">
-                    <div className="sidebar-editor">
-                        <div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div>
-                        <div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div>
-                        <div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div>
-                        <div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div>
-                    </div>
-                    <div className="canvas-grid editor-mode">
-                        <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
-                    </div>
-                </div>
-            );
-        }
-
-        // --- PUBLIC GALLERY COMPONENT ---
-        function PublicGallery({ uid }) {
-            const [portfolio, setPortfolio] = useState({});
-            const [book, setBook] = useState(null);
-            const [loading, setLoading] = useState(true);
-            const [userProfile, setUserProfile] = useState({ name: 'Creador' });
-            const [showGuide, setShowGuide] = useState(true); 
-            
-            // AGREGADO: Estados para las vistas previas dinámicas
-            const [moodboardItems, setMoodboardItems] = useState([]);
-            const [storyboardNotes, setStoryboardNotes] = useState([]);
-
-            useEffect(() => {
-                if(!db) return;
-                const load = async () => {
-                    // 1. Cargar Portafolio General
-                    const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
-                    if(docSnap.exists()) {
-                        const data = docSnap.data();
-                        setPortfolio(data);
-                        if (data.publishedBook) {
-                            setBook(data.publishedBook);
-                        } else if (data.featuredBookId) {
-                            try {
-                                const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', data.featuredBookId));
-                                if(bookSnap.exists()) setBook({id: bookSnap.id, ...bookSnap.data()});
-                            } catch(err) { console.log("No se pudo cargar libro privado", err); }
-                        }
-                    }
-
-                    // 2. Cargar Perfil
-                    const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
-                    if(profileSnap.exists()) setUserProfile(profileSnap.data());
-
-                    // 3. AGREGADO: Cargar Datos del Moodboard para vista previa
-                    try {
-                        const mbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'moodboards', 'main'));
-                        if (mbSnap.exists()) setMoodboardItems(mbSnap.data().items || []);
-                    } catch (e) { console.error("Error MB preview", e); }
-
-                    // 4. AGREGADO: Cargar Datos del Storyboard para vista previa
-                    try {
-                        const sbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'storyboards', 'main'));
-                        if (sbSnap.exists()) setStoryboardNotes(sbSnap.data().notes || []);
-                    } catch (e) { console.error("Error SB preview", e); }
-
-                    setLoading(false);
-                }; 
-                load();
-            }, [uid]);
-
-            if(loading) return <div className="flex h-screen items-center justify-center text-indigo-500 font-bold">Cargando Portafolio...</div>;
-
-            return (
-                <div className="h-full overflow-y-auto bg-gray-50 relative">
-                    {showGuide && <RegistrationBubble onClose={() => setShowGuide(false)} />}
-                    <div className="bg-white border-b shadow-sm sticky top-0 z-50 px-8 py-4 flex justify-between items-center">
-                        <div>
-                            <h1 className="text-2xl font-black text-gray-800 font-dosis">PORTAFOLIO</h1>
-                            <p className="text-gray-500 text-sm">De: {userProfile.name}</p>
-                        </div>
-                        <button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4">CREAR MI CUENTA</button>
-                    </div>
-
-                    <div className="max-w-6xl mx-auto p-8">
-                        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-lg mb-8 relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-10"></div>
-                            <div className="relative z-10">
-                                <div className="w-full h-[500px] relative z-10">
-                                    {book ? <div className="transform scale-90 origin-top h-full"><BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div> : <div className="text-center text-gray-400 mt-20">Este creador aún no ha publicado su libro.</div>}
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-6">Galería de Evidencias</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {/* MOODBOARD CARD */}
-                            <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><i className="fas fa-palette"></i></div>
-                                    <h4 className="font-bold text-gray-700">Moodboard</h4>
-                                </div>
-                                {/* AJUSTE: Reemplazada imagen estática por MiniMoodboard dinámico */}
-                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden relative">
-                                    <div className="absolute inset-0 transform scale-100 origin-center">
-                                        <MiniMoodboard items={moodboardItems} />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* STORYBOARD CARD */}
-                            <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><i className="fas fa-film"></i></div>
-                                    <h4 className="font-bold text-gray-700">Storyboard</h4>
-                                </div>
-                                {/* AJUSTE: Reemplazada imagen estática por MiniStoryboard dinámico */}
-                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden relative">
-                                    <div className="absolute inset-0 transform scale-100 origin-center">
-                                        <MiniStoryboard notes={storyboardNotes} />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
         // --- DASHBOARD ---
         function Dashboard({ user, setView }) {
             const [activeSection, setActiveSection] = useState('inicio');
@@ -1920,6 +1753,189 @@
                             </div>
                             <div className="flex-1 relative overflow-hidden h-full flex flex-col">
                                 {renderActivityContent()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- EDITOR COMPONENT (RESTAURADO) ---
+        function Editor({ user, setView }) {
+            const [book, setBook] = useState(null);
+            const [activeIdx, setActiveIdx] = useState(-1); 
+            
+            useEffect(() => { 
+                const bid = localStorage.getItem('currentBookId'); 
+                if(!bid || !db) return; 
+                getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid)).then(snap => { 
+                    if(snap.exists()) setBook({id: snap.id, ...snap.data()}); 
+                }); 
+            }, []);
+
+            const save = async () => { 
+                try { 
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { 
+                        featuredBookId: book.id,
+                        publishedBook: { 
+                            title: book.title,
+                            pages: book.pages
+                        }
+                    }, { merge: true });
+                    alert("¡GUARDADO Y PUBLICADO CORRECTAMENTE!"); 
+                } catch (e) { alert("Error: " + e.message); } 
+            };
+
+            const resetBook = async () => {
+                if(!confirm("¿Estás seguro de reiniciar el libro? Se perderán todos los cambios actuales.")) return;
+                const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; 
+                setBook({ id: book.id, ...resetState }); 
+                try {
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState);
+                    alert("¡Libro reiniciado a la plantilla original!");
+                } catch(e) {
+                    alert("Error al reiniciar: " + e.message);
+                }
+            };
+
+            const handlePageUpdate = (idx, side, field, val) => { 
+                const newPages = [...book.pages]; 
+                newPages[idx][side][field] = val; 
+                setBook({...book, pages: newPages}); 
+            };
+
+            const addPage = () => { 
+                const np = [...book.pages]; 
+                const bodyImg = 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true';
+                np.splice(np.length-1, 0, { 
+                    id: Date.now(), 
+                    type: 'content', 
+                    front: { type: 'image-page', bg: bodyImg }, 
+                    back: { type: 'image-page', bg: bodyImg } 
+                }); 
+                setBook({...book, pages: np}); 
+            };
+
+            if(!book) return <div className="flex h-full items-center justify-center text-white">Cargando Libro...</div>;
+
+            return (
+                <div className="flex h-full w-full relative overflow-hidden">
+                    <div className="sidebar-editor">
+                        <div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div>
+                        <div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div>
+                        <div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div>
+                        <div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div>
+                    </div>
+                    <div className="canvas-grid editor-mode">
+                        <BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} />
+                    </div>
+                </div>
+            );
+        }
+
+        // --- PUBLIC GALLERY COMPONENT ---
+        function PublicGallery({ uid }) {
+            const [portfolio, setPortfolio] = useState({});
+            const [book, setBook] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [userProfile, setUserProfile] = useState({ name: 'Creador' });
+            const [showGuide, setShowGuide] = useState(true); 
+            
+            // AGREGADO: Estados para las vistas previas dinámicas
+            const [moodboardItems, setMoodboardItems] = useState([]);
+            const [storyboardNotes, setStoryboardNotes] = useState([]);
+
+            useEffect(() => {
+                if(!db) return;
+                const load = async () => {
+                    // 1. Cargar Portafolio General
+                    const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', uid));
+                    if(docSnap.exists()) {
+                        const data = docSnap.data();
+                        setPortfolio(data);
+                        if (data.publishedBook) {
+                            setBook(data.publishedBook);
+                        } else if (data.featuredBookId) {
+                            try {
+                                const bookSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'books', data.featuredBookId));
+                                if(bookSnap.exists()) setBook({id: bookSnap.id, ...bookSnap.data()});
+                            } catch(err) { console.log("No se pudo cargar libro privado", err); }
+                        }
+                    }
+
+                    // 2. Cargar Perfil
+                    const profileSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
+                    if(profileSnap.exists()) setUserProfile(profileSnap.data());
+
+                    // 3. AGREGADO: Cargar Datos del Moodboard para vista previa
+                    try {
+                        const mbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'moodboards', 'main'));
+                        if (mbSnap.exists()) setMoodboardItems(mbSnap.data().items || []);
+                    } catch (e) { console.error("Error MB preview", e); }
+
+                    // 4. AGREGADO: Cargar Datos del Storyboard para vista previa
+                    try {
+                        const sbSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'storyboards', 'main'));
+                        if (sbSnap.exists()) setStoryboardNotes(sbSnap.data().notes || []);
+                    } catch (e) { console.error("Error SB preview", e); }
+
+                    setLoading(false);
+                }; 
+                load();
+            }, [uid]);
+
+            if(loading) return <div className="flex h-screen items-center justify-center text-indigo-500 font-bold">Cargando Portafolio...</div>;
+
+            return (
+                <div className="h-full overflow-y-auto bg-gray-50 relative">
+                    {showGuide && <RegistrationBubble onClose={() => setShowGuide(false)} />}
+                    <div className="bg-white border-b shadow-sm sticky top-0 z-50 px-8 py-4 flex justify-between items-center">
+                        <div>
+                            <h1 className="text-2xl font-black text-gray-800 font-dosis">PORTAFOLIO</h1>
+                            <p className="text-gray-500 text-sm">De: {userProfile.name}</p>
+                        </div>
+                        <button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4">CREAR MI CUENTA</button>
+                    </div>
+
+                    <div className="max-w-6xl mx-auto p-8">
+                        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-lg mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-10"></div>
+                            <div className="relative z-10">
+                                <div className="w-full h-[500px] relative z-10">
+                                    {book ? <div className="transform scale-90 origin-top h-full"><BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div> : <div className="text-center text-gray-400 mt-20">Este creador aún no ha publicado su libro.</div>}
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-6">Galería de Evidencias</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {/* MOODBOARD CARD */}
+                            <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><i className="fas fa-palette"></i></div>
+                                    <h4 className="font-bold text-gray-700">Moodboard</h4>
+                                </div>
+                                {/* AJUSTE: Reemplazada imagen estática por MiniMoodboard dinámico */}
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden relative">
+                                    <div className="absolute inset-0 transform scale-100 origin-center">
+                                        <MiniMoodboard items={moodboardItems} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* STORYBOARD CARD */}
+                            <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-md">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-2 bg-orange-100 text-orange-600 rounded-lg"><i className="fas fa-film"></i></div>
+                                    <h4 className="font-bold text-gray-700">Storyboard</h4>
+                                </div>
+                                {/* AJUSTE: Reemplazada imagen estática por MiniStoryboard dinámico */}
+                                <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden relative">
+                                    <div className="absolute inset-0 transform scale-100 origin-center">
+                                        <MiniStoryboard notes={storyboardNotes} />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
