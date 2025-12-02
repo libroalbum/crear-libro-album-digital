@@ -676,7 +676,6 @@
         }), () => true);
 
         // --- NUEVO COMPONENTE: INTRO GENÉRICA PARA ACTIVIDADES ---
-        // Este componente crea la ventana de bienvenida para las secciones que faltaban
         const ActivityIntro = ({ title, text, children }) => {
             const [show, setShow] = useState(true);
             return (
@@ -1193,34 +1192,60 @@
                 if(activity === 'storyboard') 
                     return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://libroalbum.github.io/tablero/" className="w-full h-full border-none"></iframe></div></div>;
                 
+                // --- CORRECCIÓN: AÑADIDA INTRO PARA PADLET PÚBLICO ---
                 if(activity === 'padlet' || activity === 'muro') 
-                    return <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div>;
+                    return (
+                        <ActivityIntro 
+                            title="Muro Colaborativo" 
+                            text="¡Comparte con la clase! Agrega 2 o 3 etiquetas sobre mitos y leyendas de Norte de Santander que te gusten, añade un breve resumen y, si puedes, una foto."
+                        >
+                            <div className={wrapperClass}><div style={iframeStyle}><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none" allow="camera;microphone;geolocation;display-capture"></iframe></div></div>
+                        </ActivityIntro>
+                    );
 
+                // --- CORRECCIÓN: AÑADIDA INTRO PARA QUIZ PÚBLICO ---
                 if(activity === 'quiz') return (
-                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
-                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-play mr-2"></i> INICIAR QUIZ</a>
+                    <ActivityIntro 
+                        title="¿Cuánto Aprendiste?" 
+                        text="Es hora de poner a prueba tus conocimientos. Responderás preguntas sobre conceptos del Libro Álbum y los Mitos y Leyendas que hemos explorado."
+                    >
+                        <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
+                            <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/Kahoot-1.png?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-play mr-2"></i> INICIAR QUIZ</a>
+                            </div>
                         </div>
-                    </div>
+                    </ActivityIntro>
                 );
 
+                // --- CORRECCIÓN: AÑADIDA INTRO PARA PERSONAJES PÚBLICO ---
                 if(activity === 'ficha' || activity === 'ficha_personajes') return (
-                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
-                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
-                        <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-pen mr-2"></i> COMPLETAR</a>
+                    <ActivityIntro 
+                        title="Taller de Personajes" 
+                        text="Aquí construirás a los protagonistas de tu historia. Define cómo se imaginan físicamente, cómo son emocionalmente y qué ropa llevan."
+                    >
+                        <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
+                            <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20de%20personajes.png?raw=true" className="w-full h-full object-contain"/>
+                            <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-xl px-10 py-4"><i className="fas fa-pen mr-2"></i> COMPLETAR</a>
+                            </div>
                         </div>
-                    </div>
+                    </ActivityIntro>
                 );
 
+                // --- CORRECCIÓN: AÑADIDA INTRO PARA NARRATIVA PÚBLICO ---
                 if(activity === 'ficha_narrativa') return (
-                    <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
-                        <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                    <ActivityIntro 
+                        title="Estructura tu Historia" 
+                        text="Primero, recuerda los cuentos, mitos y leyendas que investigaste. Elige el que más te guste y usa esta ficha para registrar el título, un resumen y los personajes principales."
+                    >
+                        <div className="flex-1 bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden relative group">
+                            <img src="https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true" className="w-full h-full object-cover blur-sm opacity-50"/>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-primary text-xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform decoration-none flex items-center gap-3" style={{textDecoration: 'none'}}><i className="fas fa-pen-nib"></i> RELLENAR LA FICHA</a>
+                            </div>
                         </div>
-                    </div>
+                    </ActivityIntro>
                 );
 
                 return <div>404</div>;
