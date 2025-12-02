@@ -902,7 +902,24 @@
 
             useEffect(() => {
                 const loadData = async () => {
-                    if (!user) return;
+                    // CORRECCIÓN: Si no hay usuario (es público), cargamos el contenido de ejemplo por defecto
+                    if (!user) {
+                        const initialNotesCount = 10;
+                        const sampleData = [
+                            { scene: "Intro: Parque soleado", dialog: "¡Qué buen día!" },
+                            { scene: "Aparece el villano", dialog: "¡Jajaja!" },
+                            { scene: "El héroe llega volando", dialog: "¡Alto ahí!" },
+                            { scene: "Persecución", dialog: "(Sin diálogo)" },
+                            { scene: "Final feliz", dialog: "¡Ganamos!" }
+                        ];
+                        for (let i = 0; i < initialNotesCount; i++) {
+                            const data = sampleData[i] || { scene: "", dialog: "" };
+                            const colorIndex = i % colors.length;
+                            createNote(data.scene, data.dialog, colors[colorIndex].bg, i + 1);
+                        }
+                        return;
+                    }
+
                     try {
                         const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'));
                         if (docSnap.exists() && docSnap.data().notes && docSnap.data().notes.length > 0) {
@@ -1034,7 +1051,6 @@
                     </>}
                 >
                     <div className="storyboard-wrapper h-full">
-                        {/* SE ELIMINA LA VENTANA VIEJA AQUÍ */}
                         <div id="sb-toolbar">
                             <button className="btn-main" id="btn-add" onClick={addNewNote}><i className="fa-solid fa-plus"></i> Nueva Nota</button>
                             <button className="btn-main" id="btn-save" onClick={downloadImage}><i className="fa-solid fa-download"></i> Descargar</button>
@@ -1152,6 +1168,7 @@
         function PublicActivityViewer({ activity }) {
             const [zoom, setZoom] = useState(1);
             const [showGuide, setShowGuide] = useState(true);
+            const [showBlocker, setShowBlocker] = useState(false);
             const handleZoomIn = () => setZoom(p => Math.min(p + 0.1, 1.5));
             const handleZoomOut = () => setZoom(p => Math.max(p - 0.1, 0.5));
             const resetZoom = () => setZoom(1);
@@ -1167,6 +1184,22 @@
                 };
                 return map[activity] || "Actividad";
             };
+
+            const BlockerModal = () => (
+                <div className="absolute inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-2xl p-8 text-center border-4 border-indigo-500 shadow-2xl relative max-w-md animation-pop-in">
+                        <button onClick={(e) => { e.stopPropagation(); setShowBlocker(false); }} className="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i className="fas fa-times"></i></button>
+                        <div className="w-20 h-20 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl text-indigo-600">
+                            <i className="fas fa-lock"></i>
+                        </div>
+                        <h3 className="text-2xl font-bold text-indigo-800 mb-2">¡Modo Lectura!</h3>
+                        <p className="text-gray-600 mb-6">Para editar este tablero y guardar tus cambios, necesitas tu propia cuenta de creador.</p>
+                        <button onClick={() => window.location.href = window.location.pathname} className="btn-modern bg-gradient-primary w-full py-3 text-lg justify-center shadow-lg transform hover:scale-105 transition">
+                            ¡REGISTRARME GRATIS!
+                        </button>
+                    </div>
+                </div>
+            );
 
             const renderContent = () => {
                 const iframeStyle = { width: `${100/zoom}%`, height: `${100/zoom}%`, transform: `scale(${zoom})`, transformOrigin: '0 0', transition: '0.2s' };
@@ -1190,14 +1223,13 @@
                             <div className={wrapperClass}>
                                 {/* Contenedor relativo para el overlay */}
                                 <div className="relative w-full h-full">
+                                    {showBlocker && <BlockerModal />}
                                     {/* Componente en modo solo lectura visual (sin intro interna) */}
                                     <MoodboardComponent user={null} disableIntro={true} />
                                     {/* Overlay que captura todos los clics */}
                                     <div 
-                                        className="absolute inset-0 z-[9999] cursor-pointer"
-                                        onClick={() => { 
-                                            alert("¡Esta es una vista previa!\nRegístrate gratis para crear y editar tus propios tableros.");
-                                        }}
+                                        className="absolute inset-0 z-[9000] cursor-pointer"
+                                        onClick={() => setShowBlocker(true)}
                                         title="Vista previa de solo lectura"
                                     ></div>
                                 </div>
@@ -1219,12 +1251,11 @@
                         >
                             <div className={wrapperClass}>
                                  <div className="relative w-full h-full">
+                                    {showBlocker && <BlockerModal />}
                                     <StoryboardComponent user={null} disableIntro={true} />
                                     <div 
-                                        className="absolute inset-0 z-[9999] cursor-pointer"
-                                        onClick={() => { 
-                                            alert("¡Esta es una vista previa!\nRegístrate gratis para crear y editar tus propios storyboards.");
-                                        }}
+                                        className="absolute inset-0 z-[9000] cursor-pointer"
+                                        onClick={() => setShowBlocker(true)}
                                         title="Vista previa de solo lectura"
                                     ></div>
                                 </div>
