@@ -1239,16 +1239,48 @@
             }, [user]);
 
             return (
-                <div className="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-10">
+                <div className="flex-1 overflow-y-auto bg-[#E6ECF2] p-6 md:p-10">
                     <div className="max-w-7xl mx-auto">
-                        <header className="mb-10 fade-in">
-                            <h1 className="text-4xl font-display font-bold text-slate-800 mb-2">Hola, {userProfile.name} <span className="text-2xl">👋</span></h1>
-                            <p className="text-lg text-slate-500 max-w-2xl leading-relaxed">
-                                Este es tu espacio creativo profesional. Aquí tienes todas las herramientas para 
-                                construir, diseñar y publicar tu propio libro álbum digital. 
-                                <span className="font-bold text-indigo-500 block mt-1">¡Empieza revisando tus misiones! 🚀</span>
-                            </p>
-                        </header>
+                        
+                        {/* --- NUEVA TARJETA DE BIENVENIDA (AJUSTE SOLICITADO) --- */}
+                        <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-10 fade-in flex flex-col md:flex-row items-center gap-8">
+                            {/* Lado Izquierdo: Texto y Botón */}
+                            <div className="flex-1">
+                                <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-800 mb-4">
+                                    Bienvenido al Estudio, {userProfile.name}
+                                </h1>
+                                <p className="text-slate-600 mb-6 text-lg leading-relaxed">
+                                    Este es tu espacio creativo profesional. Aquí tienes todas las herramientas para 
+                                    construir, diseñar y publicar tu propio Libro Álbum Digital.
+                                </p>
+                                
+                                <p className="text-slate-500 text-sm mb-4">
+                                    Empieza revisando el video introductorio o salta directo a una misión.
+                                </p>
+                                
+                                <button 
+                                    onClick={() => setView('editor')} 
+                                    className="btn-modern bg-primary py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all text-white font-bold text-lg flex items-center gap-2"
+                                >
+                                    <i className="fas fa-rocket"></i> Continuar mi Libro
+                                </button>
+                            </div>
+
+                            {/* Lado Derecho: Video */}
+                            <div className="w-full md:w-5/12">
+                                <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-lg bg-black border-4 border-slate-900 relative">
+                                     <iframe 
+                                        className="absolute inset-0 w-full h-full"
+                                        src="https://www.youtube.com/embed/Ex037JX3-BI" 
+                                        title="Video Introductorio" 
+                                        frameBorder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowFullScreen
+                                    ></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        {/* ------------------------------------------------------- */}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 fade-in">
                             {MODULES_DATA.map((mod, i) => (
@@ -1258,8 +1290,14 @@
                                     <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${mod.color} flex items-center justify-center text-white text-xl mb-6 shadow-md`}>
                                         <i className={`fas ${mod.icon}`}></i>
                                     </div>
-                                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Módulo 0{mod.id}</h4>
-                                    <h3 className="text-xl font-bold text-slate-800 mb-3 leading-tight group-hover:text-indigo-600 transition">{mod.subtitle}</h3>
+                                    
+                                    {/* AJUSTE: INVERSIÓN DE TÍTULOS */}
+                                    {/* El subtítulo descriptivo ahora es el texto pequeño superior */}
+                                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{mod.subtitle}</h4>
+                                    
+                                    {/* El nombre del Módulo ahora es el título grande y resaltado */}
+                                    <h3 className="text-xl font-bold text-slate-800 mb-3 leading-tight group-hover:text-indigo-600 transition">Módulo 0{mod.id}</h3>
+                                    
                                     <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-3">{mod.description}</p>
                                     <div className="mt-auto flex items-center text-sm font-bold text-slate-700 group-hover:text-indigo-600">
                                         Entrar <i className="fas fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
