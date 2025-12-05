@@ -327,8 +327,9 @@
             /* Ajuste visual del botón mismo */
             .collapse-toggle { transform: none; }
             
-            :root { --book-width: 85vw; --book-height: 110vw; }
-            #stage { transform: scale(0.9); }
+            /* AJUSTE MÓVIL: REDUCCIÓN DEL TAMAÑO DEL LIBRO PARA QUE QUEPA EN PANTALLA */
+            :root { --book-width: 70vw; --book-height: 90vw; } /* Reducido de 85vw/110vw */
+            #stage { transform: scale(0.65); } /* Reducido de 0.9 */
         }
         
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
@@ -1498,6 +1499,18 @@
             const [portfolioUid, setPortfolioUid] = useState(null);
             const [publicActivity, setPublicActivity] = useState(null);
 
+            // EFECTO PARA PERSISTENCIA DE ESTADO
+            useEffect(() => {
+                if (view !== 'loading' && view !== 'login' && view !== 'public-view' && view !== 'public-activity') {
+                    localStorage.setItem('app_view', view);
+                }
+                if (selectedModule) {
+                    localStorage.setItem('app_module', JSON.stringify(selectedModule));
+                } else if (view === 'dashboard') {
+                    localStorage.removeItem('app_module');
+                }
+            }, [view, selectedModule]);
+
             useEffect(() => {
                 const params = new URLSearchParams(window.location.search);
                 const pUid = params.get('portfolio');
@@ -1526,7 +1539,23 @@
                                 }
                             } catch (e) { console.error("Error perfil header", e); }
                             
-                            setView('dashboard'); 
+                            // RESTAURAR ESTADO PREVIO (PERSISTENCIA)
+                            const savedView = localStorage.getItem('app_view');
+                            const savedModule = localStorage.getItem('app_module');
+                            
+                            if (savedView === 'editor') {
+                                setView('editor');
+                            } else if (savedModule && savedModule !== 'null' && savedModule !== 'undefined') {
+                                try {
+                                    setSelectedModule(JSON.parse(savedModule));
+                                    setView('dashboard'); // Aunque view sea dashboard, selectedModule renderiza ModuleDetailView
+                                } catch (e) {
+                                    setView('dashboard');
+                                }
+                            } else {
+                                setView('dashboard'); 
+                            }
+
                         } else {
                             setView('login');
                         }
@@ -1556,7 +1585,7 @@
                         </div>
                         
                         <div className="nav-group-label">MI ESTUDIO</div>
-                        <div className={`nav-item ${!selectedModule ? 'active' : ''}`} onClick={() => setSelectedModule(null)}>
+                        <div className={`nav-item ${!selectedModule && view === 'dashboard' ? 'active' : ''}`} onClick={() => { setSelectedModule(null); setView('dashboard'); }}>
                             <div className="nav-icon-box icon-indigo"><i className="fas fa-home"></i></div>
                             <span>Inicio</span>
                         </div>
@@ -1618,13 +1647,13 @@
                                     </div>
                                 </div>
                                 <div className="h-8 w-px bg-slate-300 mx-2"></div>
-                                <button onClick={()=>signOut(auth)} className="w-9 h-9 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition shadow-sm" title="Cerrar Sesión">
+                                <button onClick={()=>{ localStorage.removeItem('app_view'); localStorage.removeItem('app_module'); signOut(auth); }} className="w-9 h-9 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition shadow-sm" title="Cerrar Sesión">
                                     <i className="fas fa-power-off"></i>
                                 </button>
                             </div>
 
                         </header>
-                        {selectedModule ? (<ModuleDetailView key={selectedModule.id} module={selectedModule} onBack={() => setSelectedModule(null)} user={user} onBookEdit={() => setView('editor')} onSelectModule={setSelectedModule}/>) : (<Dashboard user={user} setView={setView} onSelectModule={setSelectedModule} />)}
+                        {selectedModule ? (<ModuleDetailView key={selectedModule.id} module={selectedModule} onBack={() => { setSelectedModule(null); setView('dashboard'); }} user={user} onBookEdit={() => setView('editor')} onSelectModule={setSelectedModule}/>) : (<Dashboard user={user} setView={setView} onSelectModule={setSelectedModule} />)}
                     </main>
                 </div>
             );
