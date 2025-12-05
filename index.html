@@ -647,7 +647,7 @@
             );
         }
 
-        const ModuleDetailView = ({ module, onBack, user, onBookEdit }) => {
+        const ModuleDetailView = ({ module, onBack, user, onBookEdit, onSelectModule }) => {
             const [activeStepId, setActiveStepId] = useState(module.initialStepId || (module.steps[0] ? module.steps[0].id : null));
             const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // Inicia ABIERTO como solicitado
             
@@ -680,6 +680,31 @@
             // Lógica para detectar el paso siguiente
             const activeStepIdx = module.steps.findIndex(s => s.id === activeStep.id);
             const nextStep = module.steps[activeStepIdx + 1];
+            // AJUSTE: Definimos también el paso anterior para la flecha izquierda
+            const prevStep = module.steps[activeStepIdx - 1];
+
+            // AJUSTE: Lógica para detectar el SIGUIENTE MÓDULO
+            const currentModuleIdx = MODULES_DATA.findIndex(m => m.id === module.id);
+            const nextModule = MODULES_DATA[currentModuleIdx + 1];
+
+            // AJUSTE: Navegación con Teclado (Flechas)
+            useEffect(() => {
+                const handleArrowNavigation = (e) => {
+                    // Evitar que cambie de página si el usuario está escribiendo en un input o nota
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+
+                    if (e.key === 'ArrowRight') {
+                        if (nextStep) handleStepSelect(nextStep.id);
+                        else if (nextModule) onSelectModule(nextModule); // Saltar al siguiente módulo
+                    }
+                    if (e.key === 'ArrowLeft' && prevStep) {
+                        handleStepSelect(prevStep.id);
+                    }
+                };
+
+                window.addEventListener('keydown', handleArrowNavigation);
+                return () => window.removeEventListener('keydown', handleArrowNavigation);
+            }, [nextStep, prevStep, activeStepId, nextModule]); // Se actualiza cuando cambian los pasos o módulos disponibles
 
             if (!activeStep) return <div className="p-10 text-center">No hay contenido disponible en este módulo.</div>;
 
@@ -730,16 +755,21 @@
                         <div className="workspace-inner fade-in relative" key={activeStep.id}>
                             
                             {/* BOTÓN SIGUIENTE FLOTANTE (SIEMPRE VISIBLE - Z-INDEX AUMENTADO A 200 PARA ESTAR SOBRE MODALES) */}
-                            {nextStep && (
+                            {(nextStep || nextModule) && (
                                 <div className="absolute top-6 right-6 z-[200]">
                                     <button 
-                                        onClick={() => handleStepSelect(nextStep.id)}
+                                        onClick={() => {
+                                            if (nextStep) handleStepSelect(nextStep.id);
+                                            else if (nextModule) onSelectModule(nextModule);
+                                        }}
                                         className="group flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm border border-indigo-100 rounded-full shadow-lg hover:shadow-xl hover:bg-white transition-all cursor-pointer hover:scale-105"
-                                        title="Siguiente Actividad"
+                                        title={nextStep ? "Siguiente Actividad" : "Ir al Siguiente Módulo"}
                                     >
-                                        <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider group-hover:text-indigo-700">Siguiente</span>
+                                        <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider group-hover:text-indigo-700">
+                                            {nextStep ? "Siguiente" : "Siguiente Módulo"}
+                                        </span>
                                         <div className="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 text-indigo-600 transition-colors">
-                                            <i className="fas fa-arrow-right text-[10px]"></i>
+                                            <i className={`fas ${nextStep ? 'fa-arrow-right' : 'fa-forward'} text-[10px]`}></i>
                                         </div>
                                     </button>
                                 </div>
@@ -752,8 +782,6 @@
                                         <h1 className="text-3xl font-display font-bold text-slate-800">{activeStep.title}</h1>
                                         <div className="h-1 w-20 bg-primary mt-4 rounded-full"></div>
                                     </div>
-                                    
-                                    {/* ELIMINADO: Perfil duplicado aquí para que solo se vea en el encabezado principal */}
                                 </div>
                             )}
 
@@ -1548,7 +1576,7 @@
                             </div>
 
                         </header>
-                        {selectedModule ? (<ModuleDetailView key={selectedModule.id} module={selectedModule} onBack={() => setSelectedModule(null)} user={user} onBookEdit={() => setView('editor')}/>) : (<Dashboard user={user} setView={setView} onSelectModule={setSelectedModule} />)}
+                        {selectedModule ? (<ModuleDetailView key={selectedModule.id} module={selectedModule} onBack={() => setSelectedModule(null)} user={user} onBookEdit={() => setView('editor')} onSelectModule={setSelectedModule}/>) : (<Dashboard user={user} setView={setView} onSelectModule={setSelectedModule} />)}
                     </main>
                 </div>
             );
