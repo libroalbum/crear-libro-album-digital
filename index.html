@@ -984,34 +984,30 @@
                 const init = async () => {
                     if(!user || !db) return;
                     
-                    let bid = localStorage.getItem('currentBookId');
-                    let loadedBook = null;
+                    // AJUSTE CRÍTICO: Usamos un ID FIJO ('libro_principal') para garantizar la persistencia.
+                    // Esto evita que se creen múltiples libros o se pierda la referencia al cerrar sesión.
+                    const bookId = 'libro_principal';
+                    const docRef = doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId);
 
-                    // 1. Intentar cargar si hay ID
-                    if (bid) {
-                        try {
-                            const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid));
-                            if (snap.exists()) {
-                                loadedBook = { id: snap.id, ...snap.data() };
-                            }
-                        } catch(e) { console.error("Error loading", e); }
-                    }
-
-                    // 2. Si no existe (o no había ID), crear uno nuevo
-                    if (!loadedBook) {
-                        try {
+                    try {
+                        const snap = await getDoc(docRef);
+                        
+                        if (snap.exists()) {
+                            // 1. Si el libro YA existe en la nube, lo cargamos.
+                            console.log("Libro encontrado, cargando...");
+                            setBook({ id: snap.id, ...snap.data() });
+                        } else {
+                            // 2. Si NO existe (es la primera vez del usuario), lo creamos.
+                            console.log("Creando libro nuevo...");
                             const newBook = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() };
-                            const docRef = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), newBook);
-                            bid = docRef.id;
-                            localStorage.setItem('currentBookId', bid);
-                            loadedBook = { id: bid, ...newBook };
-                        } catch(e) {
-                            alert("Error iniciando libro: " + e.message);
-                            return;
+                            // Usamos setDoc en lugar de addDoc para forzar el ID 'libro_principal'
+                            await setDoc(docRef, newBook);
+                            setBook({ id: bookId, ...newBook });
                         }
+                    } catch(e) {
+                        console.error("Error cargando libro:", e);
+                        alert("Error de conexión: " + e.message);
                     }
-
-                    setBook(loadedBook);
                 };
                 
                 init();
