@@ -971,12 +971,57 @@
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1);
-            useEffect(() => { const bid = localStorage.getItem('currentBookId'); if(!bid || !db) return; getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid)).then(snap => { if(snap.exists()) setBook({id: snap.id, ...snap.data()}); }); }, []);
+            
+            // AJUSTE DE RENDIMIENTO: Carga robusta y automática
+            useEffect(() => { 
+                if(!user || !db) return;
+                
+                // Usamos un ID fijo y seguro para el proyecto del usuario
+                const bookId = 'proyecto_libro_principal'; 
+                const docRef = doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId);
+
+                const loadBook = async () => {
+                    try {
+                        const snap = await getDoc(docRef);
+                        if(snap.exists()) {
+                            // Si existe, lo cargamos inmediatamente
+                            setBook({id: snap.id, ...snap.data()});
+                        } else {
+                            // Si NO existe (primera vez o error), lo creamos automáticamente
+                            // Esto evita que la pantalla se quede en blanco eternamente
+                            const newBook = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() };
+                            await setDoc(docRef, newBook);
+                            setBook({ id: bookId, ...newBook });
+                        }
+                    } catch (e) {
+                        console.error("Error crítico cargando libro:", e);
+                        alert("Hubo un problema cargando tu libro. Por favor revisa tu conexión.");
+                    }
+                };
+                
+                loadBook();
+            }, [user]);
+
             const save = async () => { try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: book.id, publishedBook: { title: book.title, pages: book.pages } }, { merge: true }); alert("¡GUARDADO Y PUBLICADO!"); } catch (e) { alert("Error: " + e.message); } };
-            const resetBook = async () => { if(!confirm("¿Reiniciar libro?")) return; const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; setBook({ id: book.id, ...resetState }); try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); alert("¡Libro reiniciado!"); } catch(e) { alert("Error: " + e.message); } };
+            
+            const resetBook = async () => { 
+                if(!confirm("¿Reiniciar libro a blanco?")) return; 
+                const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; 
+                setBook({ id: book.id, ...resetState }); 
+                try { await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); alert("¡Libro reiniciado!"); } catch(e) { alert("Error: " + e.message); } 
+            };
+            
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
             const addPage = () => { const np = [...book.pages]; const bodyImg = 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true'; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: bodyImg }, back: { type: 'image-page', bg: bodyImg } }); setBook({...book, pages: np}); };
-            if(!book) return <div className="flex h-full items-center justify-center text-white">Cargando Libro...</div>;
+            
+            // Estado de carga visual mejorado
+            if(!book) return (
+                <div className="flex h-full flex-col items-center justify-center bg-slate-900 text-white gap-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                    <p className="animate-pulse">Preparando tu estudio...</p>
+                </div>
+            );
+
             return (<div className="flex h-full w-full relative overflow-hidden"><div className="sidebar-editor"><div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div><div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div><div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div><div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div></div><div className="canvas-grid editor-mode"><BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} /></div></div>);
         }
 
