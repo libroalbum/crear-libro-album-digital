@@ -156,7 +156,7 @@
             width: 32px; height: 32px; 
             background: white; border: 2px solid #e2e8f0; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; z-index: 30; 
+            cursor: pointer; z-index: 120; /* AUMENTADO: Z-INDEX 120 para estar sobre modales */
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); color: #64748b; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
         }
@@ -413,6 +413,7 @@
         ];
 
         // --- UTILS ---
+        // AJUSTE: Optimización de imágenes para evitar error de límite de memoria en base de datos
         const processImage = (file, callback) => {
             if (!file) return;
             const reader = new FileReader();
@@ -421,11 +422,18 @@
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 800; let width = img.width; let height = img.height;
+                    
+                    // CAMBIO 1: Reducimos el ancho máximo de 800 a 480px (Suficiente para el libro digital)
+                    const MAX_WIDTH = 480; 
+                    let width = img.width; let height = img.height;
+                    
                     if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    
                     canvas.width = width; canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.7)); 
+                    
+                    // CAMBIO 2: Bajamos la calidad de 0.7 a 0.5 para reducir el peso del archivo
+                    callback(canvas.toDataURL('image/jpeg', 0.5)); 
                 }; img.src = e.target.result;
             }; reader.readAsDataURL(file);
         };
@@ -967,61 +975,56 @@
             return (<div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}><audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio><div id="stage"><div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>{pages.map((p, i) => { const zIndex = currentIdx >= i ? i + 1 : pages.length - i; return (<div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}><div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>{renderEditOverlay(i, 'front', p.front.bg)}{p.front.type==='text-page' && (<div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10"><input disabled={!isEditor} value={p.front.title} onChange={(e)=>onUpdatePage(i, 'front', 'title', e.target.value)} className="inline-input-title" /><textarea disabled={!isEditor} value={p.front.text} onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)} className="inline-input-text" rows="6" /></div>)}{i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}</div><div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>{renderEditOverlay(i, 'back', p.back.bg)}{p.back.type==='text-page' && (<div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10"><input disabled={!isEditor} value={p.back.title} onChange={(e)=>onUpdatePage(i, 'back', 'title', e.target.value)} className="inline-input-title" /><textarea disabled={!isEditor} value={p.back.text} onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)} className="inline-input-text" rows="6" /></div>)}{i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}</div></div>)})}</div></div>{currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-arrow-left"></i></button>}{currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}</div>);
         }
 
-        // --- EDITOR COMPONENT (RESTAURADO) ---
+        // --- EDITOR COMPONENT (OPTIMIZADO) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1);
             
-            // AJUSTE DE RENDIMIENTO: Carga robusta y automática
             useEffect(() => { 
-                if(!user || !db) return;
-                
-                // Usamos un ID fijo y seguro para el proyecto del usuario
-                const bookId = 'proyecto_libro_principal'; 
-                const docRef = doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId);
+                const init = async () => {
+                    if(!user || !db) return;
+                    
+                    let bid = localStorage.getItem('currentBookId');
+                    let loadedBook = null;
 
-                const loadBook = async () => {
-                    try {
-                        const snap = await getDoc(docRef);
-                        if(snap.exists()) {
-                            // Si existe, lo cargamos inmediatamente
-                            setBook({id: snap.id, ...snap.data()});
-                        } else {
-                            // Si NO existe (primera vez o error), lo creamos automáticamente
-                            // Esto evita que la pantalla se quede en blanco eternamente
-                            const newBook = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() };
-                            await setDoc(docRef, newBook);
-                            setBook({ id: bookId, ...newBook });
-                        }
-                    } catch (e) {
-                        console.error("Error crítico cargando libro:", e);
-                        alert("Hubo un problema cargando tu libro. Por favor revisa tu conexión.");
+                    // 1. Intentar cargar si hay ID
+                    if (bid) {
+                        try {
+                            const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bid));
+                            if (snap.exists()) {
+                                loadedBook = { id: snap.id, ...snap.data() };
+                            }
+                        } catch(e) { console.error("Error loading", e); }
                     }
+
+                    // 2. Si no existe (o no había ID), crear uno nuevo
+                    if (!loadedBook) {
+                        try {
+                            const newBook = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() };
+                            const docRef = await addDoc(collection(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books'), newBook);
+                            bid = docRef.id;
+                            localStorage.setItem('currentBookId', bid);
+                            loadedBook = { id: bid, ...newBook };
+                        } catch(e) {
+                            alert("Error iniciando libro: " + e.message);
+                            return;
+                        }
+                    }
+
+                    setBook(loadedBook);
                 };
                 
-                loadBook();
+                init();
             }, [user]);
 
             const save = async () => { try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: book.id, publishedBook: { title: book.title, pages: book.pages } }, { merge: true }); alert("¡GUARDADO Y PUBLICADO!"); } catch (e) { alert("Error: " + e.message); } };
-            
-            const resetBook = async () => { 
-                if(!confirm("¿Reiniciar libro a blanco?")) return; 
-                const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; 
-                setBook({ id: book.id, ...resetState }); 
-                try { await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); alert("¡Libro reiniciado!"); } catch(e) { alert("Error: " + e.message); } 
-            };
-            
+            const resetBook = async () => { if(!confirm("¿Reiniciar libro?")) return; const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; setBook({ id: book.id, ...resetState }); try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); alert("¡Libro reiniciado!"); } catch(e) { alert("Error: " + e.message); } };
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
             const addPage = () => { const np = [...book.pages]; const bodyImg = 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true'; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: bodyImg }, back: { type: 'image-page', bg: bodyImg } }); setBook({...book, pages: np}); };
             
-            // Estado de carga visual mejorado
-            if(!book) return (
-                <div className="flex h-full flex-col items-center justify-center bg-slate-900 text-white gap-4">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                    <p className="animate-pulse">Preparando tu estudio...</p>
-                </div>
-            );
-
+            // AJUSTE VISUAL: Cambié text-white a text-indigo-500 para que se vea en fondo claro
+            if(!book) return <div className="flex h-full items-center justify-center text-indigo-500 font-bold text-xl"><i className="fas fa-spinner fa-spin mr-3"></i> Cargando Editor...</div>;
+            
             return (<div className="flex h-full w-full relative overflow-hidden"><div className="sidebar-editor"><div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div><div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div><div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div><div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div></div><div className="canvas-grid editor-mode"><BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} /></div></div>);
         }
 
