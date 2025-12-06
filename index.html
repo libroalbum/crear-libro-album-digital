@@ -236,6 +236,8 @@
         .board-item.selected { z-index: 1000 !important; box-shadow: 0 0 0 3px var(--mat-blue); }
         .board-item.selected .handle-btn { display: flex; }
         .delete-handle { background: #ff5252; top: -18px; left: -18px; } .rotate-handle { background: var(--mat-yellow); color: #333; top: -30px; left: 50%; transform: translateX(-50%); }
+        /* AJUSTE: Nuevo estilo para el botón de escalar */
+        .resize-handle { background: #4CAF50; bottom: -18px; right: -18px; cursor: nwse-resize; }
 
         /* --- STORYBOARD RESTAURADO (VISUAL ORIGINAL) --- */
         .storyboard-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; background-color: var(--sb-bg); background-image: radial-gradient(#cbd5e1 2px, transparent 2px); background-size: 30px 30px; overflow-y: auto; padding: 20px; }
@@ -512,7 +514,51 @@
                 }; 
                 const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', stop); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', stop); }; div.onmousedown = startDrag; div.ontouchstart = startDrag; return div; };
             
-            const addControls = (el) => { const delBtn = document.createElement('div'); delBtn.className = 'handle-btn delete-handle'; delBtn.innerHTML = '<i class="fas fa-times"></i>'; delBtn.onclick = (e) => { e.stopPropagation(); el.remove(); }; el.appendChild(delBtn); const rotBtn = document.createElement('div'); rotBtn.className = 'handle-btn rotate-handle'; rotBtn.innerHTML = '<i class="fas fa-sync-alt"></i>'; rotBtn.onmousedown = (e) => { e.stopPropagation(); const rect = el.getBoundingClientRect(); const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2; const move = (ev) => { const cx = ev.clientX; const cy = ev.clientY; const angle = Math.atan2(cy - centerY, cx - centerX); el.style.transform = `rotate(${angle}rad)`; }; const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', stop); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', stop); }; el.appendChild(rotBtn); };
+            const addControls = (el) => { 
+                // Botón Eliminar
+                const delBtn = document.createElement('div'); delBtn.className = 'handle-btn delete-handle'; delBtn.innerHTML = '<i class="fas fa-times"></i>'; delBtn.onclick = (e) => { e.stopPropagation(); el.remove(); }; el.appendChild(delBtn); 
+                
+                // Botón Rotar
+                const rotBtn = document.createElement('div'); rotBtn.className = 'handle-btn rotate-handle'; rotBtn.innerHTML = '<i class="fas fa-sync-alt"></i>'; rotBtn.onmousedown = (e) => { e.stopPropagation(); const rect = el.getBoundingClientRect(); const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2; const move = (ev) => { const cx = ev.clientX; const cy = ev.clientY; const angle = Math.atan2(cy - centerY, cx - centerX); el.style.transform = `rotate(${angle}rad)`; }; const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', stop); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', stop); }; el.appendChild(rotBtn); 
+
+                // AJUSTE: Botón de Escalar (Nuevo)
+                const resBtn = document.createElement('div'); 
+                resBtn.className = 'handle-btn resize-handle'; 
+                resBtn.innerHTML = '<i class="fas fa-expand"></i>'; 
+                resBtn.onmousedown = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    const startWidth = el.offsetWidth;
+                    const startHeight = el.offsetHeight;
+                    const rect = el.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const startDist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+
+                    const move = (ev) => {
+                        const currentDist = Math.hypot(ev.clientX - centerX, ev.clientY - centerY);
+                        const scale = currentDist / startDist;
+                        
+                        // Escalado proporcional para evitar deformación
+                        const newWidth = Math.max(50, startWidth * scale);
+                        const newHeight = Math.max(50, startHeight * scale);
+                        
+                        el.style.width = `${newWidth}px`;
+                        el.style.height = `${newHeight}px`;
+                    };
+
+                    const stop = () => {
+                        document.removeEventListener('mousemove', move);
+                        document.removeEventListener('mouseup', stop);
+                    };
+                    
+                    document.addEventListener('mousemove', move);
+                    document.addEventListener('mouseup', stop);
+                };
+                el.appendChild(resBtn);
+            };
+
             const addText = () => { const el = createBoardElement('text'); canvasRef.current.appendChild(el); }; const createImageElement = (src) => { const el = createBoardElement('image'); const img = document.createElement('img'); img.src = src; img.ondragstart = () => false; el.appendChild(img); addControls(el); canvasRef.current.appendChild(el); }; const handleImageUpload = (e) => { const file = e.target.files[0]; if(file) { setIsPasting(true); processImage(file, (base64) => { createImageElement(base64); setIsPasting(false); }); e.target.value = ''; } }; const clearBoard = () => { if(confirm("¿Borrar todo?")) canvasRef.current.innerHTML = '<p style="margin-top:20px; color:#ccc; text-align:center;">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; }; const downloadImage = () => { document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); html2canvas(document.querySelector('.moodboard-wrapper'), { useCORS: true, scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'mi-moodboard.png'; link.href = canvas.toDataURL(); link.click(); }); }; const saveToCloud = async () => { setIsSaving(true); const items = []; canvasRef.current.querySelectorAll('.board-item').forEach(el => { const isText = el.classList.contains('text-item'); items.push({ type: isText ? 'text' : 'image', left: el.style.left, top: el.style.top, transform: el.style.transform, zIndex: el.style.zIndex, width: el.style.width, height: el.style.height, content: isText ? el.querySelector('.text-content').innerText : el.querySelector('img').src }); }); try { await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'), { items }); alert("¡Trabajo guardado!"); } catch(e) { alert("Error: " + e.message); } setIsSaving(false); }; const restoreBoard = (items) => { if(!items) return; canvasRef.current.innerHTML = '<p style="margin-top:20px; color:#ccc; text-align:center;">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; items.forEach(item => { const el = createBoardElement(item.type); el.style.left = item.left; el.style.top = item.top; el.style.transform = item.transform; el.style.zIndex = item.zIndex; if(item.width) el.style.width = item.width; if(item.height) el.style.height = item.height; if (item.type === 'text') { el.querySelector('.text-content').innerText = item.content; } else { const img = document.createElement('img'); img.src = item.content; img.ondragstart = () => false; el.appendChild(img); addControls(el); } canvasRef.current.appendChild(el); }); };
             
             return (
@@ -522,11 +568,12 @@
                         <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
                         <div id="canvas-area" ref={canvasRef} onClick={(e) => { if(e.target.id === 'canvas-area') document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); }}><p style={{marginTop:20, color:'#ccc', textAlign:'center'}}>Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p></div>
                         <div id="toolbar">
-                            <button className="tool-btn" onClick={addText}><i className="fas fa-font"></i></button>
-                            <label className="tool-btn"><i className="fas fa-image"></i><input type="file" hidden accept="image/*" onChange={handleImageUpload}/></label>
-                            <button className="tool-btn" onClick={clearBoard}><i className="fas fa-trash-alt"></i></button>
-                            <button className="tool-btn" onClick={downloadImage}><i className="fas fa-download"></i></button>
-                            <button className="tool-btn" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving}><i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'}`}></i></button>
+                            <button className="tool-btn" onClick={addText} title="Agregar Texto"><i className="fas fa-font"></i></button>
+                            <label className="tool-btn" title="Subir Imagen"><i className="fas fa-image"></i><input type="file" hidden accept="image/*" onChange={handleImageUpload}/></label>
+                            <button className="tool-btn" onClick={clearBoard} title="Limpiar"><i className="fas fa-trash-alt"></i></button>
+                            <button className="tool-btn" onClick={downloadImage} title="Descargar"><i className="fas fa-download"></i></button>
+                            {/* AJUSTE: Icono cambiado a Disquete (fa-save) */}
+                            <button className="tool-btn" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving} title="Guardar"><i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-save'}`}></i></button>
                         </div>
                     </div>
                 </div>
