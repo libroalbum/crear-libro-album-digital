@@ -1590,7 +1590,20 @@
         function LoginScreen({ onLogin }) {
             const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [isRegister, setIsRegister] = useState(false); const [isReset, setIsReset] = useState(false);
             const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
-            const handleGoogleLogin = async () => { try { const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); } catch (error) { alert(error.message); } };
+            
+            // AJUSTE: Mejoramos la función para ignorar el error si se cancela la ventana
+            const handleGoogleLogin = async () => { 
+                try { 
+                    const provider = new GoogleAuthProvider(); 
+                    await signInWithPopup(auth, provider); 
+                } catch (error) { 
+                    // Solo mostramos alerta si NO es un error de cancelación voluntaria
+                    if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
+                        alert(error.message); 
+                    }
+                } 
+            };
+
             const handleReset = async (e) => { e.preventDefault(); if (!email) return alert("Escribe tu correo."); try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); } };
             
             return (
