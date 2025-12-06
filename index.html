@@ -1595,7 +1595,39 @@
             
             return (
                 <div className="login-split-wrapper">
-                    <div className="login-visual-side"><div className="visual-overlay"><h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2><p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte.</p></div></div>
+                    <div className="login-visual-side">
+                        
+                        {/* AJUSTE: Video movido dentro del overlay inferior, al lado del texto */}
+                        <div className="visual-overlay">
+                            <div className="flex flex-col md:flex-row items-end justify-between w-full gap-6">
+                                
+                                {/* Texto de Bienvenida */}
+                                <div className="mb-2 md:mb-0 relative z-10">
+                                    <h2 className="text-4xl font-bold font-dosis mb-2 text-shadow">Tu Imaginación no tiene límites</h2>
+                                    <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte.</p>
+                                </div>
+
+                                {/* Video Tutorial Integrado */}
+                                <div className="w-64 md:w-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/50 backdrop-blur-sm hover:scale-105 transition-transform origin-bottom-right hidden md:block relative z-20">
+                                    <div className="aspect-video bg-black">
+                                         <iframe 
+                                            className="w-full h-full"
+                                            src="https://www.youtube.com/embed/Hz2O4ftt0E8" 
+                                            title="Tutorial Creator Studio" 
+                                            frameBorder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+                                    <div className="bg-indigo-900/80 p-2 text-center backdrop-blur-md">
+                                        <p className="text-white text-[10px] font-bold uppercase tracking-widest">✨ Descubre la Magia</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
                     <div className="login-form-side">
                         <div className="w-full max-w-md">
                             <h1 className="text-3xl font-display font-black text-indigo-600 mb-2">CREATOR STUDIO</h1>
