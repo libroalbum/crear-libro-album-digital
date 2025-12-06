@@ -444,6 +444,32 @@
 
         // --- COMPONENTES (MODULE DETAIL VIEW) ---
         
+        // AJUSTE: Nuevo Componente de Notificación Personalizada (Estética de la Marca)
+        const NotificationToast = ({ message, type = 'success', onClose }) => {
+            useEffect(() => {
+                const timer = setTimeout(onClose, 3000); // Se cierra solo a los 3 segundos
+                return () => clearTimeout(timer);
+            }, [onClose]);
+
+            const isSuccess = type === 'success';
+            
+            return (
+                <div className="fixed inset-0 flex items-center justify-center z-[11000] pointer-events-none">
+                    <div className="bg-white pl-4 pr-8 py-4 rounded-2xl shadow-2xl border-l-8 border-l-green-500 flex items-center gap-4 animate-bounce-in pointer-events-auto border border-gray-100">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm ${isSuccess ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                            <i className={`fas ${isSuccess ? 'fa-check' : 'fa-exclamation-triangle'}`}></i>
+                        </div>
+                        <div>
+                            <h4 className={`font-black text-lg ${isSuccess ? 'text-slate-800' : 'text-red-600'} font-display uppercase tracking-wide`}>
+                                {isSuccess ? '¡Guardado!' : 'Atención'}
+                            </h4>
+                            <p className="text-slate-500 font-medium text-sm">{message}</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         // NUEVO COMPONENTE: INTRODUCCIÓN DE ACTIVIDAD (Ventana Emergente)
         const ActivityIntro = ({ title, text, children }) => {
             const [show, setShow] = useState(true);
@@ -494,6 +520,9 @@
             const [isPasting, setIsPasting] = useState(false); 
             const zIndexCounter = useRef(100);
             
+            // Estado para la notificación
+            const [notification, setNotification] = useState(null);
+
             useEffect(() => { const loadData = async () => { if (!user) return; try { const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main')); if (docSnap.exists()) { restoreBoard(docSnap.data().items); } } catch (e) { console.error("Error moodboard", e); } }; loadData(); const handlePaste = (e) => { const items = e.clipboardData.items; for (let i = 0; i < items.length; i++) { if (items[i].type.indexOf('image') !== -1) { const blob = items[i].getAsFile(); setIsPasting(true); processImage(blob, (base64) => { createImageElement(base64); setIsPasting(false); }); break; } } }; document.addEventListener('paste', handlePaste); return () => document.removeEventListener('paste', handlePaste); }, [user]);
             
             const createBoardElement = (type) => { const div = document.createElement('div'); div.className = 'board-item'; div.style.zIndex = zIndexCounter.current++; div.style.transform = `rotate(0deg)`; div.style.left = '50px'; div.style.top = '50px'; if (type === 'text') { div.classList.add('text-item'); const p = document.createElement('div'); p.contentEditable = false; p.className = 'text-content'; p.innerText = "¡Doble clic para editar!"; div.ondblclick = (e) => { e.stopPropagation(); p.contentEditable = true; p.focus(); div.draggable = false; }; p.onblur = () => { p.contentEditable = false; }; div.appendChild(p); addControls(div); } 
@@ -559,10 +588,29 @@
                 el.appendChild(resBtn);
             };
 
-            const addText = () => { const el = createBoardElement('text'); canvasRef.current.appendChild(el); }; const createImageElement = (src) => { const el = createBoardElement('image'); const img = document.createElement('img'); img.src = src; img.ondragstart = () => false; el.appendChild(img); addControls(el); canvasRef.current.appendChild(el); }; const handleImageUpload = (e) => { const file = e.target.files[0]; if(file) { setIsPasting(true); processImage(file, (base64) => { createImageElement(base64); setIsPasting(false); }); e.target.value = ''; } }; const clearBoard = () => { if(confirm("¿Borrar todo?")) canvasRef.current.innerHTML = '<p style="margin-top:20px; color:#ccc; text-align:center;">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; }; const downloadImage = () => { document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); html2canvas(document.querySelector('.moodboard-wrapper'), { useCORS: true, scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'mi-moodboard.png'; link.href = canvas.toDataURL(); link.click(); }); }; const saveToCloud = async () => { setIsSaving(true); const items = []; canvasRef.current.querySelectorAll('.board-item').forEach(el => { const isText = el.classList.contains('text-item'); items.push({ type: isText ? 'text' : 'image', left: el.style.left, top: el.style.top, transform: el.style.transform, zIndex: el.style.zIndex, width: el.style.width, height: el.style.height, content: isText ? el.querySelector('.text-content').innerText : el.querySelector('img').src }); }); try { await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'), { items }); alert("¡Trabajo guardado!"); } catch(e) { alert("Error: " + e.message); } setIsSaving(false); }; const restoreBoard = (items) => { if(!items) return; canvasRef.current.innerHTML = '<p style="margin-top:20px; color:#ccc; text-align:center;">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; items.forEach(item => { const el = createBoardElement(item.type); el.style.left = item.left; el.style.top = item.top; el.style.transform = item.transform; el.style.zIndex = item.zIndex; if(item.width) el.style.width = item.width; if(item.height) el.style.height = item.height; if (item.type === 'text') { el.querySelector('.text-content').innerText = item.content; } else { const img = document.createElement('img'); img.src = item.content; img.ondragstart = () => false; el.appendChild(img); addControls(el); } canvasRef.current.appendChild(el); }); };
+            const addText = () => { const el = createBoardElement('text'); canvasRef.current.appendChild(el); }; const createImageElement = (src) => { const el = createBoardElement('image'); const img = document.createElement('img'); img.src = src; img.ondragstart = () => false; el.appendChild(img); addControls(el); canvasRef.current.appendChild(el); }; const handleImageUpload = (e) => { const file = e.target.files[0]; if(file) { setIsPasting(true); processImage(file, (base64) => { createImageElement(base64); setIsPasting(false); }); e.target.value = ''; } }; const clearBoard = () => { if(confirm("¿Borrar todo?")) canvasRef.current.innerHTML = '<p style="margin-top:20px; color:#ccc; text-align:center;">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; }; const downloadImage = () => { document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); html2canvas(document.querySelector('.moodboard-wrapper'), { useCORS: true, scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'mi-moodboard.png'; link.href = canvas.toDataURL(); link.click(); }); }; 
+            
+            const saveToCloud = async () => { 
+                setIsSaving(true); 
+                const items = []; 
+                canvasRef.current.querySelectorAll('.board-item').forEach(el => { const isText = el.classList.contains('text-item'); items.push({ type: isText ? 'text' : 'image', left: el.style.left, top: el.style.top, transform: el.style.transform, zIndex: el.style.zIndex, width: el.style.width, height: el.style.height, content: isText ? el.querySelector('.text-content').innerText : el.querySelector('img').src }); }); 
+                try { 
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'), { items }); 
+                    // AJUSTE: Usar nueva notificación visual
+                    setNotification({ message: "Tu Moodboard se guardó en la nube correctamente." });
+                } catch(e) { 
+                    setNotification({ message: "Error: " + e.message, type: 'error' });
+                } 
+                setIsSaving(false); 
+            }; 
+            
+            const restoreBoard = (items) => { if(!items) return; canvasRef.current.innerHTML = '<p style="margin-top:20px; color:#ccc; text-align:center;">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; items.forEach(item => { const el = createBoardElement(item.type); el.style.left = item.left; el.style.top = item.top; el.style.transform = item.transform; el.style.zIndex = item.zIndex; if(item.width) el.style.width = item.width; if(item.height) el.style.height = item.height; if (item.type === 'text') { el.querySelector('.text-content').innerText = item.content; } else { const img = document.createElement('img'); img.src = item.content; img.ondragstart = () => false; el.appendChild(img); addControls(el); } canvasRef.current.appendChild(el); }); };
             
             return (
                 <div className="moodboard-wrapper relative h-full w-full">
+                    {/* Renderizado de Notificación */}
+                    {notification && <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
+                    
                     {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Procesando imagen...</div>}
                     <div id="doodle-mat">
                         <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
@@ -626,6 +674,10 @@
             const [notes, setNotes] = useState([]);
             const [draggedIndex, setDraggedIndex] = useState(null);
             const [isSaving, setIsSaving] = useState(false);
+            
+            // Estado para la notificación
+            const [notification, setNotification] = useState(null);
+            
             const PALETTE = ['#FFEB3B', '#FF4081', '#00E5FF', '#76FF03', '#E040FB', '#FF9100'];
             const generateId = () => '_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
             
@@ -669,12 +721,15 @@
             };
 
             const saveToCloud = async () => {
-                if (!user) return alert("Debes iniciar sesión para guardar en la nube.");
+                if (!user) return setNotification({ message: "Debes iniciar sesión para guardar.", type: 'error' });
                 setIsSaving(true);
                 try {
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'), { notes });
-                    alert("¡Storyboard guardado en la nube!");
-                } catch(e) { alert("Error al guardar: " + e.message); }
+                    // AJUSTE: Notificación visual
+                    setNotification({ message: "Tu Storyboard se guardó correctamente." });
+                } catch(e) { 
+                    setNotification({ message: "Error: " + e.message, type: 'error' });
+                }
                 setIsSaving(false);
             };
 
@@ -690,11 +745,14 @@
 
             return (
                 <div className="storyboard-wrapper w-full h-full">
+                    {/* Renderizado de Notificación */}
+                    {notification && <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
+                    
                     <div id="sb-toolbar">
                         <button className="btn-modern bg-white text-gray-600 border border-gray-200 text-sm" onClick={addNote}><i className="fa-solid fa-plus mr-2"></i> Nueva Nota</button>
                         <button className="btn-modern bg-white text-gray-600 border border-gray-200 text-sm" onClick={downloadImage}><i className="fa-solid fa-download mr-2"></i> Descargar</button>
                         <button className="btn-modern bg-indigo-600 text-white text-sm" onClick={saveToCloud} disabled={isSaving}>
-                            <i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'} mr-2`}></i> Guardar en Nube
+                            <i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-save'} mr-2`}></i> Guardar en Nube
                         </button>
                     </div>
                     <div id="sb-board">
@@ -1028,6 +1086,9 @@
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1);
             
+            // Estado para la notificación
+            const [notification, setNotification] = useState(null);
+            
             useEffect(() => { 
                 const init = async () => {
                     if(!user || !db) return;
@@ -1061,15 +1122,43 @@
                 init();
             }, [user]);
 
-            const save = async () => { try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: book.id, publishedBook: { title: book.title, pages: book.pages } }, { merge: true }); alert("¡GUARDADO Y PUBLICADO!"); } catch (e) { alert("Error: " + e.message); } };
-            const resetBook = async () => { if(!confirm("¿Reiniciar libro?")) return; const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; setBook({ id: book.id, ...resetState }); try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); alert("¡Libro reiniciado!"); } catch(e) { alert("Error: " + e.message); } };
+            const save = async () => { 
+                try { 
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: book.id, publishedBook: { title: book.title, pages: book.pages } }, { merge: true }); 
+                    
+                    // AJUSTE: Notificación visual
+                    setNotification({ message: "¡Tu libro se ha guardado y publicado!" });
+                } catch (e) { 
+                    setNotification({ message: "Error: " + e.message, type: 'error' });
+                } 
+            };
+            
+            const resetBook = async () => { 
+                if(!confirm("¿Reiniciar libro?")) return; 
+                const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; 
+                setBook({ id: book.id, ...resetState }); 
+                try { 
+                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); 
+                    setNotification({ message: "Libro reiniciado correctamente." });
+                } catch(e) { 
+                    setNotification({ message: "Error: " + e.message, type: 'error' });
+                } 
+            };
+            
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
             const addPage = () => { const np = [...book.pages]; const bodyImg = 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true'; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: bodyImg }, back: { type: 'image-page', bg: bodyImg } }); setBook({...book, pages: np}); };
             
             // AJUSTE VISUAL: Cambié text-white a text-indigo-500 para que se vea en fondo claro
             if(!book) return <div className="flex h-full items-center justify-center text-indigo-500 font-bold text-xl"><i className="fas fa-spinner fa-spin mr-3"></i> Cargando Editor...</div>;
             
-            return (<div className="flex h-full w-full relative overflow-hidden"><div className="sidebar-editor"><div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div><div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div><div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div><div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div></div><div className="canvas-grid editor-mode"><BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} /></div></div>);
+            return (
+                <div className="flex h-full w-full relative overflow-hidden">
+                    {/* Renderizado de Notificación */}
+                    {notification && <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
+                    
+                    <div className="sidebar-editor"><div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div><div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div><div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div><div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div></div><div className="canvas-grid editor-mode"><BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} /></div></div>
+            );
         }
 
         // --- PUBLIC GALLERY (MODIFICADO: NAVEGACIÓN POR PESTAÑAS) ---
