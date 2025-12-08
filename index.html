@@ -910,28 +910,31 @@
                                     {activeStep.resources && (
                                         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             {activeStep.resources.map((res, i) => (
-                                                <div 
-                                                    key={i} 
-                                                    onClick={() => {
-                                                        if (res.type === 'youtube') {
-                                                            setViewingResource(res);
-                                                        } else {
-                                                            window.open(res.url, '_blank');
-                                                        }
-                                                    }}
-                                                    className="resource-card-compact cursor-pointer group hover:bg-slate-50"
-                                                >
-                                                    <div className="w-10 h-10 rounded-full bg-indigo-100 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                                                        <i className={`fas ${res.type === 'youtube' ? 'fa-play' : res.icon || 'fa-link'}`}></i>
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-bold text-sm text-slate-700">{res.title}</p>
-                                                        <p className="text-xs text-primary font-semibold">
-                                                            {res.type === 'youtube' ? 'Reproducir Video' : 'Abrir Recurso'}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))}
+    <div 
+        key={i} 
+        /* --- ESTO ES LO NUEVO: El detector de tipo --- */
+        onClick={() => {
+            if (res.type === 'youtube') {
+                setViewingResource(res); // Si es video, abre modal
+            } else {
+                window.open(res.url, '_blank'); // Si es link, abre pestaña nueva
+            }
+        }}
+        className="resource-card-compact cursor-pointer group hover:bg-slate-50"
+    >
+        <div className="w-10 h-10 rounded-full bg-indigo-100 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+            {/* --- ESTO ES LO NUEVO: El selector de icono --- */}
+            <i className={`fas ${res.type === 'youtube' ? 'fa-play' : res.icon || 'fa-link'}`}></i>
+        </div>
+        <div>
+            <p className="font-bold text-sm text-slate-700">{res.title}</p>
+            {/* --- ESTO ES LO NUEVO: El texto dinámico --- */}
+            <p className="text-xs text-primary font-semibold">
+                {res.type === 'youtube' ? 'Reproducir Video' : 'Abrir Recurso'}
+            </p>
+        </div>
+    </div>
+))}
                                         </div>
                                     )}
                                 </div>}
