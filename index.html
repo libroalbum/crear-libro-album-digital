@@ -1736,13 +1736,26 @@
                             
                             if (savedView === 'editor') {
                                 setView('editor');
-                            } else if (savedModule && savedModule !== 'null' && savedModule !== 'undefined') {
-                                try {
-                                    setSelectedModule(JSON.parse(savedModule));
-                                    setView('dashboard'); // Aunque view sea dashboard, selectedModule renderiza ModuleDetailView
-                                } catch (e) {
-                                    setView('dashboard');
+                          } else if (savedModule && savedModule !== 'null' && savedModule !== 'undefined') {
+                        try {
+                            // CORRECCIÓN: Usamos la memoria solo para el ID, pero cargamos el contenido NUEVO
+                            const savedObj = JSON.parse(savedModule);
+                            // Buscamos la versión actualizada en tu lista de datos
+                            const freshModule = MODULES_DATA.find(m => m.id === savedObj.id);
+                            
+                            if (freshModule) {
+                                // Mantenemos al usuario en la lección donde quedó
+                                if (savedObj.initialStepId) {
+                                    freshModule.initialStepId = savedObj.initialStepId;
                                 }
+                                setSelectedModule(freshModule);
+                            } else {
+                                setSelectedModule(savedObj);
+                            }
+                            setView('dashboard'); 
+                        } catch (e) {
+                            setView('dashboard');
+                        }
                             } else {
                                 setView('dashboard'); 
                             }
