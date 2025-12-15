@@ -434,14 +434,28 @@
         ];
 
         // --- UTILS ---
-        // --- UTILS ---
-        // AJUSTE INTELIGENTE: Calidad adaptable según el largo del libro
-        // --- UTILS ---
-        // AJUSTE PRO: Sensor de Espacio Real
-        // Este código calcula cuánto espacio queda en el megabyte y ajusta la calidad
-        const processImage = (file, callback... ) => {
-            // ... un montón de código aquí adentro ...
-            // ... más código ...
+        // AJUSTE: Calidad UNIFORME (360px y 50%) - Versión estable
+        const processImage = (file, callback) => {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // TAMAÑO FIJO: 360px
+                    const MAX_WIDTH = 360; 
+                    let width = img.width; let height = img.height;
+                    
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    
+                    canvas.width = width; canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // CALIDAD FIJA: 0.5
+                    callback(canvas.toDataURL('image/jpeg', 0.5)); 
+                }; img.src = e.target.result;
             }; reader.readAsDataURL(file);
         };
         const MASTER_TEMPLATE = { title: "Nuevo Libro", pages: [{ id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20portada.png?raw=true' }, back: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' } }, { id: 'c2', type: 'structure', front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título)' } }, { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024' }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...' } }, { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' } }, { id: 'end', type: 'structure', front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20contraportada.png?raw=true' } }] };
