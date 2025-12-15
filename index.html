@@ -108,11 +108,18 @@
         .input-field-clean { width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; background: #fff; transition: all 0.2s; }
         .input-field-clean:focus { border-color: #6366f1; ring: 2px solid rgba(99, 102, 241, 0.2); outline: none; }
 
-        /* LOGIN */
+        /* LOGIN & GALLERY TRANSITIONS (AJUSTE NUEVO) */
         .login-split-wrapper { display: flex; width: 100%; height: 100%; background: white; }
-        .login-visual-side { flex: 1.2; background-image: url('https://github.com/libroalbum/crear-libro-album-digital/blob/main/bienvenida.png?raw=true'); background-size: cover; background-position: center; position: relative; }
-        .visual-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 80%); padding: 60px; color: white; display: flex; flex-direction: column; justify-content: flex-end; }
-        .login-form-side { flex: 0 0 480px; display: flex; flex-direction: column; justify-content: center; padding: 60px; background-color: #ffffff; overflow-y: auto; }
+        .login-visual-side { flex: 1.2; background-image: url('https://github.com/libroalbum/crear-libro-album-digital/blob/main/bienvenida.png?raw=true'); background-size: cover; background-position: center; position: relative; overflow: hidden; transition: all 0.5s ease; }
+        .visual-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 80%); padding: 60px; color: white; display: flex; flex-direction: column; justify-content: flex-end; z-index: 10; transition: opacity 0.5s; }
+        .login-form-side { flex: 0 0 480px; display: flex; flex-direction: column; justify-content: center; padding: 60px; background-color: #ffffff; overflow-y: auto; transition: all 0.5s ease; z-index: 20; }
+        
+        /* ESTILOS PARA LA GALERÍA EN EL LOGIN */
+        .login-gallery-active .login-visual-side { flex: 1; width: 100%; z-index: 30; }
+        .login-gallery-active .login-form-side { width: 0; padding: 0; flex: 0; opacity: 0; overflow: hidden; }
+        .gallery-container { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); z-index: 20; padding: 40px; overflow-y: auto; display: none; opacity: 0; transition: opacity 0.5s; }
+        .login-gallery-active .gallery-container { display: block; opacity: 1; }
+
         @media (max-width: 900px) { .login-split-wrapper { flex-direction: column; } .login-visual-side { flex: 0 0 30vh; order: -1; } .login-form-side { flex: 1; width: 100%; padding: 30px; } }
 
         /* APP SHELL */
@@ -368,7 +375,7 @@
             db = getFirestore(app); 
         } catch (e) { console.error(e); }
 
-        // --- DATA Y UTILS (SIN CAMBIOS) ---
+        // --- DATA Y UTILS ---
         const MODULE_1_STEPS = [
             { id: 101, title: "Bienvenida", type: "content", content: `<p class="font-bold text-xl mb-4">¡Hola, Aventureros! 👋✨</p><p class="mb-4">Bienvenidos a este viaje donde transformaremos los <strong>mitos y leyendas de Norte de Santander</strong> en un increíble libro-álbum digital. 📖</p><p class="mb-4">A lo largo del curso, combinarás narrativa y tecnología para dar vida a tu propia historia ✍️. Pasarás de escribir el guion y crear personajes con Inteligencia Artificial 🤖, hasta diseñar y publicar tu obra final para compartirla con el mundo. 🌍🚀</p><p class="mb-4 italic text-slate-500">Prepárate para convertirte en un guardián de nuestra memoria colectiva a través del arte digital. 🎨</p><p class="font-bold text-indigo-600">¡Comencemos! 🔥</p>` },
             { id: 102, title: "Concepto: Libro Álbum", type: "content", content: `<p class="mb-4">Para comenzar nuestra aventura, primero debemos conocer el artefacto que vamos a construir. ¡Bienvenidos a nuestro primer descubrimiento! 🧐✨</p><h3 class="text-lg font-bold text-slate-800 mb-2">¿Qué es un Libro-Álbum Digital? 📖💻</h3><p class="mb-4">Es una narración donde <strong>texto e imagen son inseparables</strong>: las palabras no bastan, necesitan de la ilustración digital para completar el sentido y despertar emociones. En este formato, cada pantalla funciona como una escena de película que el lector recorre a su ritmo. Tú serás quien decida qué mostrar y qué dejar a la imaginación.</p><p class="text-sm text-slate-500 mb-4">👇 A continuación, te dejo unos materiales adjuntos y enlaces con ejemplos para orientarte mejor. ¡No olvides revisarlos! 📎👀</p>`, resources: [{ type: 'link', title: 'Guía de Creación', url: 'https://libroalbum.github.io/crear-libro-album-digital/?activity=guia', icon: 'fa-book' }, { type: 'youtube', title: '¿Qué es un libro álbum?', url: 'https://www.youtube.com/embed/U9KoD0RPBnA' }] },
@@ -380,8 +387,6 @@
 
         const MODULE_2_STEPS = [
             { id: 201, title: "Bienvenida", type: "content", content: `<p class="font-bold text-xl mb-4">¡Hola, Exploradores! 👋✨</p><p class="mb-4">Nuestra aventura continúa. En esta nueva expedición, aprenderás a mirar con ojos de creador: descubrirás cómo las imágenes también tienen voz y pueden contar historias. 👁️🗨️</p><p class="mb-4">Aquí dominarás el lenguaje visual, experimentando con el color, la forma y la composición para dar vida a los personajes y escenarios de tus mitos y leyendas. Cada trazo y cada detalle te acercarán un paso más a construir tu propio libro-álbum digital. 📕✨</p><p class="font-bold text-pink-600">¡Prepárate para bocetar tu mundo! 🔥</p>` },
-            
-            /* --- AQUÍ ESTÁN TUS NUEVOS ENLACES --- */
             { id: 205, title: "Concepto: Storyboard Descriptivo", type: "content", content: `<h3 class="text-lg font-bold text-slate-800 mb-2">El Mapa de la Historia 🗺️📝</h3><p class="mb-4">Antes de dibujar, necesitamos un plan. El storyboard descriptivo es la brújula de tu narración: una versión escrita de tu historia dividida escena por escena. A diferencia del gráfico, aquí usamos palabras para "ver" lo que ocurrirá.</p><p class="mb-2 font-bold">En cada paso definirás:</p><ul class="list-disc pl-5 mb-4 space-y-2"><li>👤 <strong>Personajes:</strong> ¿Quiénes están?</li><li>⚡ <strong>Acciones:</strong> ¿Qué está pasando?</li><li>🏞️ <strong>Escenario:</strong> ¿Dónde ocurre?</li><li>❤️ <strong>Emociones:</strong> ¿Qué debe sentir el lector?</li></ul><p class="mb-4">Es tu oportunidad para organizar el cuento paso a paso en tu mente antes de tomar el lápiz digital.</p>`, 
                 resources: [
                     { type: 'youtube', title: 'Guía de Storyboard', url: 'https://www.youtube.com/embed/Bpwt6Qw3ZHQ' },
@@ -395,7 +400,6 @@
                     { type: 'link', title: '¿Cómo escribir un cuento?', url: 'https://www.goconqr.com/es-ES/p/14541910%E2%80%93C-mo-escribir-un-cuento%E2%80%93', icon: 'fa-link' }
                 ] 
             },
-            
             { id: 207, title: "Concepto: Moodboard", type: "content", content: `<h3 class="text-lg font-bold text-slate-800 mb-2">El Tablero de Inspiración 🎨🖼️</h3><p class="mb-4"><strong>¿De qué color es tu leyenda?</strong></p><p class="mb-4">El Moodboard es nuestro laboratorio de ideas. Es un collage visual donde reunirás imágenes, texturas, colores y referencias que capturen la atmósfera de tu cuento. No se trata de copiar, sino de encontrar el "tono" visual: ¿Tu historia evoca misterio y oscuridad 🌑, o alegría y magia brillante ✨?</p><p class="mb-4">Úsalo para definir el estilo antes de empezar a diseñar.</p>`, resources: [{ type: 'youtube', title: 'Aprende a inspirarte', url: 'https://www.youtube.com/embed/pOsMqDUOBxg' },{ type: 'link', title: 'Cómo hacer un moodboard', url: 'https://miro.com/es/moodboard/que-es-moodboard/', icon: 'fa-link' },{ type: 'link', title: 'Moodboard', url: 'https://es.slideshare.net/slideshow/moodboard-66483327/66483327?utm_source#3', icon: 'fa-link' }] },
             { id: 204, title: "Actividad: Estructura del Cuento", type: "tool-structure", desc: "Define el inicio, nudo y desenlace.", content: "Formulario de estructura." },
             { id: 202, title: "Actividad: Moodboard", type: "tool-moodboard", desc: "Tablero de inspiración.", content: "Crea tu atmósfera visual." },
@@ -405,7 +409,7 @@
         const MODULE_3_STEPS = [
             { id: 301, title: "Introducción", type: "content", content: `<p class="font-bold text-xl mb-4">¡Aventureros! Ha llegado el momento más visual de nuestro viaje. 👁️</p><p class="mb-4">Después de tener lista la historia, ahora vamos a darle color y forma. En esta etapa, combinaremos la <strong>Inteligencia Artificial</strong> y el diseño digital para crear los personajes y escenarios que darán vida a tu libro-álbum.</p><p class="font-bold text-emerald-600">¡Prepárate para transformar tus ideas en imágenes! 🚀</p>` },
             { id: 302, title: "Concepto: La Imagen Narrativa", type: "content", content: `<p class="mb-4">Antes de empezar a crear, descubramos nuestra herramienta clave:</p><h3 class="text-lg font-bold text-slate-800 mb-2">¿Qué es la Ilustración Narrativa? 🖌️📖</h3><p class="mb-4">Es el arte de contar una historia a través de imágenes. No se trata solo de decorar o "mostrar", sino de <strong>expresar</strong> visualmente la esencia y las emociones del relato. Aquí, cada imagen tiene una misión: complementar lo que dicen las palabras y conectar profundamente con el lector.</p><p class="text-sm text-slate-500 mb-4">👇 A continuación, te dejo unos recursos y ejemplos para que domines este concepto. ¡No olvides revisarlos! 📎👀</p>`, resources: [{ type: 'link', title: 'Cómo aplicar la narración visual', url: 'https://eniversy.com/articulos/articulo-como-aplicar-la-narracion-visual-en-la-creacion-de-contenido-educativo-para-mejorar-la-retencion-del-aprendizaje-5942', icon: 'fa-magic', color: 'bg-link' },{ type: 'link', title: 'Narrativas Visuales y Creatividad', url: 'https://papers.cumincad.org/data/works/att/sigradi2015_10.381.pdf', icon: 'fa-magic', color: 'bg-link' },{ type: 'youtube', title: '¿Qué es la NARRATIVA VISUAL?', url: 'https://youtu.be/n848mJABbBw?si=ifRxoTOvaaz5zJUq' }] },
-            { id: 303, title: "Concepto: Identidad Visual", type: "content", content: `<h3 class="text-lg font-bold text-slate-800 mb-2">Manteniendo el Rumbo 🧭✨</h3><p class="mb-4">Para que nuestro libro-álbum se vea profesional, ¡no podemos perder el estilo! La identidad visual se trata de la coherencia: tus personajes y escenarios deben conservar sus rasgos, proporciones y estética en todas las páginas. Esto asegura que todas las imágenes pertenezcan al mismo universo mágico.</p><p class="text-sm text-slate-500 mb-4">👇 Aprende a mantener tu estilo aquí: 📎</p>`, resources: [{ type: 'youtube', title: '¿Qué es la Identidad Visual?', url: 'https://www.youtube.com/embed/WpruRl_lP7w' }] },
+            { id: 303, title: "Concepto: Identidad Visual", type: "content", content: `<h3 class="text-lg font-bold text-slate-800 mb-2">Manteniendo el Rumbo 🧭✨</h3><p class="mb-4">Para que nuestro libro-álbum se vea profesional, ¡no podemos perder el estilo! La identidad visual se trata de la coherencia: tus personajes y escenarios deben conservar sus rasgos, proporciones y estética en todas las páginas. Esto asegura que todas las imágenes pertenezcan al mismo universo mágico.</p><p class="text-sm text-slate-500 mb-4">👇 Aprende a mantener tu estilo aquí: 📎</p>`, resources: [{ type: 'youtube', title: 'Consistencia de Personajes con IA', url: 'https://www.youtube.com/embed/WpruRl_lP7w' }] },
             { id: 304, title: "Concepto: Atmósferas", type: "content", content: `<h3 class="text-lg font-bold text-slate-800 mb-2">El Clima de la Aventura 🎨🌡️</h3><p class="mb-4">¿Qué emoción quieres transmitir? <strong>El color es nuestro idioma secreto</strong> para crear atmósferas. Los tonos cálidos (rojos, naranjas) nos llenan de energía y alegría, mientras que los fríos (azules, violetas) evocan calma o misterio. ¡Juega con las luces y sombras para definir el sentimiento de tu historia!.</p><p class="text-sm text-slate-500 mb-4">👇 Mira cómo usar el color aquí:</p>`, resources: [{ type: 'youtube', title: 'Psicología del Color en la Narrativa', url: 'https://www.youtube.com/embed/mpJuIf3vrRM' },{ type: 'link', title: 'La psicología del color', url: 'https://co.pinterest.com/pin/140806234351790/', icon: 'fa-link' }] },
             { id: 305, title: "Concepto: Composición", type: "content", content: `<h3 class="text-lg font-bold text-slate-800 mb-2">Organizando el Mapa 🗺️👁️</h3><p class="mb-4">¡Atención, exploradores! No basta con tener buenos elementos, hay que saber ubicarlos. La composición es la forma en que organizamos los personajes y objetos dentro de la imagen para guiar la mirada del espectador. Al diseñar en Canva, busca el equilibrio y usa el espacio para crear un ritmo que haga brillar tu escena.</p><p class="text-sm text-slate-500 mb-4">👇 Profundiza aquí con estos ejemplos: 📎</p>`, resources: [{ type: 'youtube', title: 'Reglas Básicas de Composición', url: 'https://www.youtube.com/embed/J5tZqRbmjXM' },{ type: 'link', title: 'Reglas de composición', url: 'https://es.pinterest.com/pin/67272588179294884/', icon: 'fa-link' },] },
             { id: 306, title: "Concepto: Prompt IA", type: "content", content: `<p class="mb-4">Hoy sumamos una herramienta poderosa a nuestra mochila: la <strong>Inteligencia Artificial</strong>. Esta tecnología es la que nos ayudará a ilustrar nuestra historia, pero para que ella pueda crear la magia que necesitas, primero debes saber cómo "hablarle" correctamente.</p><h3 class="text-lg font-bold text-slate-800 mb-2">El secreto es hacer un buen Prompt: 📝🔮</h3><p class="mb-4">Así se le llama a la instrucción o mensaje detallado que le escribes. Piensa en la IA como un artista digital que sigue tus órdenes: mientras más específico seas describiendo lo que imaginas, mejor será el resultado que recibirás de tu nueva aliada.</p><p class="text-sm text-slate-500 mb-4">👇 Aprende aquí cómo pedirle ayuda: 📎👀</p>`, resources: [{ type: 'youtube', title: 'Cómo escribir Prompts efectivos', url: 'https://www.youtube.com/embed/SUCVgg57DgA' },{ type: 'link', title: '¿Qué es un prompt?', url: 'https://sherpacampus.com/inteligencia-artificial/que-es-prompt-como-generarlos-ejemplos/', icon: 'fa-link' }] },
@@ -430,7 +434,6 @@
         ];
 
         // --- UTILS ---
-        // AJUSTE: Optimización de imágenes para evitar error de límite de memoria en base de datos
         const processImage = (file, callback) => {
             if (!file) return;
             const reader = new FileReader();
@@ -440,7 +443,6 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // CAMBIO 1: Reducimos el ancho máximo de 800 a 480px (Suficiente para el libro digital)
                     const MAX_WIDTH = 480; 
                     let width = img.width; let height = img.height;
                     
@@ -449,16 +451,12 @@
                     canvas.width = width; canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // CAMBIO 2: Bajamos la calidad de 0.7 a 0.5 para reducir el peso del archivo
                     callback(canvas.toDataURL('image/jpeg', 0.5)); 
                 }; img.src = e.target.result;
             }; reader.readAsDataURL(file);
         };
         const MASTER_TEMPLATE = { title: "Nuevo Libro", pages: [{ id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20portada.png?raw=true' }, back: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' } }, { id: 'c2', type: 'structure', front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título)' } }, { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024' }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...' } }, { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' } }, { id: 'end', type: 'structure', front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20contraportada.png?raw=true' } }] };
 
-        // --- COMPONENTES (MODULE DETAIL VIEW) ---
-        
-        // AJUSTE: Nuevo Componente de Notificación Personalizada (Estética de la Marca)
         const NotificationToast = ({ message, type = 'success', onClose }) => {
             useEffect(() => {
                 const timer = setTimeout(onClose, 3000); // Se cierra solo a los 3 segundos
@@ -484,41 +482,28 @@
             );
         };
 
-        // NUEVO COMPONENTE: INTRODUCCIÓN DE ACTIVIDAD (Ventana Emergente)
         const ActivityIntro = ({ title, text, children }) => {
             const [show, setShow] = useState(true);
             
-            // Si el usuario ya le dio "Entendido", mostramos el contenido directo
             if (!show) return children;
 
             return (
                 <div className="h-full w-full relative">
-                    {/* MODAL DE INTRODUCCIÓN */}
                     <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 z-[100]" style={{animation: 'fadeIn 0.3s'}}>
                         <div className="bg-white rounded-2xl max-w-lg w-full p-8 text-center border-4 border-indigo-500 shadow-2xl relative overflow-hidden animation-pop-in">
-                            {/* Decoración superior */}
                             <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-indigo-500 to-pink-500"></div>
-                            
-                            {/* Círculo con personaje */}
                             <div className="w-24 h-24 bg-green-100 rounded-full mx-auto mb-4 flex items-end justify-center overflow-hidden border-4 border-white shadow-md relative -mt-2">
                                  <img src="https://github.com/libroalbum/libro-lbum-pedag-gico/blob/main/images/personaje%20derecha.png?raw=true" className="w-20 object-contain" alt="Personaje" />
                             </div>
-                            
                             <h2 className="text-3xl font-bold text-indigo-700 font-display mb-4">{title}</h2>
                             <div className="text-slate-600 mb-8 font-sans text-lg leading-relaxed">
                                 {text}
                             </div>
-                            
-                            <button 
-                                onClick={() => setShow(false)} 
-                                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-10 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition transform text-lg"
-                            >
+                            <button onClick={() => setShow(false)} className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-10 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition transform text-lg">
                                 ¡ENTENDIDO, VAMOS!
                             </button>
                         </div>
                     </div>
-                    
-                    {/* CONTENIDO DE LA ACTIVIDAD (Oculto visualmente o detrás) */}
                     <div className="h-full w-full opacity-20 pointer-events-none filter blur-sm">
                         {children}
                     </div>
@@ -526,15 +511,12 @@
             );
         };
 
-        // --- COMPONENTES ORIGINALES ACTUALIZADOS (SIN ESCALADO FIJO) ---
-
+        // --- COMPONENTES ORIGINALES ---
         function MoodboardComponent({ user }) {
             const canvasRef = useRef(null); 
             const [isSaving, setIsSaving] = useState(false); 
             const [isPasting, setIsPasting] = useState(false); 
             const zIndexCounter = useRef(100);
-            
-            // Estado para la notificación
             const [notification, setNotification] = useState(null);
 
             useEffect(() => { const loadData = async () => { if (!user) return; try { const docSnap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main')); if (docSnap.exists()) { restoreBoard(docSnap.data().items); } } catch (e) { console.error("Error moodboard", e); } }; loadData(); const handlePaste = (e) => { const items = e.clipboardData.items; for (let i = 0; i < items.length; i++) { if (items[i].type.indexOf('image') !== -1) { const blob = items[i].getAsFile(); setIsPasting(true); processImage(blob, (base64) => { createImageElement(base64); setIsPasting(false); }); break; } } }; document.addEventListener('paste', handlePaste); return () => document.removeEventListener('paste', handlePaste); }, [user]);
@@ -547,59 +529,13 @@
                 let startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX; 
                 let startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY; 
                 let startLeft = div.offsetLeft; let startTop = div.offsetTop; 
-                const move = (ev) => { 
-                    ev.preventDefault(); 
-                    const cx = ev.type.includes('mouse') ? ev.clientX : ev.touches[0].clientX; 
-                    const cy = ev.type.includes('mouse') ? ev.clientY : ev.touches[0].clientY; 
-                    // RESTAURADO: Cálculo directo sin escala
-                    div.style.left = (startLeft + cx - startX) + 'px'; 
-                    div.style.top = (startTop + cy - startY) + 'px'; 
-                }; 
+                const move = (ev) => { ev.preventDefault(); const cx = ev.type.includes('mouse') ? ev.clientX : ev.touches[0].clientX; const cy = ev.type.includes('mouse') ? ev.clientY : ev.touches[0].clientY; div.style.left = (startLeft + cx - startX) + 'px'; div.style.top = (startTop + cy - startY) + 'px'; }; 
                 const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', stop); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', stop); }; div.onmousedown = startDrag; div.ontouchstart = startDrag; return div; };
             
             const addControls = (el) => { 
-                // Botón Eliminar
                 const delBtn = document.createElement('div'); delBtn.className = 'handle-btn delete-handle'; delBtn.innerHTML = '<i class="fas fa-times"></i>'; delBtn.onclick = (e) => { e.stopPropagation(); el.remove(); }; el.appendChild(delBtn); 
-                
-                // Botón Rotar
                 const rotBtn = document.createElement('div'); rotBtn.className = 'handle-btn rotate-handle'; rotBtn.innerHTML = '<i class="fas fa-sync-alt"></i>'; rotBtn.onmousedown = (e) => { e.stopPropagation(); const rect = el.getBoundingClientRect(); const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2; const move = (ev) => { const cx = ev.clientX; const cy = ev.clientY; const angle = Math.atan2(cy - centerY, cx - centerX); el.style.transform = `rotate(${angle}rad)`; }; const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', stop); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', stop); }; el.appendChild(rotBtn); 
-
-                // AJUSTE: Botón de Escalar (Nuevo)
-                const resBtn = document.createElement('div'); 
-                resBtn.className = 'handle-btn resize-handle'; 
-                resBtn.innerHTML = '<i class="fas fa-expand"></i>'; 
-                resBtn.onmousedown = (e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    
-                    const startWidth = el.offsetWidth;
-                    const startHeight = el.offsetHeight;
-                    const rect = el.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
-                    const startDist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-
-                    const move = (ev) => {
-                        const currentDist = Math.hypot(ev.clientX - centerX, ev.clientY - centerY);
-                        const scale = currentDist / startDist;
-                        
-                        // Escalado proporcional para evitar deformación
-                        const newWidth = Math.max(50, startWidth * scale);
-                        const newHeight = Math.max(50, startHeight * scale);
-                        
-                        el.style.width = `${newWidth}px`;
-                        el.style.height = `${newHeight}px`;
-                    };
-
-                    const stop = () => {
-                        document.removeEventListener('mousemove', move);
-                        document.removeEventListener('mouseup', stop);
-                    };
-                    
-                    document.addEventListener('mousemove', move);
-                    document.addEventListener('mouseup', stop);
-                };
-                el.appendChild(resBtn);
+                const resBtn = document.createElement('div'); resBtn.className = 'handle-btn resize-handle'; resBtn.innerHTML = '<i class="fas fa-expand"></i>'; resBtn.onmousedown = (e) => { e.stopPropagation(); e.preventDefault(); const startWidth = el.offsetWidth; const startHeight = el.offsetHeight; const rect = el.getBoundingClientRect(); const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2; const startDist = Math.hypot(e.clientX - centerX, e.clientY - centerY); const move = (ev) => { const currentDist = Math.hypot(ev.clientX - centerX, ev.clientY - centerY); const scale = currentDist / startDist; const newWidth = Math.max(50, startWidth * scale); const newHeight = Math.max(50, startHeight * scale); el.style.width = `${newWidth}px`; el.style.height = `${newHeight}px`; }; const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); }; document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop); }; el.appendChild(resBtn);
             };
 
             const addText = () => { const el = createBoardElement('text'); canvasRef.current.appendChild(el); }; const createImageElement = (src) => { const el = createBoardElement('image'); const img = document.createElement('img'); img.src = src; img.ondragstart = () => false; el.appendChild(img); addControls(el); canvasRef.current.appendChild(el); }; const handleImageUpload = (e) => { const file = e.target.files[0]; if(file) { setIsPasting(true); processImage(file, (base64) => { createImageElement(base64); setIsPasting(false); }); e.target.value = ''; } }; const clearBoard = () => { if(confirm("¿Borrar todo?")) canvasRef.current.innerHTML = '<p style="margin-top:20px; color:#ccc; text-align:center;">Copia y pega aquí los recursos que necesites para crear tu tablero de ideas</p>'; }; const downloadImage = () => { document.querySelectorAll('.board-item').forEach(i => i.classList.remove('selected')); html2canvas(document.querySelector('.moodboard-wrapper'), { useCORS: true, scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'mi-moodboard.png'; link.href = canvas.toDataURL(); link.click(); }); }; 
@@ -610,7 +546,6 @@
                 canvasRef.current.querySelectorAll('.board-item').forEach(el => { const isText = el.classList.contains('text-item'); items.push({ type: isText ? 'text' : 'image', left: el.style.left, top: el.style.top, transform: el.style.transform, zIndex: el.style.zIndex, width: el.style.width, height: el.style.height, content: isText ? el.querySelector('.text-content').innerText : el.querySelector('img').src }); }); 
                 try { 
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'moodboards', 'main'), { items }); 
-                    // AJUSTE: Usar nueva notificación visual
                     setNotification({ message: "Tu Moodboard se guardó en la nube correctamente." });
                 } catch(e) { 
                     setNotification({ message: "Error: " + e.message, type: 'error' });
@@ -622,9 +557,7 @@
             
             return (
                 <div className="moodboard-wrapper relative h-full w-full">
-                    {/* Renderizado de Notificación */}
                     {notification && <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
-                    
                     {isPasting && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full z-50 animate-pulse"><i className="fas fa-spinner fa-spin mr-2"></i> Procesando imagen...</div>}
                     <div id="doodle-mat">
                         <div id="mat-header"><h1 id="mat-title">MOOD BOARD</h1></div>
@@ -634,7 +567,6 @@
                             <label className="tool-btn" title="Subir Imagen"><i className="fas fa-image"></i><input type="file" hidden accept="image/*" onChange={handleImageUpload}/></label>
                             <button className="tool-btn" onClick={clearBoard} title="Limpiar"><i className="fas fa-trash-alt"></i></button>
                             <button className="tool-btn" onClick={downloadImage} title="Descargar"><i className="fas fa-download"></i></button>
-                            {/* AJUSTE: Icono cambiado a Disquete (fa-save) */}
                             <button className="tool-btn" id="btn-save-cloud" onClick={saveToCloud} disabled={isSaving} title="Guardar"><i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-save'}`}></i></button>
                         </div>
                     </div>
@@ -647,51 +579,28 @@
             return (
                 <div className="note" draggable onDragStart={(e) => onDragStart(e, index)} onDragOver={(e) => e.preventDefault()} onDrop={(e) => onDrop(e, index)} style={{ backgroundColor: note.color }}>
                     <div className="note-header">
-                        <label className="page-toggle">
-                            <input type="checkbox" checked={note.isDouble || false} onChange={(e) => updateNote(note.id, 'isDouble', e.target.checked)} /> 
-                            Doble Pág.
-                        </label>
-                        <div className="scene-badge"># 
-                            <input type="number" className="scene-number-input" value={index + 1} readOnly style={{width:'30px', background:'transparent', border:'none', textAlign:'center', fontWeight:'bold'}}/>
-                        </div>
+                        <label className="page-toggle"><input type="checkbox" checked={note.isDouble || false} onChange={(e) => updateNote(note.id, 'isDouble', e.target.checked)} /> Doble Pág.</label>
+                        <div className="scene-badge"># <input type="number" className="scene-number-input" value={index + 1} readOnly style={{width:'30px', background:'transparent', border:'none', textAlign:'center', fontWeight:'bold'}}/></div>
                     </div>
                     <div className="note-body">
                         <div className="field-label"><i className="fa-solid fa-video"></i> Descripción de escena</div>
-                        <div className="editable-area scene-input" contentEditable suppressContentEditableWarning 
-                             onInput={(e) => updateNote(note.id, 'scene', e.currentTarget.innerText)} 
-                             style={{minHeight: '50px', marginBottom:'8px'}}>
-                            {note.scene}
-                        </div>
+                        <div className="editable-area scene-input" contentEditable suppressContentEditableWarning onInput={(e) => updateNote(note.id, 'scene', e.currentTarget.innerText)} style={{minHeight: '50px', marginBottom:'8px'}}>{note.scene}</div>
                         <div className="field-label"><i className="fa-solid fa-comments"></i> Diálogo</div>
-                        <div className="editable-area dialogue-input" contentEditable suppressContentEditableWarning 
-                             onInput={(e) => updateNote(note.id, 'dialog', e.currentTarget.innerText)}
-                             style={{minHeight: '50px', fontStyle:'italic'}}>
-                            {note.dialog}
-                        </div>
+                        <div className="editable-area dialogue-input" contentEditable suppressContentEditableWarning onInput={(e) => updateNote(note.id, 'dialog', e.currentTarget.innerText)} style={{minHeight: '50px', fontStyle:'italic'}}>{note.dialog}</div>
                     </div>
                     <div className="note-controls">
-                        <div className="color-picker" style={{display:'flex', gap:'4px'}}>
-                            {colors.map(c => (
-                                <div key={c} className="color-dot" style={{ backgroundColor: c }} onClick={() => updateNote(note.id, 'color', c)}></div>
-                            ))}
-                        </div>
-                        <button className="btn-delete" onClick={() => deleteNote(note.id)} style={{background:'rgba(255,255,255,0.5)', width:'28px', height:'28px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#d32f2f'}}>
-                            <i className="fa-solid fa-trash-can"></i>
-                        </button>
+                        <div className="color-picker" style={{display:'flex', gap:'4px'}}>{colors.map(c => (<div key={c} className="color-dot" style={{ backgroundColor: c }} onClick={() => updateNote(note.id, 'color', c)}></div>))}</div>
+                        <button className="btn-delete" onClick={() => deleteNote(note.id)} style={{background:'rgba(255,255,255,0.5)', width:'28px', height:'28px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#d32f2f'}}><i className="fa-solid fa-trash-can"></i></button>
                     </div>
                 </div>
             );
         };
 
-        // --- STORYBOARD COMPONENT (DISEÑO RESTAURADO SIN ESCALADO) ---
         function StoryboardComponent({ user }) {
             const [notes, setNotes] = useState([]);
             const [draggedIndex, setDraggedIndex] = useState(null);
             const [isSaving, setIsSaving] = useState(false);
-            
-            // Estado para la notificación
             const [notification, setNotification] = useState(null);
-            
             const PALETTE = ['#FFEB3B', '#FF4081', '#00E5FF', '#76FF03', '#E040FB', '#FF9100'];
             const generateId = () => '_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
             
@@ -704,141 +613,75 @@
                                 const loadedNotes = docSnap.data().notes.map((n, i) => ({ ...n, id: n.id || generateId() + i }));
                                 setNotes(loadedNotes);
                             } else {
-                                const initialNotes = Array.from({ length: 10 }, (_, i) => ({
-                                    id: generateId() + i, scene: "", dialog: "", color: PALETTE[i % PALETTE.length], isDouble: false
-                                }));
+                                const initialNotes = Array.from({ length: 10 }, (_, i) => ({ id: generateId() + i, scene: "", dialog: "", color: PALETTE[i % PALETTE.length], isDouble: false }));
                                 setNotes(initialNotes);
                             }
                         } catch (e) { console.error(e); }
                     } else {
-                        const initialNotes = Array.from({ length: 10 }, (_, i) => ({
-                            id: generateId() + i, scene: "", dialog: "", color: PALETTE[i % PALETTE.length], isDouble: false
-                        }));
+                        const initialNotes = Array.from({ length: 10 }, (_, i) => ({ id: generateId() + i, scene: "", dialog: "", color: PALETTE[i % PALETTE.length], isDouble: false }));
                         setNotes(initialNotes);
                     }
                 };
                 loadData();
             }, [user]);
 
-            const addNote = () => {
-                const nextColor = PALETTE[notes.length % PALETTE.length];
-                const newNote = { id: generateId(), scene: "", dialog: "", color: nextColor, isDouble: false };
-                setNotes([...notes, newNote]);
-            };
-
-            const updateNote = (id, field, value) => {
-                setNotes(prev => prev.map(n => n.id === id ? { ...n, [field]: value } : n));
-            };
-
-            const deleteNote = (id) => {
-                if(window.confirm("¿Eliminar escena?")) setNotes(prev => prev.filter(n => n.id !== id));
-            };
-
+            const addNote = () => { const nextColor = PALETTE[notes.length % PALETTE.length]; const newNote = { id: generateId(), scene: "", dialog: "", color: nextColor, isDouble: false }; setNotes([...notes, newNote]); };
+            const updateNote = (id, field, value) => { setNotes(prev => prev.map(n => n.id === id ? { ...n, [field]: value } : n)); };
+            const deleteNote = (id) => { if(window.confirm("¿Eliminar escena?")) setNotes(prev => prev.filter(n => n.id !== id)); };
             const saveToCloud = async () => {
                 if (!user) return setNotification({ message: "Debes iniciar sesión para guardar.", type: 'error' });
                 setIsSaving(true);
                 try {
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'storyboards', 'main'), { notes });
-                    // AJUSTE: Notificación visual
                     setNotification({ message: "Tu Storyboard se guardó correctamente." });
-                } catch(e) { 
-                    setNotification({ message: "Error: " + e.message, type: 'error' });
-                }
+                } catch(e) { setNotification({ message: "Error: " + e.message, type: 'error' }); }
                 setIsSaving(false);
             };
-
-            const downloadImage = () => {
-                const wrapper = document.querySelector('.storyboard-wrapper');
-                window.html2canvas(wrapper, { scale: 2 }).then(canvas => {
-                    const link = document.createElement('a'); link.download = 'storyboard.png'; link.href = canvas.toDataURL(); link.click();
-                });
-            };
-
+            const downloadImage = () => { const wrapper = document.querySelector('.storyboard-wrapper'); window.html2canvas(wrapper, { scale: 2 }).then(canvas => { const link = document.createElement('a'); link.download = 'storyboard.png'; link.href = canvas.toDataURL(); link.click(); }); };
             const handleDragStart = (e, index) => { setDraggedIndex(index); e.dataTransfer.effectAllowed = "move"; };
             const handleDrop = (e, dropIndex) => { e.preventDefault(); if (draggedIndex === null || draggedIndex === dropIndex) return; const newNotes = [...notes]; const [movedNote] = newNotes.splice(draggedIndex, 1); newNotes.splice(dropIndex, 0, movedNote); setNotes(newNotes); setDraggedIndex(null); };
 
             return (
                 <div className="storyboard-wrapper w-full h-full">
-                    {/* Renderizado de Notificación */}
                     {notification && <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
-                    
                     <div id="sb-toolbar">
                         <button className="btn-modern bg-white text-gray-600 border border-gray-200 text-sm" onClick={addNote}><i className="fa-solid fa-plus mr-2"></i> Nueva Nota</button>
                         <button className="btn-modern bg-white text-gray-600 border border-gray-200 text-sm" onClick={downloadImage}><i className="fa-solid fa-download mr-2"></i> Descargar</button>
-                        <button className="btn-modern bg-indigo-600 text-white text-sm" onClick={saveToCloud} disabled={isSaving}>
-                            <i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-save'} mr-2`}></i> Guardar en Nube
-                        </button>
+                        <button className="btn-modern bg-indigo-600 text-white text-sm" onClick={saveToCloud} disabled={isSaving}><i className={`fas ${isSaving ? 'fa-spinner fa-spin' : 'fa-save'} mr-2`}></i> Guardar en Nube</button>
                     </div>
-                    <div id="sb-board">
-                        {notes.map((note, index) => (
-                            <Note key={note.id} note={note} index={index} updateNote={updateNote} deleteNote={deleteNote} onDragStart={handleDragStart} onDrop={handleDrop} />
-                        ))}
-                    </div>
+                    <div id="sb-board">{notes.map((note, index) => (<Note key={note.id} note={note} index={index} updateNote={updateNote} deleteNote={deleteNote} onDragStart={handleDragStart} onDrop={handleDrop} />))}</div>
                 </div>
             );
         }
 
         const ModuleDetailView = ({ module, onBack, user, onBookEdit, onSelectModule }) => {
             const [activeStepId, setActiveStepId] = useState(module.initialStepId || (module.steps[0] ? module.steps[0].id : null));
-            const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // Inicia ABIERTO como solicitado
-            
-            // ESTADO PARA EL VISOR DE RECURSOS (MODAL)
+            const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
             const [viewingResource, setViewingResource] = useState(null);
             
             useEffect(() => {
-                if (module.initialStepId) {
-                    setActiveStepId(module.initialStepId);
-                } else if (module.steps.length > 0) {
-                    setActiveStepId(module.steps[0].id);
-                }
-                // Aseguramos que empiece abierto al entrar
+                if (module.initialStepId) { setActiveStepId(module.initialStepId); } else if (module.steps.length > 0) { setActiveStepId(module.steps[0].id); }
                 setIsSidebarCollapsed(false);
             }, [module]);
 
-            // MANEJADOR DE SELECCIÓN CON AUTO-CIERRE INSTANTÁNEO
-            const handleStepSelect = (stepId) => {
-                setActiveStepId(stepId);
-                setViewingResource(null); // Cerrar modal si se cambia de paso
-                
-                // Si la barra está abierta, la cerramos inmediatamente para dar espacio al contenido
-                if (!isSidebarCollapsed) {
-                    setIsSidebarCollapsed(true);
-                }
-            };
-
+            const handleStepSelect = (stepId) => { setActiveStepId(stepId); setViewingResource(null); if (!isSidebarCollapsed) { setIsSidebarCollapsed(true); } };
             const activeStep = module.steps.find(s => s.id === activeStepId) || module.steps[0];
-            
-            // Lógica para detectar el paso siguiente
             const activeStepIdx = module.steps.findIndex(s => s.id === activeStep.id);
             const nextStep = module.steps[activeStepIdx + 1];
-            // AJUSTE: Definimos también el paso anterior para la flecha izquierda
             const prevStep = module.steps[activeStepIdx - 1];
-
-            // AJUSTE: Lógica para detectar el SIGUIENTE MÓDULO
             const currentModuleIdx = MODULES_DATA.findIndex(m => m.id === module.id);
             const nextModule = MODULES_DATA[currentModuleIdx + 1];
 
-            // AJUSTE: Navegación con Teclado (Flechas)
             useEffect(() => {
                 const handleArrowNavigation = (e) => {
-                    // Evitar que cambie de página si el usuario está escribiendo en un input o nota
                     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
-
-                    if (e.key === 'ArrowRight') {
-                        if (nextStep) handleStepSelect(nextStep.id);
-                        else if (nextModule) onSelectModule(nextModule); // Saltar al siguiente módulo
-                    }
-                    if (e.key === 'ArrowLeft' && prevStep) {
-                        handleStepSelect(prevStep.id);
-                    }
+                    if (e.key === 'ArrowRight') { if (nextStep) handleStepSelect(nextStep.id); else if (nextModule) onSelectModule(nextModule); }
+                    if (e.key === 'ArrowLeft' && prevStep) { handleStepSelect(prevStep.id); }
                 };
-
-                window.addEventListener('keydown', handleArrowNavigation);
-                return () => window.removeEventListener('keydown', handleArrowNavigation);
-            }, [nextStep, prevStep, activeStepId, nextModule]); // Se actualiza cuando cambian los pasos o módulos disponibles
+                window.addEventListener('keydown', handleArrowNavigation); return () => window.removeEventListener('keydown', handleArrowNavigation);
+            }, [nextStep, prevStep, activeStepId, nextModule]);
 
             if (!activeStep) return <div className="p-10 text-center">No hay contenido disponible en este módulo.</div>;
-
             const isTool = activeStep.type.includes('tool') || activeStep.type === 'quiz';
 
             return (
@@ -846,14 +689,10 @@
                     <div className={`path-sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
                         <div className="p-4 border-b border-gray-200 flex items-center gap-3 bg-white">
                             <button onClick={onBack} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition"><i className="fas fa-arrow-left"></i></button>
-                            <div>
-                                <h2 className="text-[10px] uppercase tracking-widest text-primary font-bold">MÓDULO {module.id}</h2>
-                                <h1 className="text-base font-display font-bold text-slate-800 leading-tight truncate w-48">{module.subtitle}</h1>
-                            </div>
+                            <div><h2 className="text-[10px] uppercase tracking-widest text-primary font-bold">MÓDULO {module.id}</h2><h1 className="text-base font-display font-bold text-slate-800 leading-tight truncate w-48">{module.subtitle}</h1></div>
                         </div>
                         <div className="timeline-scroll">
                             {module.steps.map((step, idx) => {
-                                /* AJUSTE: Ahora detectamos 'Actividad' en el título para pintarlo naranja aunque sea contenido de texto */
                                 const isStepActivity = step.type.includes('tool') || step.type === 'quiz' || step.title.includes('Actividad');
                                 return (
                                     <div key={step.id} className={`timeline-step ${isStepActivity ? 'type-activity' : 'type-theory'} ${activeStep.id === step.id ? 'active' : ''}`} onClick={() => handleStepSelect(step.id)}>
@@ -868,225 +707,47 @@
                             })}
                         </div>
                     </div>
-                    
-                    {/* BOTÓN FLOTANTE CON CLASES AUXILIARES PARA MÓVIL */}
-                    <div 
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 z-[120] mobile-toggle-wrapper ${isSidebarCollapsed ? 'is-closed' : 'is-open'}`} 
-                        style={{left: isSidebarCollapsed ? '20px' : '325px', transition: 'left 0.3s'}}
-                    >
-                        <button 
-                            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-                            className={`collapse-toggle ${isSidebarCollapsed ? 'attention' : ''}`}
-                            title={isSidebarCollapsed ? "Mostrar Ruta" : "Ocultar Ruta"}
-                        >
-                            <i className={`fas fa-chevron-${isSidebarCollapsed ? 'right' : 'left'}`}></i>
-                        </button>
+                    <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-[120] mobile-toggle-wrapper ${isSidebarCollapsed ? 'is-closed' : 'is-open'}`} style={{left: isSidebarCollapsed ? '20px' : '325px', transition: 'left 0.3s'}}>
+                        <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className={`collapse-toggle ${isSidebarCollapsed ? 'attention' : ''}`} title={isSidebarCollapsed ? "Mostrar Ruta" : "Ocultar Ruta"}><i className={`fas fa-chevron-${isSidebarCollapsed ? 'right' : 'left'}`}></i></button>
                     </div>
-
                     <div className="path-workspace">
                         <div className="workspace-inner fade-in relative" key={activeStep.id}>
-                            
-                            {/* BOTÓN SIGUIENTE FLOTANTE (SIEMPRE VISIBLE - Z-INDEX AUMENTADO A 200 PARA ESTAR SOBRE MODALES) */}
                             {(nextStep || nextModule) && (
                                 <div className="absolute top-6 right-6 z-[200]">
-                                    <button 
-                                        onClick={() => {
-                                            if (nextStep) handleStepSelect(nextStep.id);
-                                            else if (nextModule) onSelectModule(nextModule);
-                                        }}
-                                        className="group flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm border border-indigo-100 rounded-full shadow-lg hover:shadow-xl hover:bg-white transition-all cursor-pointer hover:scale-105"
-                                        title={nextStep ? "Siguiente Actividad" : "Ir al Siguiente Módulo"}
-                                    >
-                                        <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider group-hover:text-indigo-700">
-                                            {nextStep ? "Siguiente" : "Siguiente Módulo"}
-                                        </span>
-                                        <div className="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 text-indigo-600 transition-colors">
-                                            <i className={`fas ${nextStep ? 'fa-arrow-right' : 'fa-forward'} text-[10px]`}></i>
-                                        </div>
+                                    <button onClick={() => { if (nextStep) handleStepSelect(nextStep.id); else if (nextModule) onSelectModule(nextModule); }} className="group flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm border border-indigo-100 rounded-full shadow-lg hover:shadow-xl hover:bg-white transition-all cursor-pointer hover:scale-105" title={nextStep ? "Siguiente Actividad" : "Ir al Siguiente Módulo"}>
+                                        <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider group-hover:text-indigo-700">{nextStep ? "Siguiente" : "Siguiente Módulo"}</span>
+                                        <div className="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 text-indigo-600 transition-colors"><i className={`fas ${nextStep ? 'fa-arrow-right' : 'fa-forward'} text-[10px]`}></i></div>
                                     </button>
                                 </div>
                             )}
-
-                            {/* ENCABEZADO DE LECCIÓN (SOLO SI NO ES HERRAMIENTA) */}
-                            {!isTool && (
-                                <div className="max-w-4xl mx-auto w-full pt-10 px-10 pb-4 flex justify-between items-start fade-in">
-                                    <div>
-                                        <h1 className="text-3xl font-display font-bold text-slate-800">{activeStep.title}</h1>
-                                        <div className="h-1 w-20 bg-primary mt-4 rounded-full"></div>
-                                    </div>
-                                </div>
-                            )}
-
+                            {!isTool && (<div className="max-w-4xl mx-auto w-full pt-10 px-10 pb-4 flex justify-between items-start fade-in"><div><h1 className="text-3xl font-display font-bold text-slate-800">{activeStep.title}</h1><div className="h-1 w-20 bg-primary mt-4 rounded-full"></div></div></div>)}
                             <div className={isTool ? "tool-content-wrapper" : "text-content-wrapper"}>
                                 {activeStep.type === 'content' && <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100"><div className="prose prose-lg text-slate-600 max-w-none" dangerouslySetInnerHTML={{__html: activeStep.content}}></div>
-                                    
-                                    {/* MODIFICACIÓN: Lógica para abrir videos en modal */}
                                     {activeStep.resources && (
                                         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             {activeStep.resources.map((res, i) => (
-    <div 
-        key={i} 
-        /* --- ESTO ES LO NUEVO: El detector de tipo --- */
-        onClick={() => {
-            if (res.type === 'youtube') {
-                setViewingResource(res); // Si es video, abre modal
-            } else {
-                window.open(res.url, '_blank'); // Si es link, abre pestaña nueva
-            }
-        }}
-        className="resource-card-compact cursor-pointer group hover:bg-slate-50"
-    >
-        <div className="w-10 h-10 rounded-full bg-indigo-100 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-            {/* --- ESTO ES LO NUEVO: El selector de icono --- */}
-            <i className={`fas ${res.type === 'youtube' ? 'fa-play' : res.icon || 'fa-link'}`}></i>
-        </div>
-        <div>
-            <p className="font-bold text-sm text-slate-700">{res.title}</p>
-            {/* --- ESTO ES LO NUEVO: El texto dinámico --- */}
-            <p className="text-xs text-primary font-semibold">
-                {res.type === 'youtube' ? 'Reproducir Video' : 'Abrir Recurso'}
-            </p>
-        </div>
-    </div>
-))}
+                                                <div key={i} onClick={() => { if (res.type === 'youtube') { setViewingResource(res); } else { window.open(res.url, '_blank'); } }} className="resource-card-compact cursor-pointer group hover:bg-slate-50">
+                                                    <div className="w-10 h-10 rounded-full bg-indigo-100 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors"><i className={`fas ${res.type === 'youtube' ? 'fa-play' : res.icon || 'fa-link'}`}></i></div>
+                                                    <div><p className="font-bold text-sm text-slate-700">{res.title}</p><p className="text-xs text-primary font-semibold">{res.type === 'youtube' ? 'Reproducir Video' : 'Abrir Recurso'}</p></div>
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>}
-                                
-                                {activeStep.type === 'tool-padlet' && (
-                                    <ActivityIntro 
-                                        title="Muro Colaborativo" 
-                                        text="¡Comparte con la clase! Agrega 2 o 3 etiquetas sobre mitos y leyendas de Norte de Santander que te gusten, añade un breve resumen y, si puedes, una foto."
-                                    >
-                                        <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none bg-slate-100"></iframe>
-                                    </ActivityIntro>
-                                )}
-                                
-                                {activeStep.type === 'tool-ficha' && (
-                                    <ActivityIntro 
-                                        title="Estructura tu Historia" 
-                                        text="Primero, recuerda los cuentos, mitos y leyendas que investigaste. Elige el que más te guste y usa esta ficha para registrar el título, un resumen y los personajes principales."
-                                    >
-                                        <div className="activity-cover-card" style={{backgroundImage: "url('https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true')"}}>
-                                                <div className="activity-cover-overlay">
-                                                    <h2 className="text-3xl font-bold mb-4">Ficha Narrativa</h2>
-                                                    <p className="mb-8 opacity-90">Estructura tu historia paso a paso antes de comenzar.</p>
-                                                    <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-2xl scale-110">
-                                                        <i className="fas fa-pen-nib mr-2"></i> RELLENAR EN CANVA
-                                                    </a>
-                                                </div>
-                                            </div>
-                                    </ActivityIntro>
-                                )}
-                                
-                                {activeStep.type === 'tool-moodboard' && (
-                                    <ActivityIntro 
-                                        title="¡Bienvenido a tu Moodboard!" 
-                                        text={<>Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.<br/><br/><strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.</>}
-                                    >
-                                        <MoodboardComponent user={user} />
-                                    </ActivityIntro>
-                                )}
-
-                                {activeStep.type === 'tool-storyboard' && (
-                                    <ActivityIntro 
-                                        title="¡Hola, Aventurero!" 
-                                        text={<>Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.<br/><br/>Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.</>}
-                                    >
-                                        <StoryboardComponent user={user} />
-                                    </ActivityIntro>
-                                )}
-                                
-                                {activeStep.type === 'tool-character-sheet' && (
-                                    <ActivityIntro 
-                                        title="Taller de Personajes" 
-                                        text="Aquí construirás a los protagonistas de tu historia. Define cómo se imaginan físicamente, cómo son emocionalmente y qué ropa llevan."
-                                    >
-                                        <div className="activity-cover-card" style={{backgroundImage: "url('https://img.freepik.com/free-vector/character-sheet-concept-illustration_114360-12868.jpg?w=1380&t=st=1709224000~exp=1709224600~hmac=d2') /* Placeholder genérico o tu imagen */", backgroundColor: "#6366f1"}}>
-                                                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/80 to-indigo-900/80"></div>
-                                                <div className="activity-cover-overlay relative z-10">
-                                                    <h2 className="text-3xl font-bold mb-4">Creación de Personajes</h2>
-                                                    <p className="mb-8 opacity-90">Define la personalidad, apariencia y rasgos únicos.</p>
-                                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-2xl">
-                                                        <i className="fas fa-user-astronaut mr-2"></i> ABRIR FICHA
-                                                    </a>
-                                                </div>
-                                            </div>
-                                    </ActivityIntro>
-                                )}
-                                
-                                {activeStep.type === 'tool-structure' && (
-                                    <ActivityIntro 
-                                        title="Estructura de Cuento" 
-                                        text="Aquí aprenderás a estructurar tu cuento: Introducción, Nudo y Desenlace."
-                                    >
-                                        <div className="activity-cover-card" style={{backgroundColor: "#10b981"}}>
-                                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-                                                <div className="activity-cover-overlay">
-                                                    <h3 className="text-3xl font-bold mb-4">Estructura del Cuento</h3>
-                                                    <p className="mb-8 opacity-90">Define el inicio, nudo y desenlace de tu gran historia.</p>
-                                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSclddiTEQJVg2wFUoLYeJFMlAiUz0AaAqPT5s2onaiwmk5U_A/viewform" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-2xl">
-                                                        <i className="fas fa-list-ol mr-2"></i> ABRIR FORMULARIO
-                                                    </a>
-                                                </div>
-                                            </div>
-                                    </ActivityIntro>
-                                )}
-                                
+                                {activeStep.type === 'tool-padlet' && <ActivityIntro title="Muro Colaborativo" text="¡Comparte con la clase! Agrega 2 o 3 etiquetas sobre mitos y leyendas de Norte de Santander que te gusten, añade un breve resumen y, si puedes, una foto."><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none bg-slate-100"></iframe></ActivityIntro>}
+                                {activeStep.type === 'tool-ficha' && <ActivityIntro title="Estructura tu Historia" text="Primero, recuerda los cuentos, mitos y leyendas que investigaste. Elige el que más te guste y usa esta ficha para registrar el título, un resumen y los personajes principales."><div className="activity-cover-card" style={{backgroundImage: "url('https://github.com/libroalbum/crear-libro-album-digital/blob/main/ficha%20narrativa.jpg?raw=true')"}}><div className="activity-cover-overlay"><h2 className="text-3xl font-bold mb-4">Ficha Narrativa</h2><p className="mb-8 opacity-90">Estructura tu historia paso a paso antes de comenzar.</p><a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-2xl scale-110"><i className="fas fa-pen-nib mr-2"></i> RELLENAR EN CANVA</a></div></div></ActivityIntro>}
+                                {activeStep.type === 'tool-moodboard' && <ActivityIntro title="¡Bienvenido a tu Moodboard!" text={<>Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.<br/><br/><strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.</>}><MoodboardComponent user={user} /></ActivityIntro>}
+                                {activeStep.type === 'tool-storyboard' && <ActivityIntro title="¡Hola, Aventurero!" text={<>Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.<br/><br/>Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.</>}><StoryboardComponent user={user} /></ActivityIntro>}
+                                {activeStep.type === 'tool-character-sheet' && <ActivityIntro title="Taller de Personajes" text="Aquí construirás a los protagonistas de tu historia. Define cómo se imaginan físicamente, cómo son emocionalmente y qué ropa llevan."><div className="activity-cover-card" style={{backgroundImage: "url('https://img.freepik.com/free-vector/character-sheet-concept-illustration_114360-12868.jpg?w=1380&t=st=1709224000~exp=1709224600~hmac=d2') /* Placeholder genérico o tu imagen */", backgroundColor: "#6366f1"}}><div className="absolute inset-0 bg-gradient-to-br from-purple-900/80 to-indigo-900/80"></div><div className="activity-cover-overlay relative z-10"><h2 className="text-3xl font-bold mb-4">Creación de Personajes</h2><p className="mb-8 opacity-90">Define la personalidad, apariencia y rasgos únicos.</p><a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-2xl"><i className="fas fa-user-astronaut mr-2"></i> ABRIR FICHA</a></div></div></ActivityIntro>}
+                                {activeStep.type === 'tool-structure' && <ActivityIntro title="Estructura de Cuento" text="Aquí aprenderás a estructurar tu cuento: Introducción, Nudo y Desenlace."><div className="activity-cover-card" style={{backgroundColor: "#10b981"}}><div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div><div className="activity-cover-overlay"><h3 className="text-3xl font-bold mb-4">Estructura del Cuento</h3><p className="mb-8 opacity-90">Define el inicio, nudo y desenlace de tu gran historia.</p><a href="https://docs.google.com/forms/d/e/1FAIpQLSclddiTEQJVg2wFUoLYeJFMlAiUz0AaAqPT5s2onaiwmk5U_A/viewform" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-2xl"><i className="fas fa-list-ol mr-2"></i> ABRIR FORMULARIO</a></div></div></ActivityIntro>}
                                 {activeStep.type === 'tool-editor' && <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 text-white"><h2 className="text-4xl font-display font-bold mb-4">Editor de Libro Álbum</h2><button onClick={onBookEdit} className="btn-modern bg-gradient-success text-xl px-10 py-4 shadow-2xl"><i className="fas fa-magic mr-2"></i> ABRIR EDITOR</button></div>}
                                 {activeStep.type === 'tool-guide' && <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>}
                                 {activeStep.type === 'tool-portfolio' && <PublicGallery uid={user.uid} isEmbedded={true} />}
-                                
-                                {activeStep.type === 'quiz' && (
-                                    <ActivityIntro 
-                                        title="¿Cuánto Aprendiste?" 
-                                        text="Es hora de poner a prueba tus conocimientos. Responderás preguntas sobre conceptos del Libro Álbum y los Mitos y Leyendas que hemos explorado."
-                                    >
-                                        <div className="activity-cover-card" style={{backgroundColor: "#fbbf24"}}>
-                                                <div className="activity-cover-overlay border-yellow-300 bg-yellow-900/80">
-                                                    <h2 className="text-4xl font-bold mb-4 text-yellow-400">¡Hora del Quiz! 🧠</h2>
-                                                    <p className="mb-8 text-white">Demuestra lo que has aprendido hasta ahora.</p>
-                                                    <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-yellow-500 text-white text-xl hover:bg-yellow-400 border-b-4 border-yellow-700 active:border-b-0">
-                                                        COMENZAR RETO
-                                                    </a>
-                                                </div>
-                                            </div>
-                                    </ActivityIntro>
-                                )}
+                                {activeStep.type === 'quiz' && <ActivityIntro title="¿Cuánto Aprendiste?" text="Es hora de poner a prueba tus conocimientos. Responderás preguntas sobre conceptos del Libro Álbum y los Mitos y Leyendas que hemos explorado."><div className="activity-cover-card" style={{backgroundColor: "#fbbf24"}}><div className="activity-cover-overlay border-yellow-300 bg-yellow-900/80"><h2 className="text-4xl font-bold mb-4 text-yellow-400">¡Hora del Quiz! 🧠</h2><p className="mb-8 text-white">Demuestra lo que has aprendido hasta ahora.</p><a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-yellow-500 text-white text-xl hover:bg-yellow-400 border-b-4 border-yellow-700 active:border-b-0">COMENZAR RETO</a></div></div></ActivityIntro>}
                             </div>
                         </div>
                     </div>
-
-                    {/* MODAL DE REPRODUCCIÓN DE VIDEO (AÑADIDO AL FINAL DEL LAYOUT) */}
-                    {viewingResource && (
-                        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4 animate-fade-in" onClick={() => setViewingResource(null)}>
-                            <div className="bg-white rounded-2xl w-full max-w-3xl shadow-2xl relative overflow-hidden animation-pop-in" onClick={e => e.stopPropagation()}>
-                                {/* Cabecera del Modal */}
-                                <div className="p-4 border-b flex justify-between items-center bg-gray-50">
-                                    <h3 className="font-bold text-slate-700 flex items-center gap-2">
-                                        <i className="fab fa-youtube text-red-500"></i> {viewingResource.title}
-                                    </h3>
-                                    <button 
-                                        onClick={() => setViewingResource(null)} 
-                                        className="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition"
-                                    >
-                                        <i className="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                {/* Contenedor del Video */}
-                                <div className="aspect-video w-full bg-black">
-                                    <iframe 
-                                        src={viewingResource.url} 
-                                        className="w-full h-full" 
-                                        frameBorder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                        allowFullScreen
-                                    ></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
+                    {viewingResource && <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4 animate-fade-in" onClick={() => setViewingResource(null)}><div className="bg-white rounded-2xl w-full max-w-3xl shadow-2xl relative overflow-hidden animation-pop-in" onClick={e => e.stopPropagation()}><div className="p-4 border-b flex justify-between items-center bg-gray-50"><h3 className="font-bold text-slate-700 flex items-center gap-2"><i className="fab fa-youtube text-red-500"></i> {viewingResource.title}</h3><button onClick={() => setViewingResource(null)} className="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition"><i className="fas fa-times"></i></button></div><div className="aspect-video w-full bg-black"><iframe src={viewingResource.url} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe></div></div></div>}
                 </div>
             );
         };
@@ -1098,54 +759,64 @@
             return (<div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}><audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio><div id="stage"><div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>{pages.map((p, i) => { const zIndex = currentIdx >= i ? i + 1 : pages.length - i; return (<div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}><div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>{renderEditOverlay(i, 'front', p.front.bg)}{p.front.type==='text-page' && (<div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10"><input disabled={!isEditor} value={p.front.title} onChange={(e)=>onUpdatePage(i, 'front', 'title', e.target.value)} className="inline-input-title" /><textarea disabled={!isEditor} value={p.front.text} onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)} className="inline-input-text" rows="6" /></div>)}{i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}</div><div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>{renderEditOverlay(i, 'back', p.back.bg)}{p.back.type==='text-page' && (<div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10"><input disabled={!isEditor} value={p.back.title} onChange={(e)=>onUpdatePage(i, 'back', 'title', e.target.value)} className="inline-input-title" /><textarea disabled={!isEditor} value={p.back.text} onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)} className="inline-input-text" rows="6" /></div>)}{i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}</div></div>)})}</div></div>{currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-arrow-left"></i></button>}{currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}</div>);
         }
 
-        // --- EDITOR COMPONENT (OPTIMIZADO) ---
+        // --- NUEVA FUNCIÓN: CARGAR PERFIL DE USUARIO ---
+        // Necesaria para obtener el nombre del estudiante al guardar
+        const fetchUserProfile = async (uid) => {
+            try {
+                const snap = await getDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', uid, 'profile', 'user_info'));
+                if(snap.exists()) return snap.data();
+            } catch(e) {}
+            return { name: 'Estudiante' };
+        };
+
+        // --- EDITOR COMPONENT (OPTIMIZADO CON PUBLICACIÓN A GALERÍA) ---
         function Editor({ user, setView }) {
             const [book, setBook] = useState(null);
             const [activeIdx, setActiveIdx] = useState(-1);
-            
-            // Estado para la notificación
             const [notification, setNotification] = useState(null);
-            
+            const [userProfile, setUserProfile] = useState({ name: 'Estudiante' }); // Para guardar autor
+
             useEffect(() => { 
                 const init = async () => {
                     if(!user || !db) return;
                     
-                    // AJUSTE CRÍTICO: Usamos un ID FIJO ('libro_principal') para garantizar la persistencia.
-                    // Esto evita que se creen múltiples libros o se pierda la referencia al cerrar sesión.
+                    // Cargar perfil para obtener nombre
+                    const profile = await fetchUserProfile(user.uid);
+                    setUserProfile(profile);
+
                     const bookId = 'libro_principal';
                     const docRef = doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', bookId);
-
                     try {
                         const snap = await getDoc(docRef);
-                        
-                        if (snap.exists()) {
-                            // 1. Si el libro YA existe en la nube, lo cargamos.
-                            console.log("Libro encontrado, cargando...");
-                            setBook({ id: snap.id, ...snap.data() });
-                        } else {
-                            // 2. Si NO existe (es la primera vez del usuario), lo creamos.
-                            console.log("Creando libro nuevo...");
+                        if (snap.exists()) { setBook({ id: snap.id, ...snap.data() }); } 
+                        else { 
                             const newBook = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() };
-                            // Usamos setDoc en lugar de addDoc para forzar el ID 'libro_principal'
-                            await setDoc(docRef, newBook);
-                            setBook({ id: bookId, ...newBook });
+                            await setDoc(docRef, newBook); setBook({ id: bookId, ...newBook }); 
                         }
-                    } catch(e) {
-                        console.error("Error cargando libro:", e);
-                        alert("Error de conexión: " + e.message);
-                    }
+                    } catch(e) { console.error(e); alert("Error de conexión: " + e.message); }
                 };
-                
                 init();
             }, [user]);
 
             const save = async () => { 
                 try { 
+                    // 1. Guardar en privado
                     await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), { pages: book.pages, title: book.title }); 
+                    
+                    // 2. Guardar en Portafolio Privado
                     await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'portfolios', user.uid), { featuredBookId: book.id, publishedBook: { title: book.title, pages: book.pages } }, { merge: true }); 
                     
-                    // AJUSTE: Notificación visual
-                    setNotification({ message: "¡Tu libro se ha guardado y publicado!" });
+                    // 3. --- NUEVO: PUBLICAR EN GALERÍA PÚBLICA ---
+                    // Guardamos una copia ligera en la colección pública para que salga en el inicio
+                    await setDoc(doc(db, 'artifacts', 'libroalbum-app', 'public', 'data', 'gallery', user.uid), {
+                        title: book.title || "Libro Sin Título",
+                        author: userProfile.name || "Estudiante Anónimo",
+                        cover: book.pages[0].front.bg || "", // La imagen de portada
+                        pages: book.pages, // El libro completo para poder leerlo
+                        updatedAt: new Date().toISOString()
+                    });
+
+                    setNotification({ message: "¡Tu libro se ha guardado y publicado en la Galería!" });
                 } catch (e) { 
                     setNotification({ message: "Error: " + e.message, type: 'error' });
                 } 
@@ -1155,30 +826,171 @@
                 if(!confirm("¿Reiniciar libro?")) return; 
                 const resetState = { ...MASTER_TEMPLATE, createdAt: new Date().toISOString() }; 
                 setBook({ id: book.id, ...resetState }); 
-                try { 
-                    await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); 
-                    setNotification({ message: "Libro reiniciado correctamente." });
-                } catch(e) { 
-                    setNotification({ message: "Error: " + e.message, type: 'error' });
-                } 
+                try { await updateDoc(doc(db, 'artifacts', 'libroalbum-app', 'users', user.uid, 'books', book.id), resetState); setNotification({ message: "Libro reiniciado correctamente." }); } catch(e) { setNotification({ message: "Error: " + e.message, type: 'error' }); } 
             };
             
             const handlePageUpdate = (idx, side, field, val) => { const newPages = [...book.pages]; newPages[idx][side][field] = val; setBook({...book, pages: newPages}); };
             const addPage = () => { const np = [...book.pages]; const bodyImg = 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true'; np.splice(np.length-1, 0, { id: Date.now(), type: 'content', front: { type: 'image-page', bg: bodyImg }, back: { type: 'image-page', bg: bodyImg } }); setBook({...book, pages: np}); };
             
-            // AJUSTE VISUAL: Cambié text-white a text-indigo-500 para que se vea en fondo claro
             if(!book) return <div className="flex h-full items-center justify-center text-indigo-500 font-bold text-xl"><i className="fas fa-spinner fa-spin mr-3"></i> Cargando Editor...</div>;
             
             return (
                 <div className="flex h-full w-full relative overflow-hidden">
-                    {/* Renderizado de Notificación */}
                     {notification && <NotificationToast message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
-                    
-                    <div className="sidebar-editor"><div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div><div className="icon-chunk" onClick={save} title="Guardar"><i className="fas fa-save text-green-400"></i></div><div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div><div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div></div><div className="canvas-grid editor-mode"><BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} /></div></div>
+                    <div className="sidebar-editor"><div className="icon-chunk" onClick={()=>setView('dashboard')} title="Volver"><i className="fas fa-arrow-left"></i></div><div className="icon-chunk" onClick={save} title="Guardar y Publicar"><i className="fas fa-save text-green-400"></i></div><div className="icon-chunk" onClick={resetBook} title="Reiniciar Libro"><i className="fas fa-undo-alt text-red-400"></i></div><div className="mt-auto"><div className="icon-chunk" onClick={addPage} title="Agregar Página"><i className="fas fa-plus text-blue-400"></i></div></div></div><div className="canvas-grid editor-mode"><BookViewer pages={book.pages} activeIdx={activeIdx} setActiveIdx={setActiveIdx} isEditor={true} onUpdatePage={handlePageUpdate} /></div></div>
             );
         }
 
-        // --- PUBLIC GALLERY (MODIFICADO: NAVEGACIÓN POR PESTAÑAS) ---
+        // --- NUEVO COMPONENTE: GALERÍA COMUNITARIA (PARA EL INICIO) ---
+        function CommunityGallery({ onClose }) {
+            const [books, setBooks] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [selectedBook, setSelectedBook] = useState(null); // Para abrir el lector
+
+            useEffect(() => {
+                // Escuchar la colección pública 'gallery'
+                const q = query(collection(db, 'artifacts', 'libroalbum-app', 'public', 'data', 'gallery'));
+                const unsubscribe = onSnapshot(q, (snapshot) => {
+                    const loadedBooks = [];
+                    snapshot.forEach(doc => {
+                        loadedBooks.push({ id: doc.id, ...doc.data() });
+                    });
+                    setBooks(loadedBooks);
+                    setLoading(false);
+                });
+                return () => unsubscribe();
+            }, []);
+
+            return (
+                <div className="gallery-container text-white">
+                    {/* Botón Cerrar */}
+                    <button onClick={onClose} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition backdrop-blur-sm z-50">
+                        <i className="fas fa-times text-lg"></i>
+                    </button>
+
+                    <div className="max-w-6xl mx-auto pt-10">
+                        <h2 className="text-4xl font-display font-bold mb-2 text-center">Biblioteca de la Comunidad 📚</h2>
+                        <p className="text-center text-indigo-200 mb-10">Descubre los mundos creados por otros exploradores.</p>
+
+                        {loading ? (
+                            <div className="text-center py-20"><i className="fas fa-spinner fa-spin text-3xl"></i></div>
+                        ) : books.length === 0 ? (
+                            <div className="text-center py-20 opacity-50">Aún no hay libros publicados. ¡Sé el primero!</div>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
+                                {books.map(book => (
+                                    <div key={book.id} onClick={() => setSelectedBook(book)} className="bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:bg-white/10 hover:border-indigo-400 transition cursor-pointer group shadow-lg hover:shadow-indigo-500/20">
+                                        {/* Portada */}
+                                        <div className="aspect-[3/4] bg-slate-800 relative overflow-hidden">
+                                            {book.cover ? (
+                                                <img src={book.cover} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Portada" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-slate-600 bg-slate-100">
+                                                    <i className="fas fa-book-open text-4xl opacity-20"></i>
+                                                </div>
+                                            )}
+                                            {/* Overlay al pasar mouse */}
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition backdrop-blur-[2px]">
+                                                <span className="bg-white text-indigo-900 px-6 py-2 rounded-full font-bold text-sm transform scale-90 group-hover:scale-100 transition">LEER LIBRO</span>
+                                            </div>
+                                        </div>
+                                        {/* Info */}
+                                        <div className="p-4">
+                                            <h3 className="font-bold text-lg truncate text-white">{book.title}</h3>
+                                            <p className="text-sm text-indigo-300"><i className="fas fa-user-edit mr-1 text-xs"></i> {book.author}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* MODAL PARA LEER EL LIBRO SELECCIONADO */}
+                    {selectedBook && (
+                        <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex flex-col animate-fade-in">
+                            <div className="h-16 flex items-center justify-between px-6 border-b border-white/10">
+                                <h3 className="font-bold text-white truncate max-w-md">{selectedBook.title} <span className="text-slate-400 font-normal text-sm">por {selectedBook.author}</span></h3>
+                                <button onClick={() => setSelectedBook(null)} className="text-white hover:text-red-400 transition"><i className="fas fa-times text-xl"></i></button>
+                            </div>
+                            <div className="flex-1 overflow-hidden p-4 relative">
+                                <BookViewer pages={selectedBook.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // --- LOGIN SCREEN ACTUALIZADO (CON ACCESO A GALERÍA) ---
+        function LoginScreen({ onLogin }) {
+            const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [isRegister, setIsRegister] = useState(false); const [isReset, setIsReset] = useState(false);
+            const [showGallery, setShowGallery] = useState(false); // ESTADO PARA MOSTRAR GALERÍA
+
+            const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
+            const handleGoogleLogin = async () => { try { const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); } catch (error) { if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') { alert(error.message); } } };
+            const handleReset = async (e) => { e.preventDefault(); if (!email) return alert("Escribe tu correo."); try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); } };
+            
+            return (
+                <div className={`login-split-wrapper ${showGallery ? 'login-gallery-active' : ''}`}>
+                    <div className="login-visual-side">
+                        
+                        {/* COMPONENTE DE GALERÍA (OCULTO POR DEFECTO) */}
+                        {showGallery && <CommunityGallery onClose={() => setShowGallery(false)} />}
+
+                        <div className={`visual-overlay ${showGallery ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                            <div className="w-64 md:w-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/50 backdrop-blur-sm mb-6 hover:scale-105 transition-transform origin-bottom-left hidden md:block relative z-20">
+                                <div className="aspect-video bg-black">
+                                     <iframe className="w-full h-full" src="https://www.youtube.com/embed/Hz2O4ftt0E8" title="Tutorial Creator Studio" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                                </div>
+                                <div className="bg-indigo-900/80 p-2 text-center backdrop-blur-md">
+                                    <p className="text-white text-[10px] font-bold uppercase tracking-widest">✨ Descubre la Magia</p>
+                                </div>
+                            </div>
+
+                            <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
+                            <p className="text-lg opacity-90 font-outfit mb-8">Crea, diseña y comparte.</p>
+
+                            {/* BOTÓN NUEVO PARA VER LA BIBLIOTECA */}
+                            <button 
+                                onClick={() => setShowGallery(true)}
+                                className="bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white font-bold py-3 px-6 rounded-full w-max flex items-center gap-3 transition-all hover:scale-105 shadow-lg group"
+                            >
+                                <span className="bg-white text-indigo-600 w-8 h-8 rounded-full flex items-center justify-center shadow-md group-hover:rotate-12 transition">
+                                    <i className="fas fa-book-open"></i>
+                                </span>
+                                Explorar Biblioteca Pública
+                            </button>
+                        </div>
+
+                    </div>
+                    <div className="login-form-side">
+                        <div className="w-full max-w-md">
+                            <h1 className="text-3xl font-display font-black text-indigo-600 mb-2">CREATOR STUDIO</h1>
+                            <p className="text-slate-500 mb-8">Empieza tu aventura creativa ahora.</p>
+                            {isReset ? (
+                                <form onSubmit={handleReset} className="space-y-4">
+                                    <input className="input-field-clean" placeholder="Tu correo" value={email} onChange={e=>setEmail(e.target.value)} />
+                                    <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Enviar Enlace</button>
+                                    <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Cancelar</div>
+                                </form>
+                            ) : (
+                                <form onSubmit={handleAuth} className="space-y-4">
+                                    <input className="input-field-clean" placeholder="Correo" value={email} onChange={e=>setEmail(e.target.value)} />
+                                    <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
+                                    <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
+                                    <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
+                                    <div className="relative flex py-2 items-center"><div className="flex-grow border-t border-gray-200"></div><span className="flex-shrink-0 mx-4 text-gray-400 text-xs">O continúa con</span><div className="flex-grow border-t border-gray-200"></div></div>
+                                    <button type="button" onClick={handleGoogleLogin} className="btn-modern bg-white text-gray-700 w-full py-3 text-lg border border-gray-200 hover:bg-gray-50"><i className="fab fa-google text-red-500 mr-2"></i> Google</button>
+                                    <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- PUBLIC GALLERY (EXISTENTE) ---
         function PublicGallery({ uid, isEmbedded }) {
             const [book, setBook] = useState(null);
             const [loading, setLoading] = useState(true);
@@ -1215,43 +1027,18 @@
 
             if(loading) return <div className="flex h-full items-center justify-center text-indigo-500 font-bold">Cargando Portafolio...</div>;
 
-            // 1. ReadOnly Moodboard (AJUSTE: Fondo transparente para heredar el oscuro del portafolio)
             const ReadOnlyMoodboard = ({ items }) => (
                 <div className="w-full h-full relative overflow-hidden">
-                    <div style={{
-                        position: 'relative', width: '100%', height: '100%', 
-                        overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <div style={{
-                            position: 'relative', width: '95%', height: '90%', maxWidth: '1600px', backgroundColor: '#2196F3',
-                            backgroundImage: 'linear-gradient(90deg, #F44336 25%, #FFEB3B 25%, #FFEB3B 50%, #2196F3 50%, #2196F3 75%, #4CAF50 75%)',
-                            backgroundSize: '100px 100%', display: 'flex', flexDirection: 'column', padding: '60px', paddingTop: '0',
-                            boxShadow: '0 30px 60px rgba(0,0,0,0.6)', borderRadius: '20px'
-                        }}>
-                            <div style={{
-                                backgroundColor: '#F44336', width: 'calc(100% + 120px)', marginLeft: '-60px', height: '80px', display: 'flex', 
-                                alignItems: 'center', justifyContent: 'center', borderBottom: '5px solid rgba(0,0,0,0.1)', position: 'relative', 
-                                zIndex: 10, borderRadius: '20px 20px 0 0'
-                            }}>
+                    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ position: 'relative', width: '95%', height: '90%', maxWidth: '1600px', backgroundColor: '#2196F3', backgroundImage: 'linear-gradient(90deg, #F44336 25%, #FFEB3B 25%, #FFEB3B 50%, #2196F3 50%, #2196F3 75%, #4CAF50 75%)', backgroundSize: '100px 100%', display: 'flex', flexDirection: 'column', padding: '60px', paddingTop: '0', boxShadow: '0 30px 60px rgba(0,0,0,0.6)', borderRadius: '20px' }}>
+                            <div style={{ backgroundColor: '#F44336', width: 'calc(100% + 120px)', marginLeft: '-60px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '5px solid rgba(0,0,0,0.1)', position: 'relative', zIndex: 10, borderRadius: '20px 20px 0 0' }}>
                                 <h1 style={{fontFamily: "'Bangers', cursive", fontSize: '3rem', color: '#fff', textShadow: '2px 2px 0px #333'}}>MOOD BOARD</h1>
                             </div>
-                            <div style={{
-                                flexGrow: 1, width: '100%', backgroundColor: 'white', borderRadius: '0 0 15px 15px', position: 'relative', overflow: 'hidden',
-                                backgroundImage: 'radial-gradient(#ddd 1px, transparent 1px)', backgroundSize: '25px 25px'
-                            }}>
+                            <div style={{ flexGrow: 1, width: '100%', backgroundColor: 'white', borderRadius: '0 0 15px 15px', position: 'relative', overflow: 'hidden', backgroundImage: 'radial-gradient(#ddd 1px, transparent 1px)', backgroundSize: '25px 25px' }}>
                                 {items && items.map((item, i) => (
-                                    <div key={i} style={{
-                                        position: 'absolute', left: item.left, top: item.top, transform: item.transform, zIndex: item.zIndex,
-                                        width: item.width || 'auto', height: item.height || 'auto', padding: '10px', display: 'inline-block'
-                                    }}>
-                                        <div style={{
-                                            backgroundColor: item.type === 'text' ? 'rgba(255,255,255,0.9)' : 'white', padding: '10px', 
-                                            boxShadow: '0 4px 10px rgba(0,0,0,0.2)', borderRadius: '4px', border: '1px solid #eee'
-                                        }}>
-                                            {item.type === 'text' ? 
-                                                <div style={{fontFamily: "'Permanent Marker', cursive", fontSize: '1.5rem', color: '#333', textAlign:'center'}}>{item.content}</div> 
-                                                : <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>
-                                            }
+                                    <div key={i} style={{ position: 'absolute', left: item.left, top: item.top, transform: item.transform, zIndex: item.zIndex, width: item.width || 'auto', height: item.height || 'auto', padding: '10px', display: 'inline-block' }}>
+                                        <div style={{ backgroundColor: item.type === 'text' ? 'rgba(255,255,255,0.9)' : 'white', padding: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.2)', borderRadius: '4px', border: '1px solid #eee' }}>
+                                            {item.type === 'text' ? <div style={{fontFamily: "'Permanent Marker', cursive", fontSize: '1.5rem', color: '#333', textAlign:'center'}}>{item.content}</div> : <img src={item.content} style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}}/>}
                                         </div>
                                     </div>
                                 ))}
@@ -1261,250 +1048,62 @@
                 </div>
             );
 
-            // 2. ReadOnly Storyboard (AJUSTE: Fondo transparente para heredar el oscuro del portafolio)
             const ReadOnlyStoryboard = ({ notes }) => (
                 <div className="w-full h-full overflow-y-auto p-8 relative">
-                    <div style={{
-                        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, 240px)', gridAutoRows: '250px', 
-                        gap: '25px', justifyContent: 'center', width: '100%', paddingBottom: '50px'
-                    }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, 240px)', gridAutoRows: '250px', gap: '25px', justifyContent: 'center', width: '100%', paddingBottom: '50px' }}>
                         {notes && notes.map((note, i) => (
                             <div key={i} className="note" style={{backgroundColor: note.color, cursor: 'default'}}>
-                                <div className="note-header">
-                                    <label className="page-toggle" style={{pointerEvents:'none'}}>
-                                        <input type="checkbox" checked={note.isDouble} readOnly/> Doble Pág.
-                                    </label>
-                                    <div className="scene-badge"># {note.sceneNum || i+1}</div>
-                                </div>
-                                <div className="note-body">
-                                    <div className="field-label"><i className="fa-solid fa-video"></i> Descripción</div>
-                                    <div className="editable-area" style={{background:'rgba(255,255,255,0.4)', padding:'6px', borderRadius:'8px', fontSize:'0.8rem', minHeight:'50px', marginBottom:'8px'}}>
-                                        {note.sceneText || note.scene}
-                                    </div>
-                                    <div className="field-label"><i className="fa-solid fa-comments"></i> Diálogo</div>
-                                    <div className="editable-area" style={{background:'rgba(255,255,255,0.4)', padding:'6px', borderRadius:'8px', fontSize:'0.8rem', minHeight:'50px', fontStyle:'italic'}}>
-                                        {note.dialogText || note.dialog}
-                                    </div>
-                                </div>
+                                <div className="note-header"><label className="page-toggle" style={{pointerEvents:'none'}}><input type="checkbox" checked={note.isDouble} readOnly/> Doble Pág.</label><div className="scene-badge"># {note.sceneNum || i+1}</div></div>
+                                <div className="note-body"><div className="field-label"><i className="fa-solid fa-video"></i> Descripción</div><div className="editable-area" style={{background:'rgba(255,255,255,0.4)', padding:'6px', borderRadius:'8px', fontSize:'0.8rem', minHeight:'50px', marginBottom:'8px'}}>{note.sceneText || note.scene}</div><div className="field-label"><i className="fa-solid fa-comments"></i> Diálogo</div><div className="editable-area" style={{background:'rgba(255,255,255,0.4)', padding:'6px', borderRadius:'8px', fontSize:'0.8rem', minHeight:'50px', fontStyle:'italic'}}>{note.dialogText || note.dialog}</div></div>
                             </div>
                         ))}
                     </div>
                 </div>
             );
 
-            // GENERAR URL PÚBLICA
             const publicUrl = `${window.location.origin}${window.location.pathname}?portfolio=${uid}`;
 
             return (
-                // AJUSTE: Fondo del Portafolio cambiado a estilo Editor (Azul oscuro con puntos)
                 <div className="h-full flex flex-col relative overflow-hidden" style={{backgroundColor: '#2b2d42', backgroundImage: 'radial-gradient(#3d405b 1px, transparent 1px)', backgroundSize: '30px 30px'}}>
-                    {/* ENCABEZADO CON PESTAÑAS */}
                     <div className="bg-white border-b shadow-sm sticky top-0 z-50 px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-4 flex-shrink-0">
-                        <div>
-                            <h1 className="text-xl font-black text-gray-800 font-dosis uppercase tracking-wider">PORTAFOLIO</h1>
-                            <p className="text-gray-500 text-xs">De: {userProfile.name}</p>
-                        </div>
-                        
-                        {/* PESTAÑAS DE NAVEGACIÓN */}
+                        <div><h1 className="text-xl font-black text-gray-800 font-dosis uppercase tracking-wider">PORTAFOLIO</h1><p className="text-gray-500 text-xs">De: {userProfile.name}</p></div>
                         <div className="flex bg-gray-100 p-1 rounded-xl shadow-inner">
-                            <button onClick={()=>setActiveTab('book')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab==='book' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-                                <i className="fas fa-book-open mr-2"></i> Libro Álbum
-                            </button>
-                            <button onClick={()=>setActiveTab('moodboard')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab==='moodboard' ? 'bg-white text-pink-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-                                <i className="fas fa-palette mr-2"></i> Moodboard
-                            </button>
-                            <button onClick={()=>setActiveTab('storyboard')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab==='storyboard' ? 'bg-white text-orange-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-                                <i className="fas fa-layer-group mr-2"></i> Storyboard
-                            </button>
+                            <button onClick={()=>setActiveTab('book')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab==='book' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><i className="fas fa-book-open mr-2"></i> Libro Álbum</button>
+                            <button onClick={()=>setActiveTab('moodboard')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab==='moodboard' ? 'bg-white text-pink-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><i className="fas fa-palette mr-2"></i> Moodboard</button>
+                            <button onClick={()=>setActiveTab('storyboard')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab==='storyboard' ? 'bg-white text-orange-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><i className="fas fa-layer-group mr-2"></i> Storyboard</button>
                         </div>
-
-                        {/* BOTÓN DE VISTA PREVIA (SOLO SI ES EMBEDDED/LOGUEADO) O CREAR CUENTA (SI ES PÚBLICO) */}
                         <div className="flex gap-2">
-                            {isEmbedded && (
-                                <a href={publicUrl} target="_blank" className="btn-modern bg-white text-indigo-600 border border-indigo-100 text-xs px-4 shadow-sm hover:shadow-md transition-all">
-                                    <i className="fas fa-external-link-alt mr-2"></i> VISTA PÚBLICA
-                                </a>
-                            )}
+                            {isEmbedded && (<a href={publicUrl} target="_blank" className="btn-modern bg-white text-indigo-600 border border-indigo-100 text-xs px-4 shadow-sm hover:shadow-md transition-all"><i className="fas fa-external-link-alt mr-2"></i> VISTA PÚBLICA</a>)}
                             {!isEmbedded && <button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4">CREAR MI CUENTA</button>}
                         </div>
                     </div>
-
-                    {/* CONTENIDO PRINCIPAL (SIN SCROLL GLOBAL, SOLO INTERNO) */}
                     <div className="flex-1 relative overflow-hidden">
-                        {activeTab === 'book' && (
-                            // AJUSTE: Eliminado bg-gray-100 para que se vea el fondo oscuro
-                            <div className="w-full h-full flex items-center justify-center p-4">
-                                {book ? 
-                                    <div className="w-full h-full max-w-5xl"><BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div> 
-                                    : <div className="text-center text-gray-400">No publicado aún.</div>
-                                }
-                            </div>
-                        )}
-
-                        {activeTab === 'moodboard' && (
-                            /* AJUSTE: Eliminado ActivityIntro para vista limpia de exhibición */
-                            <ReadOnlyMoodboard items={moodboardItems} />
-                        )}
-                        
-                        {activeTab === 'storyboard' && (
-                            /* AJUSTE: Eliminado ActivityIntro para vista limpia de exhibición */
-                            <ReadOnlyStoryboard notes={storyboardNotes} />
-                        )}
+                        {activeTab === 'book' && (<div className="w-full h-full flex items-center justify-center p-4">{book ? <div className="w-full h-full max-w-5xl"><BookViewer pages={book.pages} activeIdx={-1} setActiveIdx={()=>{}} isEditor={false} /></div> : <div className="text-center text-gray-400">No publicado aún.</div>}</div>)}
+                        {activeTab === 'moodboard' && <ReadOnlyMoodboard items={moodboardItems} />}
+                        {activeTab === 'storyboard' && <ReadOnlyStoryboard notes={storyboardNotes} />}
                     </div>
                 </div>
             );
         }
 
-        // --- PUBLIC ACTIVITY VIEWER (VISTAS PÚBLICAS CONFIGURADAS) ---
+        // --- PUBLIC ACTIVITY VIEWER ---
         function PublicActivityViewer({ activity }) {
             const [showGuide, setShowGuide] = useState(true);
             const [showBlocker, setShowBlocker] = useState(false);
-            
-            const RegistrationBubble = ({ onClose }) => (
-                <div className="fixed top-20 right-5 z-[9999] w-72 bg-white p-5 rounded-2xl shadow-xl border-2 border-indigo-500 animate-bounce-in">
-                    <button onClick={onClose} className="absolute top-2 left-2 text-gray-400 hover:text-red-500"><i className="fas fa-times"></i></button>
-                    <h3 className="font-bold text-indigo-600 mb-2">¡Hola, Creador!</h3>
-                    <p className="text-sm text-gray-600 mb-3">Estás viendo una actividad pública. Regístrate para guardar tu progreso.</p>
-                    <button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary w-full text-xs py-2">CREAR CUENTA</button>
-                </div>
-            );
-
-            const BlockerModal = () => (
-                <div className="absolute inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white rounded-2xl p-8 text-center border-4 border-indigo-500 shadow-2xl relative max-w-md animation-pop-in">
-                        <button onClick={(e) => { e.stopPropagation(); setShowBlocker(false); }} className="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i className="fas fa-times"></i></button>
-                        <div className="w-20 h-20 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl text-indigo-600">
-                            <i className="fas fa-lock"></i>
-                        </div>
-                        <h3 className="text-2xl font-bold text-indigo-800 mb-2">¡Modo Lectura!</h3>
-                        <p className="text-gray-600 mb-6">Para editar este tablero y guardar tus cambios, necesitas tu propia cuenta de creador.</p>
-                        <button onClick={() => window.location.href = window.location.pathname} className="btn-modern bg-gradient-primary w-full py-3 text-lg justify-center shadow-lg transform hover:scale-105 transition">
-                            ¡REGISTRARME GRATIS!
-                        </button>
-                    </div>
-                </div>
-            );
-
+            const RegistrationBubble = ({ onClose }) => (<div className="fixed top-20 right-5 z-[9999] w-72 bg-white p-5 rounded-2xl shadow-xl border-2 border-indigo-500 animate-bounce-in"><button onClick={onClose} className="absolute top-2 left-2 text-gray-400 hover:text-red-500"><i className="fas fa-times"></i></button><h3 className="font-bold text-indigo-600 mb-2">¡Hola, Creador!</h3><p className="text-sm text-gray-600 mb-3">Estás viendo una actividad pública. Regístrate para guardar tu progreso.</p><button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary w-full text-xs py-2">CREAR CUENTA</button></div>);
+            const BlockerModal = () => (<div className="absolute inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in"><div className="bg-white rounded-2xl p-8 text-center border-4 border-indigo-500 shadow-2xl relative max-w-md animation-pop-in"><button onClick={(e) => { e.stopPropagation(); setShowBlocker(false); }} className="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i className="fas fa-times"></i></button><div className="w-20 h-20 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl text-indigo-600"><i className="fas fa-lock"></i></div><h3 className="text-2xl font-bold text-indigo-800 mb-2">¡Modo Lectura!</h3><p className="text-gray-600 mb-6">Para editar este tablero y guardar tus cambios, necesitas tu propia cuenta de creador.</p><button onClick={() => window.location.href = window.location.pathname} className="btn-modern bg-gradient-primary w-full py-3 text-lg justify-center shadow-lg transform hover:scale-105 transition">¡REGISTRARME GRATIS!</button></div></div>);
             let content;
             switch(activity) {
-                // 1. Muro Social
-                case 'padlet':
-                    content = (
-                        <ActivityIntro 
-                            title="Muro Colaborativo" 
-                            text="¡Comparte con la clase! Agrega 2 o 3 etiquetas sobre mitos y leyendas de Norte de Santander que te gusten, añade un breve resumen y, si puedes, una foto."
-                        >
-                            <iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none"></iframe>
-                        </ActivityIntro>
-                    );
-                    break;
-                // 2. Quiz
-                case 'quiz':
-                    content = (
-                        <ActivityIntro 
-                            title="¿Cuánto Aprendiste?" 
-                            text="Es hora de poner a prueba tus conocimientos. Responderás preguntas sobre conceptos del Libro Álbum y los Mitos y Leyendas que hemos explorado."
-                        >
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-yellow-50 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-yellow-900/10"></div>
-                                <div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-2xl max-w-lg">
-                                    <h1 className="text-4xl font-black text-yellow-500 mb-4">Quiz Time!</h1>
-                                    <p className="text-gray-500 mb-8">Demuestra tus conocimientos sobre mitos y leyendas.</p>
-                                    <a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-activity text-xl px-8 py-3">INICIAR</a>
-                                </div>
-                            </div>
-                        </ActivityIntro>
-                    );
-                    break;
-                // 3. Libro Guía
-                case 'guia':
-                    content = <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>;
-                    break;
-                // 4. Moodboard
-                case 'moodboard':
-                    content = (
-                        <ActivityIntro 
-                            title="¡Bienvenido a tu Moodboard!" 
-                            text={<>Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.<br/><br/><strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.</>}
-                        >
-                            <div className="w-full h-full relative">
-                                {showBlocker && <BlockerModal />}
-                                <MoodboardComponent user={null} />
-                                <div className="absolute inset-0 z-[9000] cursor-pointer" onClick={() => setShowBlocker(true)} title="Registrarse para editar"></div>
-                            </div>
-                        </ActivityIntro>
-                    ); 
-                    break;
-                // 5. Storyboard
-                case 'storyboard':
-                    content = (
-                        <ActivityIntro 
-                            title="¡Hola, Aventurero!" 
-                            text={<>Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.<br/><br/>Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.</>}
-                        >
-                            <div className="w-full h-full relative">
-                                {showBlocker && <BlockerModal />}
-                                <StoryboardComponent user={null} />
-                                <div className="absolute inset-0 z-[9000] cursor-pointer" onClick={() => setShowBlocker(true)} title="Registrarse para editar"></div>
-                            </div>
-                        </ActivityIntro>
-                    ); 
-                    break;
-                // 6. Ficha Narrativa (NUEVO)
-                case 'ficha_narrativa':
-                    content = (
-                        <ActivityIntro 
-                            title="Estructura tu Historia" 
-                            text="Primero, recuerda los cuentos, mitos y leyendas que investigaste. Elige el que más te guste y usa esta ficha para registrar el título, un resumen y los personajes principales."
-                        >
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-rose-50 relative">
-                                <div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-xl max-w-lg border border-rose-100">
-                                    <h2 className="text-3xl font-bold text-rose-500 mb-4">Ficha Narrativa</h2>
-                                    <p className="text-gray-500 mb-6">Estructura tu historia antes de comenzar.</p>
-                                    <a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-lg">IR A CANVA</a>
-                                </div>
-                            </div>
-                        </ActivityIntro>
-                    );
-                    break;
-                // 7. Estructura (NUEVO)
-                case 'estructura_cuento':
-                    content = (
-                        <ActivityIntro 
-                            title="Estructura de Cuento" 
-                            text="Aquí aprenderás a estructurar tu cuento: Introducción, Nudo y Desenlace."
-                        >
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-emerald-50 relative">
-                                <div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-xl max-w-lg border border-emerald-100">
-                                    <h2 className="text-3xl font-bold text-emerald-500 mb-4">Estructura del Cuento</h2>
-                                    <p className="text-gray-500 mb-6">Define Inicio, Nudo y Desenlace.</p>
-                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSclddiTEQJVg2wFUoLYeJFMlAiUz0AaAqPT5s2onaiwmk5U_A/viewform" target="_blank" className="btn-modern bg-gradient-success text-lg shadow-lg">ABRIR FORMULARIO</a>
-                                </div>
-                            </div>
-                        </ActivityIntro>
-                    );
-                    break;
-                // 8. Personajes (NUEVO)
-                case 'ficha_personajes':
-                    content = (
-                        <ActivityIntro 
-                            title="Taller de Personajes" 
-                            text="Aquí construirás a los protagonistas de tu historia. Define cómo se imaginan físicamente, cómo son emocionalmente y qué ropa llevan."
-                        >
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-50 relative">
-                                <div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-xl max-w-lg border border-indigo-100">
-                                    <h2 className="text-3xl font-bold text-indigo-500 mb-4">Taller de Personajes</h2>
-                                    <p className="text-gray-500 mb-6">Crea la personalidad y apariencia de tus héroes.</p>
-                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-lg shadow-lg">ABRIR FICHA</a>
-                                </div>
-                            </div>
-                        </ActivityIntro>
-                    );
-                    break;
-                default:
-                    content = <div className="flex h-full items-center justify-center text-gray-400">Actividad no encontrada o enlace incorrecto.</div>;
+                case 'padlet': content = <ActivityIntro title="Muro Colaborativo" text="¡Comparte con la clase! Agrega 2 o 3 etiquetas sobre mitos y leyendas de Norte de Santander que te gusten, añade un breve resumen y, si puedes, una foto."><iframe src="https://padlet.com/embed/kz78sfkwdm9abosj" className="w-full h-full border-none"></iframe></ActivityIntro>; break;
+                case 'quiz': content = <ActivityIntro title="¿Cuánto Aprendiste?" text="Es hora de poner a prueba tus conocimientos. Responderás preguntas sobre conceptos del Libro Álbum y los Mitos y Leyendas que hemos explorado."><div className="w-full h-full flex flex-col items-center justify-center bg-yellow-50 relative overflow-hidden"><div className="absolute inset-0 bg-yellow-900/10"></div><div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-2xl max-w-lg"><h1 className="text-4xl font-black text-yellow-500 mb-4">Quiz Time!</h1><p className="text-gray-500 mb-8">Demuestra tus conocimientos sobre mitos y leyendas.</p><a href="https://create.kahoot.it/share/quiz-interactivo/f8f5983d-25e9-44e7-aa46-eab37837811f" target="_blank" className="btn-modern bg-gradient-activity text-xl px-8 py-3">INICIAR</a></div></div></ActivityIntro>; break;
+                case 'guia': content = <iframe src="https://libroalbum.github.io/libro-lbum-pedag-gico/" className="w-full h-full border-none"></iframe>; break;
+                case 'moodboard': content = <ActivityIntro title="¡Bienvenido a tu Moodboard!" text={<>Este es tu lienzo infinito de inspiración. Aquí podrás reunir imágenes, textos y colores para dar vida a la atmósfera de tu historia.<br/><br/><strong>¡Tip Mágico!</strong> ✨ Copia imágenes de internet y pégalas (Ctrl+V) directamente.</>}><div className="w-full h-full relative">{showBlocker && <BlockerModal />}<MoodboardComponent user={null} /><div className="absolute inset-0 z-[9000] cursor-pointer" onClick={() => setShowBlocker(true)} title="Registrarse para editar"></div></div></ActivityIntro>; break;
+                case 'storyboard': content = <ActivityIntro title="¡Hola, Aventurero!" text={<>Bienvenido a tu taller creativo. Aquí construirás el <strong>Storyboard</strong> para tu libro álbum digital.<br/><br/>Usa este espacio para describir <strong>cómo imaginas cada escena</strong> y escribe los <strong>diálogos</strong> de tus personajes.</>}><div className="w-full h-full relative">{showBlocker && <BlockerModal />}<StoryboardComponent user={null} /><div className="absolute inset-0 z-[9000] cursor-pointer" onClick={() => setShowBlocker(true)} title="Registrarse para editar"></div></div></ActivityIntro>; break;
+                case 'ficha_narrativa': content = <ActivityIntro title="Estructura tu Historia" text="Primero, recuerda los cuentos, mitos y leyendas que investigaste. Elige el que más te guste y usa esta ficha para registrar el título, un resumen y los personajes principales."><div className="w-full h-full flex flex-col items-center justify-center bg-rose-50 relative"><div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-xl max-w-lg border border-rose-100"><h2 className="text-3xl font-bold text-rose-500 mb-4">Ficha Narrativa</h2><p className="text-gray-500 mb-6">Estructura tu historia antes de comenzar.</p><a href="https://www.canva.com/design/DAG4JQ_26mk/yYHgZbuApHUSdalSG2938g/view" target="_blank" className="btn-modern bg-gradient-activity text-lg shadow-lg">IR A CANVA</a></div></div></ActivityIntro>; break;
+                case 'estructura_cuento': content = <ActivityIntro title="Estructura de Cuento" text="Aquí aprenderás a estructurar tu cuento: Introducción, Nudo y Desenlace."><div className="w-full h-full flex flex-col items-center justify-center bg-emerald-50 relative"><div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-xl max-w-lg border border-emerald-100"><h2 className="text-3xl font-bold text-emerald-500 mb-4">Estructura del Cuento</h2><p className="text-gray-500 mb-6">Define Inicio, Nudo y Desenlace.</p><a href="https://docs.google.com/forms/d/e/1FAIpQLSclddiTEQJVg2wFUoLYeJFMlAiUz0AaAqPT5s2onaiwmk5U_A/viewform" target="_blank" className="btn-modern bg-gradient-success text-lg shadow-lg">ABRIR FORMULARIO</a></div></div></ActivityIntro>; break;
+                case 'ficha_personajes': content = <ActivityIntro title="Taller de Personajes" text="Aquí construirás a los protagonistas de tu historia. Define cómo se imaginan físicamente, cómo son emocionalmente y qué ropa llevan."><div className="w-full h-full flex flex-col items-center justify-center bg-indigo-50 relative"><div className="relative z-10 text-center p-10 bg-white rounded-3xl shadow-xl max-w-lg border border-indigo-100"><h2 className="text-3xl font-bold text-indigo-500 mb-4">Taller de Personajes</h2><p className="text-gray-500 mb-6">Crea la personalidad y apariencia de tus héroes.</p><a href="https://docs.google.com/forms/d/e/1FAIpQLSdeATljdt5PMVoLzJ1x6S7sItasYY9hW2aiClLJpE1Yr1OyQw/viewform" target="_blank" className="btn-modern bg-gradient-primary text-lg shadow-lg">ABRIR FICHA</a></div></div></ActivityIntro>; break;
+                default: content = <div className="flex h-full items-center justify-center text-gray-400">Actividad no encontrada o enlace incorrecto.</div>;
             }
-
             return (
                 <div className="w-full h-screen bg-gray-50 flex flex-col">
                     {showGuide && <RegistrationBubble onClose={()=>setShowGuide(false)} />}
@@ -1512,9 +1111,7 @@
                         <div className="font-bold text-xl text-indigo-600">CREATOR STUDIO <span className="text-gray-400 font-normal text-sm">/ Vista Pública</span></div>
                         <button onClick={()=>window.location.href=window.location.pathname} className="btn-modern bg-gradient-primary text-xs px-4">ACCEDER</button>
                     </div>
-                    <div className="flex-1 relative overflow-hidden">
-                        {content}
-                    </div>
+                    <div className="flex-1 relative overflow-hidden">{content}</div>
                 </div>
             );
         }
@@ -1604,80 +1201,6 @@
             );
         };
 
-        function LoginScreen({ onLogin }) {
-            const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [isRegister, setIsRegister] = useState(false); const [isReset, setIsReset] = useState(false);
-            const handleAuth = async (e) => { e.preventDefault(); try { if (isRegister) await createUserWithEmailAndPassword(auth, email, password); else await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); } };
-            
-            // AJUSTE: Mejoramos la función para ignorar el error si se cancela la ventana
-            const handleGoogleLogin = async () => { 
-                try { 
-                    const provider = new GoogleAuthProvider(); 
-                    await signInWithPopup(auth, provider); 
-                } catch (error) { 
-                    // Solo mostramos alerta si NO es un error de cancelación voluntaria
-                    if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
-                        alert(error.message); 
-                    }
-                } 
-            };
-
-            const handleReset = async (e) => { e.preventDefault(); if (!email) return alert("Escribe tu correo."); try { await sendPasswordResetEmail(auth, email); alert("Revisa tu correo."); setIsReset(false); } catch (err) { alert(err.message); } };
-            
-            return (
-                <div className="login-split-wrapper">
-                    <div className="login-visual-side">
-                        
-                        <div className="visual-overlay">
-                            {/* AJUSTE: Video movido ENCIMA del texto */}
-                            <div className="w-64 md:w-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/50 backdrop-blur-sm mb-6 hover:scale-105 transition-transform origin-bottom-left hidden md:block relative z-20">
-                                <div className="aspect-video bg-black">
-                                     <iframe 
-                                        className="w-full h-full"
-                                        src="https://www.youtube.com/embed/Hz2O4ftt0E8" 
-                                        title="Tutorial Creator Studio" 
-                                        frameBorder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                        allowFullScreen
-                                    ></iframe>
-                                </div>
-                                <div className="bg-indigo-900/80 p-2 text-center backdrop-blur-md">
-                                    <p className="text-white text-[10px] font-bold uppercase tracking-widest">✨ Descubre la Magia</p>
-                                </div>
-                            </div>
-
-                            <h2 className="text-4xl font-bold font-dosis mb-2">Tu Imaginación no tiene límites</h2>
-                            <p className="text-lg opacity-90 font-outfit">Crea, diseña y comparte.</p>
-                        </div>
-
-                    </div>
-                    <div className="login-form-side">
-                        <div className="w-full max-w-md">
-                            <h1 className="text-3xl font-display font-black text-indigo-600 mb-2">CREATOR STUDIO</h1>
-                            <p className="text-slate-500 mb-8">Empieza tu aventura creativa ahora.</p>
-                            {isReset ? (
-                                <form onSubmit={handleReset} className="space-y-4">
-                                    <input className="input-field-clean" placeholder="Tu correo" value={email} onChange={e=>setEmail(e.target.value)} />
-                                    <button className="btn-modern bg-gradient-primary w-full py-3 text-lg">Enviar Enlace</button>
-                                    <div onClick={()=>setIsReset(false)} className="text-center text-gray-500 text-sm cursor-pointer hover:text-indigo-500 mt-4 font-bold">Cancelar</div>
-                                </form>
-                            ) : (
-                                <form onSubmit={handleAuth} className="space-y-4">
-                                    <input className="input-field-clean" placeholder="Correo" value={email} onChange={e=>setEmail(e.target.value)} />
-                                    <input className="input-field-clean" type="password" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
-                                    <div className="text-right"><span className="text-xs text-indigo-500 font-bold cursor-pointer hover:underline" onClick={()=>setIsReset(true)}>¿Olvidaste tu contraseña?</span></div>
-                                    <button className="btn-modern bg-gradient-primary w-full py-3 text-lg shadow-lg mt-2">{isRegister ? 'Crear Cuenta Gratis' : 'Ingresar al Estudio'}</button>
-                                    <div className="relative flex py-2 items-center"><div className="flex-grow border-t border-gray-200"></div><span className="flex-shrink-0 mx-4 text-gray-400 text-xs">O continúa con</span><div className="flex-grow border-t border-gray-200"></div></div>
-                                    <button type="button" onClick={handleGoogleLogin} className="btn-modern bg-white text-gray-700 w-full py-3 text-lg border border-gray-200 hover:bg-gray-50"><i className="fab fa-google text-red-500 mr-2"></i> Google</button>
-                                    <div className="mt-6 text-center"><span className="text-sm text-indigo-600 cursor-pointer hover:text-indigo-800 font-bold border-b-2 border-indigo-100 hover:border-indigo-600 transition" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? '¿Ya tienes cuenta? Inicia Sesión' : '¿Eres nuevo? Regístrate aquí'}</span></div>
-                                </form>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // --- APP SHELL ---
         function App() {
             const [user, setUser] = useState(null); 
             const [view, setView] = useState('loading'); 
@@ -1736,26 +1259,25 @@
                             
                             if (savedView === 'editor') {
                                 setView('editor');
-                          } else if (savedModule && savedModule !== 'null' && savedModule !== 'undefined') {
-                        try {
-                            // CORRECCIÓN: Usamos la memoria solo para el ID, pero cargamos el contenido NUEVO
-                            const savedObj = JSON.parse(savedModule);
-                            // Buscamos la versión actualizada en tu lista de datos
-                            const freshModule = MODULES_DATA.find(m => m.id === savedObj.id);
-                            
-                            if (freshModule) {
-                                // Mantenemos al usuario en la lección donde quedó
-                                if (savedObj.initialStepId) {
-                                    freshModule.initialStepId = savedObj.initialStepId;
+                            } else if (savedModule && savedModule !== 'null' && savedModule !== 'undefined') {
+                                try {
+                                    const savedObj = JSON.parse(savedModule);
+                                    // Buscamos la versión actualizada en tu lista de datos
+                                    const freshModule = MODULES_DATA.find(m => m.id === savedObj.id);
+                                    
+                                    if (freshModule) {
+                                        // Mantenemos al usuario en la lección donde quedó
+                                        if (savedObj.initialStepId) {
+                                            freshModule.initialStepId = savedObj.initialStepId;
+                                        }
+                                        setSelectedModule(freshModule);
+                                    } else {
+                                        setSelectedModule(savedObj);
+                                    }
+                                    setView('dashboard'); 
+                                } catch (e) {
+                                    setView('dashboard');
                                 }
-                                setSelectedModule(freshModule);
-                            } else {
-                                setSelectedModule(savedObj);
-                            }
-                            setView('dashboard'); 
-                        } catch (e) {
-                            setView('dashboard');
-                        }
                             } else {
                                 setView('dashboard'); 
                             }
