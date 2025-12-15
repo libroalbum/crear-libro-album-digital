@@ -443,7 +443,8 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    const MAX_WIDTH = 480; 
+                    // AJUSTE NUEVO: Tamaño 350px (Ideal para que no se bloquee la base de datos)
+                    const MAX_WIDTH = 350; 
                     let width = img.width; let height = img.height;
                     
                     if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
@@ -451,7 +452,8 @@
                     canvas.width = width; canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    callback(canvas.toDataURL('image/jpeg', 0.5)); 
+                    // AJUSTE NUEVO: Calidad 0.4 (Logra el equilibrio perfecto de peso/calidad)
+                    callback(canvas.toDataURL('image/jpeg', 0.4)); 
                 }; img.src = e.target.result;
             }; reader.readAsDataURL(file);
         };
