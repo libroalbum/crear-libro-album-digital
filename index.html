@@ -439,44 +439,9 @@
         // --- UTILS ---
         // AJUSTE PRO: Sensor de Espacio Real
         // Este código calcula cuánto espacio queda en el megabyte y ajusta la calidad
-        const processImage = (file, callback, currentBookSize = 0) => {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // 1. Calculamos cuánto espacio libre queda (Límite: 1,000,000 Bytes)
-                    const MAX_LIMIT = 1000000;
-                    const FREE_SPACE = MAX_LIMIT - currentBookSize;
-
-                    // 2. Definimos la calidad según el espacio libre
-                    let MAX_WIDTH = 320; 
-                    let QUALITY = 0.4;
-
-                    if (FREE_SPACE > 600000) { 
-                        // SEMÁFORO VERDE: Queda mucho espacio (+600KB) -> Calidad Alta
-                        MAX_WIDTH = 600; 
-                        QUALITY = 0.7;
-                    } 
-                    else if (FREE_SPACE > 300000) {
-                        // SEMÁFORO AMARILLO: Queda espacio medio (+300KB) -> Calidad Media
-                        MAX_WIDTH = 450; 
-                        QUALITY = 0.55;
-                    }
-                    // SEMÁFORO ROJO: Queda poco espacio -> Se queda en modo ahorro (320px / 0.4)
-
-                    // 3. Aplicamos el cambio
-                    let width = img.width; let height = img.height;
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    
-                    canvas.width = width; canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    callback(canvas.toDataURL('image/jpeg', QUALITY)); 
-                }; img.src = e.target.result;
+        const processImage = (file, callback... ) => {
+            // ... un montón de código aquí adentro ...
+            // ... más código ...
             }; reader.readAsDataURL(file);
         };
         const MASTER_TEMPLATE = { title: "Nuevo Libro", pages: [{ id: 'c1', type: 'structure', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20portada.png?raw=true' }, back: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' } }, { id: 'c2', type: 'structure', front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, back: { type: 'text-page', title: 'Hoja de Respeto', text: '(Título)' } }, { id: 'c3', type: 'structure', front: { type: 'text-page', title: 'Créditos', text: 'Autor: Tu Nombre\nAño: 2024' }, back: { type: 'text-page', title: 'Dedicatoria', text: 'Para...' } }, { id: 'p1', type: 'content', front: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20cuerpo.png?raw=true' } }, { id: 'end', type: 'structure', front: { type: 'endpaper', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20paginas%20guardas.png?raw=true' }, back: { type: 'image-page', bg: 'https://github.com/libroalbum/crear-libro-album-digital/blob/main/plantilla%20contraportada.png?raw=true' } }] };
@@ -790,27 +755,8 @@
             const audioRef = useRef(null); const [localIdx, setLocalIdx] = useState(activeIdx); const currentIdx = isEditor ? activeIdx : localIdx; const isOpen = currentIdx >= 0 && currentIdx < pages.length - 1; const isClosedBack = currentIdx === pages.length - 1; 
             const changePage = (newIdx) => { if(audioRef.current) { audioRef.current.currentTime=0; audioRef.current.play().catch(()=>{}); } if(isEditor) setActiveIdx(newIdx); else setLocalIdx(newIdx); }; useEffect(() => { const handleKeyDown = (e) => { if (e.key === "ArrowRight" && currentIdx < pages.length-1) changePage(currentIdx+1); if (e.key === "ArrowLeft" && currentIdx >= 0) changePage(currentIdx-1); }; window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown); }, [currentIdx, pages]); 
             
-            // AJUSTE: Aquí pesamos el libro en tiempo real antes de subir la foto
-            const renderEditOverlay = (pageIdx, side, currentBg) => { 
-                if (!isEditor || (pageIdx===1 && side==='back') || pageIdx===2) return null; 
-                return (
-                    <div className="edit-overlay">
-                        <label className="btn-modern bg-gradient-accent" style={{fontSize:'0.9rem', padding:'8px'}}>
-                            <i className="fas fa-camera mr-2"></i> {currentBg ? 'Cambiar' : 'Subir'}
-                            <input type="file" accept="image/*" className="hidden" onChange={(e) => { 
-                                const file = e.target.files[0]; 
-                                if(file) {
-                                    // BÁSCULA DIGITAL: Calculamos el peso actual del libro
-                                    const currentSize = JSON.stringify(pages).length;
-                                    // Enviamos el peso a la trituradora para que decida la calidad
-                                    processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64), currentSize); 
-                                }
-                            }} />
-                        </label>
-                        <input className="input-field-clean" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px', padding:'8px'}} />
-                    </div>
-                ); 
-            };
+            // AJUSTE: Versión estándar sin sensores complejos
+            const renderEditOverlay = (pageIdx, side, currentBg) => { if (!isEditor || (pageIdx===1 && side==='back') || pageIdx===2) return null; return (<div className="edit-overlay"><label className="btn-modern bg-gradient-accent" style={{fontSize:'0.9rem', padding:'8px'}}><i className="fas fa-camera mr-2"></i> {currentBg ? 'Cambiar' : 'Subir'}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if(file) processImage(file, (base64) => onUpdatePage(pageIdx, side, 'bg', base64)); }} /></label><input className="input-field-clean" placeholder="O pega enlace..." value={currentBg && currentBg.startsWith('http') ? currentBg : ''} onClick={(e) => e.stopPropagation()} onChange={(e) => onUpdatePage(pageIdx, side, 'bg', e.target.value)} style={{fontSize:'0.8rem', marginTop:'10px', padding:'8px'}} /></div>); };
             
             return (<div style={{width:'100%', height:'100%', display:'flex', justifyContent:'center', alignItems:'center', position:'relative'}}><audio ref={audioRef} src="https://raw.githubusercontent.com/libroalbum/libro-lbum-pedag-gico/main/images/sonido%20deslizar.mp3"></audio><div id="stage"><div className={`book ${isOpen ? 'opened' : ''} ${isClosedBack ? 'closed-back' : ''}`}>{pages.map((p, i) => { const zIndex = currentIdx >= i ? i + 1 : pages.length - i; return (<div key={p.id} className={`paper ${i <= currentIdx ? 'flipped' : ''}`} style={{zIndex}}><div className={`front ${p.front.type}`} style={p.front.bg ? {backgroundImage:`url(${p.front.bg})`}:{}}>{renderEditOverlay(i, 'front', p.front.bg)}{p.front.type==='text-page' && (<div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10"><input disabled={!isEditor} value={p.front.title} onChange={(e)=>onUpdatePage(i, 'front', 'title', e.target.value)} className="inline-input-title" /><textarea disabled={!isEditor} value={p.front.text} onChange={(e)=>onUpdatePage(i, 'front', 'text', e.target.value)} className="inline-input-text" rows="6" /></div>)}{i>0 && i<pages.length-1 && <span className="page-number">{i*2}</span>}</div><div className={`back ${p.back.type}`} style={p.back.bg ? {backgroundImage:`url(${p.back.bg})`}:{}}>{renderEditOverlay(i, 'back', p.back.bg)}{p.back.type==='text-page' && (<div className="w-full h-full p-8 flex flex-col items-center justify-center relative z-10"><input disabled={!isEditor} value={p.back.title} onChange={(e)=>onUpdatePage(i, 'back', 'title', e.target.value)} className="inline-input-title" /><textarea disabled={!isEditor} value={p.back.text} onChange={(e)=>onUpdatePage(i, 'back', 'text', e.target.value)} className="inline-input-text" rows="6" /></div>)}{i>0 && i<pages.length-1 && <span className="page-number">{i*2+1}</span>}</div></div>)})}</div></div>{currentIdx >= 0 && <button className="nav-btn prev-btn" onClick={() => changePage(currentIdx - 1)}><i className="fas fa-arrow-left"></i></button>}{currentIdx < pages.length - 1 && <button className="nav-btn next-btn" onClick={() => changePage(currentIdx + 1)}><i className="fas fa-arrow-right"></i></button>}</div>);
         }
