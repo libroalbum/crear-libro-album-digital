@@ -584,9 +584,19 @@
                     </div>
                     <div className="note-body">
                         <div className="field-label"><i className="fa-solid fa-video"></i> Descripción de escena</div>
-                        <div className="editable-area scene-input" contentEditable suppressContentEditableWarning onInput={(e) => updateNote(note.id, 'scene', e.currentTarget.innerText)} style={{minHeight: '50px', marginBottom:'8px'}}>{note.scene}</div>
+                        <textarea 
+                            className="editable-area scene-input" 
+                            value={note.scene} 
+                            onChange={(e) => updateNote(note.id, 'scene', e.target.value)} 
+                            style={{minHeight: '50px', marginBottom:'8px', resize:'none', border:'none', background:'rgba(255,255,255,0.4)'}} 
+                        />
                         <div className="field-label"><i className="fa-solid fa-comments"></i> Diálogo</div>
-                        <div className="editable-area dialogue-input" contentEditable suppressContentEditableWarning onInput={(e) => updateNote(note.id, 'dialog', e.currentTarget.innerText)} style={{minHeight: '50px', fontStyle:'italic'}}>{note.dialog}</div>
+                        <textarea 
+                            className="editable-area dialogue-input" 
+                            value={note.dialog} 
+                            onChange={(e) => updateNote(note.id, 'dialog', e.target.value)} 
+                            style={{minHeight: '50px', fontStyle:'italic', resize:'none', border:'none', background:'rgba(255,255,255,0.4)'}} 
+                        />
                     </div>
                     <div className="note-controls">
                         <div className="color-picker" style={{display:'flex', gap:'4px'}}>{colors.map(c => (<div key={c} className="color-dot" style={{ backgroundColor: c }} onClick={() => updateNote(note.id, 'color', c)}></div>))}</div>
